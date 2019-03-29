@@ -11,9 +11,9 @@ namespace Host
     //Klasa implementujacą hosta
     class Host
     {
-        private Socket socket; //socket ktory wysyla pakiety do chmury
-        private IPEndPoint endPoint; //reprezentuje punkt koncowy sieci jako adres ip i numer portu
-        private IPAddress destinationIP; //adres ip do ktorego beda skierowane pakiety
+        private static Socket socket; //socket ktory wysyla pakiety do chmury
+        private static IPEndPoint endPoint; //reprezentuje punkt koncowy sieci jako adres ip i numer portu
+        private static IPAddress destinationIP; //adres ip do ktorego beda skierowane pakiety
 
         public Host()
         {
@@ -26,7 +26,7 @@ namespace Host
          * @ portNumber port, na który będzie wysyłać pakiety 
          * @ targetIP IP docelowe
         */
-        public void ConfigureHost(int portNumber, string targetIP)
+        private static void ConfigureHost(int portNumber, string targetIP)
         {
             destinationIP = IPAddress.Parse(targetIP);
             endPoint = new IPEndPoint(destinationIP, portNumber);
@@ -36,7 +36,7 @@ namespace Host
          * metoda wysyłająca wiadomość
          * @ message - treść wiadomości
         */
-        public void sendMessage(string message)
+        private static void SendMessage(string message)
         {
             //String text = "testtestest";
             byte[] sendbuf = Encoding.ASCII.GetBytes(message);
@@ -64,6 +64,32 @@ namespace Host
                 }
             }
             throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+
+        /**
+         * metoda parsująca argumenty metody Main Hosta, configurująca Hosta i wysyłająca wiadomość
+         * @ args - tablica typu string
+        */
+        private static void ParseAndExecuteForHostArguments(string[] args)
+        {
+            int portNumber = Int32.Parse(args[0]);
+            string targetIP = args[1];
+            string message = args[2];
+
+            Console.WriteLine(portNumber + " " + targetIP + " " + message);
+            Console.ReadKey();
+
+            //ConfigureHost(portNumber, targetIP);
+            //SendMessage(message);
+        }
+
+        /**
+         * metoda Main Hosta
+         * @ args - tablica typu string
+        */
+        static void Main(string[] args)
+        {
+            ParseAndExecuteForHostArguments(args);
         }
     }
 }
