@@ -2,6 +2,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Globalization;
+
 
 namespace ConnectionCloud
 {
@@ -12,6 +14,9 @@ namespace ConnectionCloud
         private State state = new State();
         private EndPoint epFrom = new IPEndPoint(IPAddress.Any, 0);
         private AsyncCallback recv = null;
+        DateTime dt = DateTime.Now;
+        static Time time = new Time();
+        private String timeStamp = time.GetTimestamp(DateTime.Now);
 
         public class State
         {
@@ -22,6 +27,7 @@ namespace ConnectionCloud
         {
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
+            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
             Receive();
         }
 
@@ -49,7 +55,8 @@ namespace ConnectionCloud
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                Console.WriteLine("RECV: {0}: {1}, {2}", epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                timeStamp = time.GetTimestamp(DateTime.Now);
+                Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
             }, state);
         }
     }
