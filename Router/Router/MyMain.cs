@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RouterV1
 {
-    class Program
+    class MyMain
     {
         static void Main(string[] args)
         {
@@ -14,9 +14,21 @@ namespace RouterV1
             RoutingLine line1 = new RoutingLine(27000);
             router1.AddRoutingLine(line1);
             UDPSocket socket1 = new UDPSocket();
-            socket1.Client("127.0.0.1", 27000);
-            for (int i = 0; i < 2000; i++)
+            UDPSocket socket2 = new UDPSocket();
+            socket1.Client("127.0.0.1", 27000, router1);
+            socket2.Server("127.0.0.1", 27000, router1);
+            router1.AddSocket(socket1);
+            router1.AddSocket(socket2);
+
+
+            for (int i = 0; i < 100; i++)
                 socket1.Send(i.ToString());
+
+
+            Console.ReadLine();
+
+            Console.WriteLine("Odebrano wiadomosci: " + socket2.counter);
+            Console.ReadKey();
 
 
         }

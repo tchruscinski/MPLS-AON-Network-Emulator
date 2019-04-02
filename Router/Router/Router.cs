@@ -14,8 +14,10 @@ namespace RouterV1
      */
     class Router
     {
-        private List<RoutingLine> routingTable = new List<RoutingLine>();
+        private List<RoutingLine> routingTable = new List<RoutingLine>(); //FIB(?)
         private List<UDPSocket> sockets = new List<UDPSocket>();
+        private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
+
 
         /*
          * Metoda dodaje 
@@ -33,5 +35,25 @@ namespace RouterV1
         {
             sockets.Add(newSocket);
         }
+        /*
+         * Pobiera pakiet od socketu
+         * @ packet, tresc pakietu
+         */
+        public void GetPacket(string packet)
+        {
+            _packet = packet;
+            ShowMessage(_packet);
+        }
+        /*
+         * Pomocnicza metoda, wypisuje tresc odebranej wiadomosci 
+         * @ message, tresc wiadomosci
+         */
+        public void ShowMessage(string message)
+        {
+            Console.WriteLine(message);
+
+        }
+
     }
 }
+
