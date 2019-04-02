@@ -8,7 +8,6 @@ namespace ConnectionCloud
 
         public string GetTimestamp(DateTime dt)
         {
-
             return dt.ToString("[yyyy-MM-dd HH:mm:ss]");
         }
 

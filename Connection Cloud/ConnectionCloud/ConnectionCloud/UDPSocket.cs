@@ -16,7 +16,6 @@ namespace ConnectionCloud
         private AsyncCallback recv = null;
         DateTime dt = DateTime.Now;
         static Time time = new Time();
-        private String timeStamp = time.GetTimestamp(DateTime.Now);
 
         public class State
         {
@@ -27,11 +26,11 @@ namespace ConnectionCloud
         {
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
-            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
             Receive();
         }
 
-        public void Client(string address, int port)
+        public void Connect(string address, int port)
         {
             _socket.Connect(IPAddress.Parse(address), port);
             Receive();
@@ -44,20 +43,31 @@ namespace ConnectionCloud
             {
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndSend(ar);
-                Console.WriteLine("SEND: {0}, {1}", bytes, text);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " SEND: {0}, {1}", bytes, text);
             }, state);
         }
 
-        private void Receive()
+        private string Receive()
         {
+             string msg = "";
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                timeStamp = time.GetTimestamp(DateTime.Now);
-                Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
+                msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
             }, state);
+
+            return msg;
         }
+
+        private string MessageProcessing(string message)
+        {
+            //TODO
+            string proceeded_message = "";
+            return proceeded_message;
+        }
+
     }
 }
