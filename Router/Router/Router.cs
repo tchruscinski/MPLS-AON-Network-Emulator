@@ -17,7 +17,7 @@ namespace RouterV1
         private List<RoutingLine> routingTable = new List<RoutingLine>(); //FIB(?)
         private List<UDPSocket> sockets = new List<UDPSocket>();
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
-
+        private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
 
         /*
          * Metoda dodaje 
@@ -42,6 +42,7 @@ namespace RouterV1
         public void GetPacket(string packet)
         {
             _packet = packet;
+            GetDestinationHost(_packet);
             ShowMessage(_packet);
         }
         /*
@@ -53,7 +54,32 @@ namespace RouterV1
             Console.WriteLine(message);
 
         }
+        /*
+         * Odczytuje z tresci wiadomosci nazwe hosta docelowego i przypisuje go do @ destinationHost
+         * @ message, tresc wiadomoci
+         */
+        public void GetDestinationHost(string message)
+        {
+            //wiadomosc przekonwertowana do tablicy bajtow
+            byte[] byteMessage = Encoding.ASCII.GetBytes(message);
+            //licznik dlugosci nazwy hosta
+            int counter = 0;
+            //petla liczy na ktorym bajcie wiadomosci jest znak konca naglowka
+            while (byteMessage[counter] != ';' && counter < byteMessage.Length)
+                counter++;
+            //pomocnicza tablica bajtow, do ktorej zapisywana jest nazwa hosta docelowego
+            byte[] hostName = new byte[counter];
+            for (int i = 0; i < counter; i++)
+                hostName[i] = byteMessage[i];
+
+            //Console.WriteLine("Nazwa hosta");
+            //Console.WriteLine(destinationHost);
+            //Console.WriteLine("/////////////");
+            destinationHost = Encoding.ASCII.GetString(hostName);
+
+
+        }
+
 
     }
 }
-

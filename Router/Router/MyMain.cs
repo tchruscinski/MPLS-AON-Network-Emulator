@@ -21,16 +21,17 @@ namespace RouterV1
             router1.AddSocket(socket2);
 
 
-            for (int i = 0; i < 100; i++)
-                socket1.Send(i.ToString());
-
+            //for (int i = 0; i < 100; i++)
+            //    socket1.Send(i.ToString());
+            socket1.Send("host1;tresc wiadomosci.......sasgg");
 
             Console.ReadLine();
 
-            Console.WriteLine("Odebrano wiadomosci: " + socket2.counter);
-            Console.ReadKey();
+            //Console.WriteLine("Odebrano wiadomosci: " + socket2.counter);
+            //Console.ReadKey();
 
 
         }
     }
 }
+
