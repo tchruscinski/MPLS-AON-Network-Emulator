@@ -21,14 +21,19 @@ namespace RouterV1
         private String timeStamp = time.GetTimestamp(DateTime.Now);
         public int counter = 0;
         Router _router;
+        private int _port;
 
         public class State
         {
             public byte[] buffer = new byte[bufSize];
         }
 
+
+        public int getPort() { return _port; }
+
         public void Server(string address, int port, Router router)
         {
+            _port = port;
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             _router = router;
@@ -37,6 +42,7 @@ namespace RouterV1
         }
         public void Client(string address, int port, Router router)
         {
+            _port = port;
             _socket.Connect(IPAddress.Parse(address), port);
             _router = router;
             Receive(_router);
@@ -65,8 +71,9 @@ namespace RouterV1
                 int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 timeStamp = time.GetTimestamp(DateTime.Now);
-                //Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
-                router.GetPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                Console.WriteLine("In router: " + nameof(router));
+                Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                router.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                 counter++;
             }, state);
 

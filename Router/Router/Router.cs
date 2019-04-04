@@ -15,34 +15,52 @@ namespace RouterV1
     class Router
     {
         private List<RoutingLine> routingTable = new List<RoutingLine>(); //FIB(?)
-        private List<UDPSocket> sockets = new List<UDPSocket>();
+        //sockety, ktorymi pakiety sa przesylane dalej
+        private List<UDPSocket> sendingSockets = new List<UDPSocket>();
+        //sockety, ktore odbieraja pakiety
+        private List<UDPSocket> receivingSockets = new List<UDPSocket>();
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
 
         /*
          * Metoda dodaje 
          * @ newLine, nowy wiersz do tablicy routingowej 
+         * oraz tworzy UDP socket nasluchujacy na tym porcie
          */
         public void AddRoutingLine(RoutingLine newLine)
         {
             routingTable.Add(newLine);
+            UDPSocket socket = new UDPSocket();
+            socket.Client(Utils.destinationIP, newLine.GetPort(), this);
+            //socket.Server(Utils.destinationIP, 27000, this);
+            AddSendingSocket(socket);
+        }
+        public string GetDestinationHost() { return destinationHost; }
+        /*
+         * Metoda dodaje,
+         * @ newSocket, nowy socket do listy
+         */
+        public void AddSendingSocket(UDPSocket newSocket)
+        {
+            sendingSockets.Add(newSocket);
         }
         /*
          * Metoda dodaje,
          * @ newSocket, nowy socket do listy
          */
-        public void AddSocket(UDPSocket newSocket)
+        public void AddReceivingSocket(UDPSocket newSocket)
         {
-            sockets.Add(newSocket);
+            receivingSockets
+                .Add(newSocket);
         }
         /*
          * Pobiera pakiet od socketu
          * @ packet, tresc pakietu
          */
-        public void GetPacket(string packet)
+        public void ReadPacket(string packet)
         {
             _packet = packet;
-            GetDestinationHost(_packet);
+            ReadDestinationHost(_packet);
             ShowMessage(_packet);
         }
         /*
@@ -58,7 +76,7 @@ namespace RouterV1
          * Odczytuje z tresci wiadomosci nazwe hosta docelowego i przypisuje go do @ destinationHost
          * @ message, tresc wiadomoci
          */
-        public void GetDestinationHost(string message)
+        public void ReadDestinationHost(string message)
         {
             //wiadomosc przekonwertowana do tablicy bajtow
             byte[] byteMessage = Encoding.ASCII.GetBytes(message);
@@ -78,6 +96,43 @@ namespace RouterV1
             destinationHost = Encoding.ASCII.GetString(hostName);
 
 
+        }
+        /*
+         * Metoda pomocnicza, do testowania
+         * Wysyla pakiet odpowiednim portem, dla danego hosta docelowego
+         */
+        public void SendPacket(string message, int port)
+        {
+            for(int i = 0; i < sendingSockets.Count; i++)
+                if(sendingSockets[i].getPort() == port)
+                {
+                    sendingSockets[i].Send(message);
+                    return;
+                }
+            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+
+        }
+        /*
+         * Na postawie wartosci @ destinationHost wysyla pakiet odpowiednim portem
+         */
+         public void SendPacket()
+        {
+            //pierwszy for szuka odpowiedniego wiersza tablicy routingowej, po nazwie hosta
+            //i odczytuje jego nr portu
+            for(int i = 0; i < routingTable.Count; i++)
+                if(routingTable[i].GetHostName().Equals(destinationHost))
+                {
+                   int port = routingTable[i].GetPort();
+                    //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
+                    //pobrana przy odbiorze tresc pakietu
+                    for (int j = 0; j < sendingSockets.Count; j++)
+                        if (sendingSockets[j].getPort() == port)
+                        {
+                            sendingSockets[j].Send(_packet);
+                            return;
+                        }
+                }
+            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
         }
 
 
