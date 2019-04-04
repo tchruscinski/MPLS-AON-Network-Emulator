@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+<Router Name="Router1" ListeningPort="100"/>
+<Router Name="Router2" ListeningPort="200"/>
+<Router Name="Router3" ListeningPort="300"/>
+<Router Name="Router4" ListeningPort="400"/>
+<RoutingTable>
+<Row></Row>
+</RoutingTable>
+</Config>

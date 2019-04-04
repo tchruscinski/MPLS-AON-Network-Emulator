@@ -13,10 +13,45 @@ namespace Management_System
     */
     class ManagementSystem
     {
-        //private static void compileProject()
-        //{
+        private UDPSocket listeningSocket = new UDPSocket();
+        private UDPSocket sendingSocket = new UDPSocket();
+        private Parser parser = new Parser();
+        private List<string> routersListeningPorts = new List<string>();
 
-        //}
+
+        /**
+        * metoda parsująca plik konfiguracyjny dla sieci
+        * @ no arguments, void
+        */
+        private void ReadConfig()
+        {
+            routersListeningPorts = parser.ParseConfig("Router", "ListeningPort");
+            for(int i = 0; i < routersListeningPorts.Count; i++)
+            {
+                Console.WriteLine("port routera: "+routersListeningPorts[i]);
+            }
+        }
+
+        /**
+        * metoda startująca serwer na listeningSockecie systemu zarządzania
+        * @ no arguments, void
+        */
+        private static void StartServer()
+        {
+            //sendingSocket.RunServer();
+        }
+        
+        /**
+        * metoda wyświetlająca interfejs systemu zarządznia
+        * @ no arguments, void
+        */
+        private static void ShowInterface()
+        {
+            Console.WriteLine("System Zarządzania v1.0");
+
+            Console.WriteLine("");
+            StartServer();
+        }
 
         /**
          * metoda konfigurująca Hosta, odpala apke Hosta z określonymi parametrami
@@ -49,7 +84,11 @@ namespace Management_System
         */
         static void Main(string[] args)
         {
-            ConfigureHosts();
+            //ConfigureHosts();
+            UDPSocket udpSocket = new UDPSocket();
+            ManagementSystem ms = new ManagementSystem();
+            ms.ReadConfig();
+            Console.ReadKey();
         }
     }
 }
