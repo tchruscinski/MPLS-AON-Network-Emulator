@@ -55,7 +55,7 @@ namespace RouterV1
         }
         /*
         * Metoda dodaje,
-        * @ newSocket, nowy socket do listy
+        * @ port, numer portu
         */
         public void AddReceivingSocket(int port)
         {

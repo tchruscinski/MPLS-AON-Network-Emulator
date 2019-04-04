@@ -30,7 +30,7 @@ namespace RouterV1
 
             //for (int i = 0; i < 100; i++)
             //    socket1.Send(i.ToString());
-            sendingRouter.SendPacket("host1;tresc wiadomosci.......sasgg", 27000);
+            sendingRouter.SendPacket("host2;tresc wiadomosci.......sasgg", 27000);
             
             
             Console.ReadLine();
