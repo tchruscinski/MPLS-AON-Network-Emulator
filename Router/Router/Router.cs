@@ -54,6 +54,17 @@ namespace RouterV1
                 .Add(newSocket);
         }
         /*
+        * Metoda dodaje,
+        * @ newSocket, nowy socket do listy
+        */
+        public void AddReceivingSocket(int port)
+        {
+            UDPSocket socket = new UDPSocket();
+            socket.Server(Utils.destinationIP, port, this);
+            receivingSockets
+                .Add(socket);
+        }
+        /*
          * Pobiera pakiet od socketu
          * @ packet, tresc pakietu
          */

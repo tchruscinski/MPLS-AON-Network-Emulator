@@ -12,13 +12,13 @@ namespace RouterV1
         {
             // host1 <--> sendingRouter <--> midRouter <--> receivingRouter <--> host2
             Router sendingRouter = new Router();
-            RoutingLine line1 = new RoutingLine(27000, "host1");
+            RoutingLine line1 = new RoutingLine(27000, "host2");
             sendingRouter.AddRoutingLine(line1);
 
             Router midRouter = new Router();
             UDPSocket socket = new UDPSocket();
             socket.Server(Utils.destinationIP, 27000, midRouter);
-            RoutingLine line2 = new RoutingLine(27001, "host1");
+            RoutingLine line2 = new RoutingLine(27001, "host2");
             midRouter.AddReceivingSocket(socket);
             midRouter.AddRoutingLine(line2);
 
