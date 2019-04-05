@@ -14,6 +14,7 @@ namespace RouterV1
      */
     class Router
     {
+        private string _name = " "; //nazwa routera
         private List<RoutingLine> routingTable = new List<RoutingLine>(); //FIB(?)
         //sockety, ktorymi pakiety sa przesylane dalej
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
@@ -21,6 +22,12 @@ namespace RouterV1
         private List<UDPSocket> receivingSockets = new List<UDPSocket>();
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
+
+        public Router(string name)
+        {
+            _name = name;
+        }
+        public string GetName() { return _name; }
 
         /*
          * Metoda dodaje 
@@ -33,17 +40,9 @@ namespace RouterV1
             UDPSocket socket = new UDPSocket();
             socket.Client(Utils.destinationIP, newLine.GetPort(), this);
             //socket.Server(Utils.destinationIP, 27000, this);
-            AddSendingSocket(socket);
+            sendingSockets.Add(socket);
         }
         public string GetDestinationHost() { return destinationHost; }
-        /*
-         * Metoda dodaje,
-         * @ newSocket, nowy socket do listy
-         */
-        public void AddSendingSocket(UDPSocket newSocket)
-        {
-            sendingSockets.Add(newSocket);
-        }
         /*
          * Metoda dodaje,
          * @ newSocket, nowy socket do listy
@@ -65,7 +64,7 @@ namespace RouterV1
                 .Add(socket);
         }
         /*
-         * Pobiera pakiet od socketu
+         * Pobiera pakiet od socketu, a nastepnie przesyla go dalej
          * @ packet, tresc pakietu
          */
         public void ReadPacket(string packet)
@@ -73,6 +72,8 @@ namespace RouterV1
             _packet = packet;
             ReadDestinationHost(_packet);
             ShowMessage(_packet);
+            //przesyla pakiet do nastepnego wezla
+            SendPacket();
         }
         /*
          * Pomocnicza metoda, wypisuje tresc odebranej wiadomosci 
@@ -94,7 +95,7 @@ namespace RouterV1
             //licznik dlugosci nazwy hosta
             int counter = 0;
             //petla liczy na ktorym bajcie wiadomosci jest znak konca naglowka
-            while (byteMessage[counter] != ';' && counter < byteMessage.Length)
+            while (counter < byteMessage.Length && byteMessage[counter] != ';')
                 counter++;
             //pomocnicza tablica bajtow, do ktorej zapisywana jest nazwa hosta docelowego
             byte[] hostName = new byte[counter];
