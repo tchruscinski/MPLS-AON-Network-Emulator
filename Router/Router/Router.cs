@@ -70,7 +70,14 @@ namespace RouterV1
         public void ReadPacket(string packet)
         {
             _packet = packet;
-            ReadDestinationHost(_packet);
+            //jeezeli FEC != 0, to znaczy, ze jest etykieta mpls
+            if(ReadFECValue(_packet) != 0)
+            {
+                //...
+            }
+            //w innym wypadku patrzymy po prostu do tablicy routingowej
+            else
+               ReadDestinationHost(_packet);
             ShowMessage(_packet);
             //przesyla pakiet do nastepnego wezla
             SendPacket();
@@ -94,8 +101,8 @@ namespace RouterV1
             byte[] byteMessage = Encoding.ASCII.GetBytes(message);
             //licznik dlugosci nazwy hosta
             int counter = 0;
-            //petla liczy na ktorym bajcie wiadomosci jest znak konca naglowka
-            while (counter < byteMessage.Length && byteMessage[counter] != ';')
+            //petla liczy na ktorym bajcie wiadomosci jest znak konca nazwy hosta 
+            while (counter < byteMessage.Length && byteMessage[counter] != ':')
                 counter++;
             //pomocnicza tablica bajtow, do ktorej zapisywana jest nazwa hosta docelowego
             byte[] hostName = new byte[counter];
@@ -107,6 +114,36 @@ namespace RouterV1
             //Console.WriteLine("/////////////");
             destinationHost = Encoding.ASCII.GetString(hostName);
 
+
+        }
+        /*
+         * Odczytuje FEC czyli ID tunelu
+         * @ message, tresc wiadomosci
+         * @ return ID tunelu
+         */
+        public int ReadFECValue(string message)
+        {
+            //wiadomosc przekonwertowana do tablicy bajtow
+            byte[] byteMessage = Encoding.ASCII.GetBytes(message);
+            int counter = 0;
+            //petla liczy na ktorym bajcie wiadomosci jest znak konca nazwy hosta 
+            while (counter < byteMessage.Length && byteMessage[counter] != ':')
+                counter++;
+            int startIndex = ++counter; //indeks, na ktorym zaczyna sie FEC
+                                        //counter jest na znaku ':' stad inkrementacja
+            //petla liczy na ktorym bajcie wiadomosci jest znak konca naglowka 
+            while (counter < byteMessage.Length && byteMessage[counter] != ';')
+                counter++;
+            int FEC_Length = counter - startIndex; //dlugosc nr tunelu
+            byte[] FEC = new byte[FEC_Length];
+            for (int i = 0; i < FEC_Length; i++)
+            {
+                FEC[i] = byteMessage[startIndex];
+                Console.Write(FEC[i]);
+                startIndex++;
+            }
+            return Int32.Parse(Encoding.ASCII.GetString(FEC));    
+                
 
         }
         /*
