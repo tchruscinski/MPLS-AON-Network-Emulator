@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
@@ -17,7 +19,12 @@ namespace Management_System
         private UDPSocket sendingSocket = new UDPSocket();
         private Parser parser = new Parser();
         private List<string> routersListeningPorts = new List<string>();
-
+        private List<string> routersSendingPorts = new List<string>();
+        private int portNumber = 100;
+        private int connectionCloudListeningPort = 100;
+        private string localIP;
+        private string listeningPorts;
+        private string sendingPorts;
 
         /**
         * metoda parsująca plik konfiguracyjny dla sieci
@@ -26,31 +33,90 @@ namespace Management_System
         private void ReadConfig()
         {
             routersListeningPorts = parser.ParseConfig("Router", "ListeningPort");
+            routersSendingPorts = parser.ParseConfig("Router", "SendingPort");
             for(int i = 0; i < routersListeningPorts.Count; i++)
             {
-                Console.WriteLine("port routera: "+routersListeningPorts[i]);
+                Console.WriteLine("nasłuchujący port routera: "+routersListeningPorts[i]);
+                Console.WriteLine("wysyłający port routera: "+routersSendingPorts[i]);
             }
+        }
+
+        /**
+        * Metoda ustawiająca lokalny adres IP maszyny
+        * @ no arguments, void
+        */
+        public void SetLocalIPAddress()
+        {
+            if(!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()) 
+            {
+                localIP = null;
+            }
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         /**
         * metoda startująca serwer na listeningSockecie systemu zarządzania
         * @ no arguments, void
         */
-        private static void StartServer()
+        private void StartServer()
         {
-            //sendingSocket.RunServer();
+            listeningSocket.RunServer(localIP, 100);
         }
         
+        /* Metoda tworząca stringi z konfiguracją, które będą wysłane do chmury połączeń
+        * @ no arguments, void
+        */
+        private void prepareStringsToSend()
+        {
+            if(routersListeningPorts.Count == 0 || routersSendingPorts.Count == 0) 
+            {
+                return;
+            }
+
+            for(int i = 0; i < routersListeningPorts.Count; i++)
+            {   
+                listeningPorts += routersListeningPorts[i] + ",";
+                sendingPorts += routersSendingPorts[i] + ",";
+            }
+        }
+
+        /**
+        * metoda wysyłająca tablice routingową do chmury połączeń
+        * @ no arguments, void
+        */
+        private void SendRoutingTable()
+        {   
+            Console.WriteLine("Wysyłanie konfiguracji do chmury połączeń ...");
+            sendingSocket.Connect(localIP, connectionCloudListeningPort);
+            sendingSocket.Send(listeningPorts);
+            sendingSocket.Send(sendingPorts);
+            Console.WriteLine("Wysyłano pomyślnie.");
+        }
         /**
         * metoda wyświetlająca interfejs systemu zarządznia
         * @ no arguments, void
         */
-        private static void ShowInterface()
+        private void ShowInterface()
         {
             Console.WriteLine("System Zarządzania v1.0");
-
-            Console.WriteLine("");
             StartServer();
+
+            Console.WriteLine("Wysyłanie konfiguracji do chmury połączeń ...");
+            SendRoutingTable();
+            
+            /*while ((line = Console.ReadLine()) != null)
+            {
+                string newLine = line.Replace(("").PadRight(tabSize, ' '), "\t");
+                Console.WriteLine(newLine);
+            }*/
         }
 
         /**
