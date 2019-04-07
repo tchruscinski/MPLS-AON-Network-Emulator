@@ -16,8 +16,7 @@ namespace Host
             //Host host4 = new Host("host2", 112, 111);
             //Console.ReadLine();
             //host3.SendPacket("host2", "wiadomosc");
-
-            host1.SendPacket("host2", "wiadomosc testowa");
+            host1.SendPacket("host3", "wiadomosc testowa");
 
             Console.ReadLine();
         }

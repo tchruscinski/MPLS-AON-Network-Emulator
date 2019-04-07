@@ -17,12 +17,15 @@ namespace RouterV1
         private string _name = " "; //nazwa routera
         private List<RoutingLine> tableIP_FIB = new List<RoutingLine>(); //tablica routingowa IP
         private List<RoutingLineMPLS> tableMPLS_FIB = new List<RoutingLineMPLS>(); //tablica routingowa MPLS
+        private List<FTNLine> tableFTN = new List<FTNLine>();//tablica FTN
+        private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
         //sockety, ktorymi pakiety sa przesylane dalej
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
         //sockety, ktore odbieraja pakiety
         private List<UDPSocket> receivingSockets = new List<UDPSocket>();
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
+        private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
 
         public Router(string name)
         {
@@ -45,6 +48,8 @@ namespace RouterV1
         }
 
         public void AddRoutingLineMPLS(RoutingLineMPLS newLine) { tableMPLS_FIB.Add(newLine); }
+        public void AddFTNLine(FTNLine newLine) { tableFTN.Add(newLine); }
+        public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
 
         public string GetDestinationHost() { return destinationHost; }
         /*
@@ -102,6 +107,7 @@ namespace RouterV1
             //petla liczy na ktorym bajcie wiadomosci jest znak konca nazwy hosta 
             while (counter < byteMessage.Length && byteMessage[counter] != ':')
                 counter++;
+            labelStartIndex = counter;
             //pomocnicza tablica bajtow, do ktorej zapisywana jest nazwa hosta docelowego
             byte[] hostName = new byte[counter];
             for (int i = 0; i < counter; i++)
@@ -164,19 +170,52 @@ namespace RouterV1
          */
         public void SendPacket()
         {
-            if (CheckMPLSTable())
+            int port = 0; //nr portu, ktorym wyslemy pakiet
+            int FEC = CheckMPLSTable(); //odczytujemy wartosc FEC z tablicy MPLS-FIB
+            if (FEC != 0)
             {
-                //....tutaj bedzie komunikacja z systemem zarzadzania
+                int NHLFE_ID = CheckFTNTable(FEC); //odczytujemy ID wpisu NHLFE z tablicy FTN
+                                                   //petla zakomentowana do testow
+                                                   //while(NHLFE_ID != 0) //sprawdzamy wpisy NHLFE, az dojdziemy do wpisu o numerze 0
+                                                   //{
+                int index = CheckNHLFETable(NHLFE_ID); //szukamy indeksu wpisu o danym ID
+                if (index == -1) Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+                else
+                {
+                    NHLFELine line = tableNHLFE[index];
+                    //odczytujemy etykiete
+                    int label = line.getLabel();
+
+                    //obsluga wszystkich rodzajow akcji
+                    if (line.getAction() == Action.PUSH)
+                    {
+                        AddLabel(label);
+                    }
+                    else if (line.getAction() == Action.POP)
+                    {
+                        //...
+                    }
+                    else
+                    {
+                        //...
+                    }
+                    //odczytujemy nr portu
+                    port = line.getPort();
+                  
+                }
+                //}
+
             }
             else
             {
-                int port = CheckIPTable();
+                port = CheckIPTable(); //odczytujemy nr portu z tablicy IP-FIB
                 //jezeli metoda zwrocila nr portu 0, to znaczy, ze nie ma takiego portu
                 if (port == 0)
                 {
                     Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
                     return;
                 }
+            }
                 //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
                 //pobrana przy odbiorze tresc pakietu
                 for (int j = 0; j < sendingSockets.Count; j++)
@@ -187,24 +226,25 @@ namespace RouterV1
                     }
                 //jezeli nie udalo sie wyslac, zwraca komunikat
                 Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
-            }
-
         }
+
+        
 
 
         /*
          * Metoda sprawdza tablice MPLS-FIB, 
-         * zwraca true dla FEC != 0, w przeciwnym wypadku false
+         * zwraca true wartosc FEC odczytana z tablicy
+         * jesli nie znalazla zadnej wartosci zwraca 0
          */
-        public bool CheckMPLSTable()
+        public int CheckMPLSTable()
         {
             for (int i = 0; i < tableMPLS_FIB.Count; i++)
                 if (tableMPLS_FIB[i].GetHostName().Equals(destinationHost))
                 {
-                    if (tableMPLS_FIB[i].GetFEC() != 0) return true; //jesli FEC != 0 zwraca true
-                    else return false;
+                    if (tableMPLS_FIB[i].GetFEC() != 0) return tableMPLS_FIB[i].GetFEC(); 
+                    
                 }
-            return false; //jesli nie bylo zadnego wpisu zwraca false
+            return 0;
 
         }
         /*
@@ -221,6 +261,74 @@ namespace RouterV1
                     return tableIP_FIB[i].GetPort();
                 }
             return 0; //jezeli nie ma takiego wiersza zwraca 0
+        }
+        /*
+         * Metoda sprawdza tablice FTN, 
+         * zwraca ID wpisu NHLFE
+         * @ FEC poszukiwana wartosc FEC
+         */
+        public int CheckFTNTable(int FEC)
+        {
+            for (int i = 0; i < tableFTN.Count; i++)
+                if (tableFTN[i].GetFEC() == FEC)
+                {
+                    return tableFTN[i].GetId();
+                }
+            return 0; //jezeli nie ma takiego wiersza zwraca 0
+        }
+        /*
+         * Metoda sprawdza tablice NHLFE, 
+         * szukajac wpisu o odpowiednim ID
+         * zwraca jego indeks
+         * @ ID, ID poszukiwanego wpisu
+         */
+        public int CheckNHLFETable(int ID)
+        {
+            for (int i = 0; i < tableNHLFE.Count; i++)
+                if (tableNHLFE[i].getID() == ID)
+                {
+                    return i;
+                }
+            return -1; //jezeli nie ma takiego wpisu zwraca -1
+        }
+        /*
+         * Dodaje etykiete do pakietu
+         * @ label nr etykiety
+         */
+        public void AddLabel(int label)
+        {
+            //tresc pakietu przekonwertowana do tablicy bajtow
+            byte[] packet = Encoding.ASCII.GetBytes(_packet);
+            //nazwa hosta wraz z znakiem ':'
+            //labelStartIndex to dlugosc nazwy, wiec + 1, na znak ':'
+            byte[] hostName = new byte[labelStartIndex + 1];
+            //reszta wiadomosci
+            byte[] message = new byte[packet.Length - labelStartIndex];
+            //indeks pomocniczy
+            int index = labelStartIndex;
+            //labelStartIndex jest na znaku ':', 
+            //ktorego nie chcemy drugi raz, wiec stad inkrementacja
+            //stad rowniez - 1 w forze
+            index++;
+            for(int i = 0; i < packet.Length - labelStartIndex - 1; i++)
+            {
+                message[i] = packet[index];
+                index++;
+            }
+            for (int i = 0; i <= labelStartIndex; i++)
+                hostName[i] = packet[i];
+            //pakiet jest tworzony od nowa
+            // nazwa hosta: -> etykieta -> , -> reszta wiadomosci
+            //przecinek do oddzielenia kolejnych etykiet
+            StringBuilder newPacket = new StringBuilder(Encoding.ASCII.GetString(hostName));
+            newPacket.Append(label);
+            newPacket.Append(",");
+            newPacket.Append(Encoding.ASCII.GetString(message));
+
+            //nowa tresc pakietu, z dodana etykieta mpls
+            _packet = newPacket.ToString();
+            Console.WriteLine(_packet);
+
         }
 
 

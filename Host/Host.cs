@@ -59,7 +59,7 @@ namespace Host
         {
             StringBuilder builder = new StringBuilder(destinationHost);
             builder.Append(":"); //znak konca adresu docelowego
-            builder.Append("0"); //miejsce na etykiete mpls, 0 == brak etykiety
+            //miedzy :, a ; jest miejsce na etykiety mpls
             builder.Append(";"); //znak konca naglowka
             builder.Append(message);
             sendingSocket.Send(builder.ToString());

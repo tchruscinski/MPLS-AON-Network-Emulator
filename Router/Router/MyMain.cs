@@ -16,9 +16,16 @@ namespace RouterV1
             socket0.Server(Utils.destinationIP, 26999, sendingRouter);
             RoutingLine line1 = new RoutingLine(27000, "host2");
             RoutingLineMPLS mLine1 = new RoutingLineMPLS("host2", 0);
+            RoutingLineMPLS mLine2 = new RoutingLineMPLS("host3", 1);
             sendingRouter.AddRoutingLine(line1);
             sendingRouter.AddRoutingLineMPLS(mLine1);
+            sendingRouter.AddRoutingLineMPLS(mLine2);
             sendingRouter.AddReceivingSocket(socket0);
+
+            FTNLine ftn1 = new FTNLine(1, 1);
+            sendingRouter.AddFTNLine(ftn1);
+            NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 27000, 0); //wyslij portem 2700 z etykieta 20
+            sendingRouter.AddNHLFELine(nhlfe1);
 
             Router midRouter = new Router("midRouter");
             UDPSocket socket = new UDPSocket();
@@ -40,7 +47,7 @@ namespace RouterV1
             //for (int i = 0; i < 100; i++)
             //    socket1.Send(i.ToString());
             //sendingRouter.SendPacket("host2;tresc wiadomosci.......sasgg", 27000);
-            sendingRouter.SendPacket();
+            //sendingRouter.SendPacket();
 
             Console.ReadLine();
             Console.WriteLine("Host: " + midRouter.GetDestinationHost());
