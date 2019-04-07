@@ -50,6 +50,7 @@ namespace Management_System
             if(!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()) 
             {
                 localIP = null;
+                throw new Exception("No network adapters with an IPv4 address in the system!");
             }
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
@@ -59,7 +60,6 @@ namespace Management_System
                     localIP = ip.ToString();
                 }
             }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         /**
@@ -68,6 +68,7 @@ namespace Management_System
         */
         private void StartServer()
         {
+            SetLocalIPAddress();
             listeningSocket.RunServer(localIP, 100);
         }
         
@@ -95,6 +96,7 @@ namespace Management_System
         private void SendRoutingTable()
         {   
             Console.WriteLine("Wysyłanie konfiguracji do chmury połączeń ...");
+            prepareStringsToSend();
             sendingSocket.Connect(localIP, connectionCloudListeningPort);
             sendingSocket.Send(listeningPorts);
             sendingSocket.Send(sendingPorts);
@@ -108,16 +110,23 @@ namespace Management_System
         {
             Console.WriteLine("System Zarządzania v1.0");
             StartServer();
-
-            Console.WriteLine("Wysyłanie konfiguracji do chmury połączeń ...");
             SendRoutingTable();
             
             /*while ((line = Console.ReadLine()) != null)
             {
-                string newLine = line.Replace(("").PadRight(tabSize, ' '), "\t");
-                Console.WriteLine(newLine);
+                ReadInput();
             }*/
         }
+
+         /**
+         * Metoda czytająca komendy z konsoli
+         * @ no arguments, void
+        */
+        /*private void ReadInput() 
+        {
+            string line = Console.ReadLine();
+            //if(line = "")
+        }*/
 
         /**
          * metoda konfigurująca Hosta, odpala apke Hosta z określonymi parametrami
@@ -154,6 +163,8 @@ namespace Management_System
             UDPSocket udpSocket = new UDPSocket();
             ManagementSystem ms = new ManagementSystem();
             ms.ReadConfig();
+            Console.ReadKey();
+            ms.ShowInterface();
             Console.ReadKey();
         }
     }
