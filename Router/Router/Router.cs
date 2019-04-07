@@ -15,7 +15,8 @@ namespace RouterV1
     class Router
     {
         private string _name = " "; //nazwa routera
-        private List<RoutingLine> routingTable = new List<RoutingLine>(); //FIB(?)
+        private List<RoutingLine> tableIP_FIB = new List<RoutingLine>(); //tablica routingowa IP
+        private List<RoutingLineMPLS> tableMPLS_FIB = new List<RoutingLineMPLS>(); //tablica routingowa MPLS
         //sockety, ktorymi pakiety sa przesylane dalej
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
         //sockety, ktore odbieraja pakiety
@@ -36,12 +37,15 @@ namespace RouterV1
          */
         public void AddRoutingLine(RoutingLine newLine)
         {
-            routingTable.Add(newLine);
+            tableIP_FIB.Add(newLine);
             UDPSocket socket = new UDPSocket();
             socket.Client(Utils.destinationIP, newLine.GetPort(), this);
             //socket.Server(Utils.destinationIP, 27000, this);
             sendingSockets.Add(socket);
         }
+
+        public void AddRoutingLineMPLS(RoutingLineMPLS newLine) { tableMPLS_FIB.Add(newLine); }
+
         public string GetDestinationHost() { return destinationHost; }
         /*
          * Metoda dodaje,
@@ -71,13 +75,7 @@ namespace RouterV1
         {
             _packet = packet;
             //jeezeli FEC != 0, to znaczy, ze jest etykieta mpls
-            if(ReadFECValue(_packet) != 0)
-            {
-                //...
-            }
-            //w innym wypadku patrzymy po prostu do tablicy routingowej
-            else
-               ReadDestinationHost(_packet);
+            destinationHost = ReadDestinationHost(_packet);
             ShowMessage(_packet);
             //przesyla pakiet do nastepnego wezla
             SendPacket();
@@ -95,7 +93,7 @@ namespace RouterV1
          * Odczytuje z tresci wiadomosci nazwe hosta docelowego i przypisuje go do @ destinationHost
          * @ message, tresc wiadomoci
          */
-        public void ReadDestinationHost(string message)
+        public string ReadDestinationHost(string message)
         {
             //wiadomosc przekonwertowana do tablicy bajtow
             byte[] byteMessage = Encoding.ASCII.GetBytes(message);
@@ -112,48 +110,48 @@ namespace RouterV1
             //Console.WriteLine("Nazwa hosta");
             //Console.WriteLine(destinationHost);
             //Console.WriteLine("/////////////");
-            destinationHost = Encoding.ASCII.GetString(hostName);
+            return Encoding.ASCII.GetString(hostName);
 
 
         }
-        /*
-         * Odczytuje FEC czyli ID tunelu
-         * @ message, tresc wiadomosci
-         * @ return ID tunelu
-         */
-        public int ReadFECValue(string message)
-        {
-            //wiadomosc przekonwertowana do tablicy bajtow
-            byte[] byteMessage = Encoding.ASCII.GetBytes(message);
-            int counter = 0;
-            //petla liczy na ktorym bajcie wiadomosci jest znak konca nazwy hosta 
-            while (counter < byteMessage.Length && byteMessage[counter] != ':')
-                counter++;
-            int startIndex = ++counter; //indeks, na ktorym zaczyna sie FEC
-                                        //counter jest na znaku ':' stad inkrementacja
-            //petla liczy na ktorym bajcie wiadomosci jest znak konca naglowka 
-            while (counter < byteMessage.Length && byteMessage[counter] != ';')
-                counter++;
-            int FEC_Length = counter - startIndex; //dlugosc nr tunelu
-            byte[] FEC = new byte[FEC_Length];
-            for (int i = 0; i < FEC_Length; i++)
-            {
-                FEC[i] = byteMessage[startIndex];
-                Console.Write(FEC[i]);
-                startIndex++;
-            }
-            return Int32.Parse(Encoding.ASCII.GetString(FEC));    
-                
+        ///*
+        // * Odczytuje FEC czyli ID tunelu
+        // * @ message, tresc wiadomosci
+        // * @ return ID tunelu
+        // */
+        //public int ReadFECValue(string message)
+        //{
+        //    //wiadomosc przekonwertowana do tablicy bajtow
+        //    byte[] byteMessage = Encoding.ASCII.GetBytes(message);
+        //    int counter = 0;
+        //    //petla liczy na ktorym bajcie wiadomosci jest znak konca nazwy hosta 
+        //    while (counter < byteMessage.Length && byteMessage[counter] != ':')
+        //        counter++;
+        //    int startIndex = ++counter; //indeks, na ktorym zaczyna sie FEC
+        //                                //counter jest na znaku ':' stad inkrementacja
+        //    //petla liczy na ktorym bajcie wiadomosci jest znak konca naglowka 
+        //    while (counter < byteMessage.Length && byteMessage[counter] != ';')
+        //        counter++;
+        //    int FEC_Length = counter - startIndex; //dlugosc nr tunelu
+        //    byte[] FEC = new byte[FEC_Length];
+        //    for (int i = 0; i < FEC_Length; i++)
+        //    {
+        //        FEC[i] = byteMessage[startIndex];
+        //        Console.Write(FEC[i]);
+        //        startIndex++;
+        //    }
+        //    return Int32.Parse(Encoding.ASCII.GetString(FEC));    
 
-        }
+
+        //}
         /*
          * Metoda pomocnicza, do testowania
          * Wysyla pakiet odpowiednim portem, dla danego hosta docelowego
          */
         public void SendPacket(string message, int port)
         {
-            for(int i = 0; i < sendingSockets.Count; i++)
-                if(sendingSockets[i].getPort() == port)
+            for (int i = 0; i < sendingSockets.Count; i++)
+                if (sendingSockets[i].getPort() == port)
                 {
                     sendingSockets[i].Send(message);
                     return;
@@ -164,24 +162,65 @@ namespace RouterV1
         /*
          * Na postawie wartosci @ destinationHost wysyla pakiet odpowiednim portem
          */
-         public void SendPacket()
+        public void SendPacket()
+        {
+            if (CheckMPLSTable())
+            {
+                //....tutaj bedzie komunikacja z systemem zarzadzania
+            }
+            else
+            {
+                int port = CheckIPTable();
+                //jezeli metoda zwrocila nr portu 0, to znaczy, ze nie ma takiego portu
+                if (port == 0)
+                {
+                    Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+                    return;
+                }
+                //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
+                //pobrana przy odbiorze tresc pakietu
+                for (int j = 0; j < sendingSockets.Count; j++)
+                    if (sendingSockets[j].getPort() == port)
+                    {
+                        sendingSockets[j].Send(_packet);
+                        return;
+                    }
+                //jezeli nie udalo sie wyslac, zwraca komunikat
+                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+            }
+
+        }
+
+
+        /*
+         * Metoda sprawdza tablice MPLS-FIB, 
+         * zwraca true dla FEC != 0, w przeciwnym wypadku false
+         */
+        public bool CheckMPLSTable()
+        {
+            for (int i = 0; i < tableMPLS_FIB.Count; i++)
+                if (tableMPLS_FIB[i].GetHostName().Equals(destinationHost))
+                {
+                    if (tableMPLS_FIB[i].GetFEC() != 0) return true; //jesli FEC != 0 zwraca true
+                    else return false;
+                }
+            return false; //jesli nie bylo zadnego wpisu zwraca false
+
+        }
+        /*
+         * Metoda sprawdza tablice IP-FIB, 
+         * zwraca nr portu, ktorym pakiet ma zostac wyslany
+         */
+        public int CheckIPTable()
         {
             //pierwszy for szuka odpowiedniego wiersza tablicy routingowej, po nazwie hosta
             //i odczytuje jego nr portu
-            for(int i = 0; i < routingTable.Count; i++)
-                if(routingTable[i].GetHostName().Equals(destinationHost))
+            for (int i = 0; i < tableIP_FIB.Count; i++)
+                if (tableIP_FIB[i].GetHostName().Equals(destinationHost))
                 {
-                   int port = routingTable[i].GetPort();
-                    //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
-                    //pobrana przy odbiorze tresc pakietu
-                    for (int j = 0; j < sendingSockets.Count; j++)
-                        if (sendingSockets[j].getPort() == port)
-                        {
-                            sendingSockets[j].Send(_packet);
-                            return;
-                        }
+                    return tableIP_FIB[i].GetPort();
                 }
-            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+            return 0; //jezeli nie ma takiego wiersza zwraca 0
         }
 
 

@@ -4,14 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Router
+namespace RouterV1
 {
     /*
      * Klasa reprezentuje wiersz tablicy FIB-MPLS routera
      */
     class RoutingLineMPLS
     {
-        int _label; //etykieta, ktora zostanie nalozona na pakiet przy wysylaniu
-        int _port; //port, ktorym pakiet zostanie wyslany
+        string _destinationHost; //host docelowy
+        int _valueFEC; //wartosc FEC
+
+        public RoutingLineMPLS(string destinationHost, int valueFEC)
+        {
+            _destinationHost = destinationHost;
+            _valueFEC = valueFEC;
+        }
+        public String GetHostName() { return _destinationHost; }
+        public int GetFEC() { return _valueFEC; }
     }
+
 }
