@@ -64,18 +64,23 @@ namespace Host
          */
         public void Receive(Host host)
         {
-
-            _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
+            try
             {
-                State so = (State)ar.AsyncState;
-                int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
-                _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                timeStamp = time.GetTimestamp(DateTime.Now);
+                _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
+                {
+                    State so = (State)ar.AsyncState;
+                    int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
+                    _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
+                    timeStamp = time.GetTimestamp(DateTime.Now);
                 //Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
                 host.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
-                counter++;
-            }, state);
-
+                    counter++;
+                }, state);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("exception");
+            }
 
 
         }

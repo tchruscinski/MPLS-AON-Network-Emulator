@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConnectionCloud
 {
-    class ConnectionCloud
+    public class ConnectionCloud
     {
         private List<RoutingTableLine> routingTable = new List<RoutingTableLine>(); //FIB(?)
         //sockety, ktorymi pakiety sa przesylane dalej
@@ -15,9 +15,26 @@ namespace ConnectionCloud
         private List<UDPSocket> receivingSockets = new List<UDPSocket>();
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez chmurę,
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego
-        
+        private TextProcessor _textProcessor = new TextProcessor();
+        private String[] _processedText;
+        Time time = new Time();
 
-        //TODO - wypelnianie tabeli routingu danymi 
+        //TODO - wypelnianie tabeli routingu danymi
+        public void ReadPacket(string packet)
+        {
+            _packet = packet;
+            _processedText = _textProcessor.splitText(_packet);
+            if (_processedText[0] == "TAB" && (_processedText.Length == 4))
+            {
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received new routing table data: ");
+                Console.WriteLine("Hostname: {0}, Port: {1}, Label: {2}", _processedText[1], _processedText[2], _processedText[3]);
+            }
+        }
+
+        public void FillRoutingTable(String[] data)
+        {
+
+        }
 
     }
 }
