@@ -49,7 +49,7 @@ namespace Host
 
             //zapisuje ilosc bajtow rowna (bytes.Length - counter), zaczynajac od indeksu counter
             String message = Encoding.ASCII.GetString(bytes, counter, (bytes.Length - counter));
-            Console.WriteLine(_name + " otrzymal: " + message);
+            Console.WriteLine(_name + " otrzymal:" + message);
         }
         /*
          * Wysyla pakiet danych, dodajac w naglowku nazwe hosta docelowego
@@ -58,6 +58,8 @@ namespace Host
         public void SendPacket(string destinationHost, string message)
         {
             StringBuilder builder = new StringBuilder(destinationHost);
+            builder.Append(":"); //znak konca adresu docelowego
+            builder.Append("0"); //miejsce na etykiete mpls, 0 == brak etykiety
             builder.Append(";"); //znak konca naglowka
             builder.Append(message);
             sendingSocket.Send(builder.ToString());
