@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Host
 {
-    class UDPSocket 
+    class UDPSocket
     {
         private Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         private const int bufSize = 8 * 1024;
@@ -66,44 +66,26 @@ namespace Host
         {
             try
             {
-<<<<<<< HEAD:Host/UDPSocket.cs
                 _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
-=======
-                try
->>>>>>> e621fe7e8bb83a10e36584cdb9853dee6f255136:Host/Host/Host/UDPSocket.cs
                 {
                     State so = (State)ar.AsyncState;
                     int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                     _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                     timeStamp = time.GetTimestamp(DateTime.Now);
-<<<<<<< HEAD:Host/UDPSocket.cs
-                //Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
-                host.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
-                    counter++;
-                }, state);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("exception");
-            }
-=======
                     //Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     host.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     counter++;
-                }
-                catch(SocketException e)
-                {
-                    Console.WriteLine("Nie mozna nawiazac polaczenia");
-                    //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
-                    //host/router nie jest dostepny
-                }
-            }, state);
-
->>>>>>> e621fe7e8bb83a10e36584cdb9853dee6f255136:Host/Host/Host/UDPSocket.cs
+                }, state);
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine("Nie mozna nawiazac polaczenia");
+                //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
+                //host/router nie jest dostepny
 
 
+            }
         }
+
     }
-
 }
-
