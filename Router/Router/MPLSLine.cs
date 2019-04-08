@@ -9,18 +9,18 @@ namespace RouterV1
     /*
      * Klasa reprezentuje wiersz tablicy FIB-MPLS routera
      */
-    class RoutingLineMPLS
+    class MPLSLine
     {
         string _destinationHost; //host docelowy
-        int _valueFEC; //wartosc FEC
+        int _valueNHLFE; //wartosc NHLFE ID
 
-        public RoutingLineMPLS(string destinationHost, int valueFEC)
+        public MPLSLine(string destinationHost, int valueNHLFE)
         {
             _destinationHost = destinationHost;
-            _valueFEC = valueFEC;
+            _valueNHLFE = valueNHLFE;
         }
         public String GetHostName() { return _destinationHost; }
-        public int GetFEC() { return _valueFEC; }
+        public int GetNHLFE() { return _valueNHLFE; }
     }
 
 }

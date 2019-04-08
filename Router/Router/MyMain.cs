@@ -14,23 +14,23 @@ namespace RouterV1
             Router sendingRouter = new Router("sendingRouter");
             UDPSocket socket0 = new UDPSocket();
             socket0.Server(Utils.destinationIP, 26999, sendingRouter);
-            RoutingLine line1 = new RoutingLine(27000, "host2");
-            RoutingLineMPLS mLine1 = new RoutingLineMPLS("host2", 0);
-            RoutingLineMPLS mLine2 = new RoutingLineMPLS("host3", 1);
+            IPLine line1 = new IPLine(27000, "host2");
+            MPLSLine mLine1 = new MPLSLine("host2", 0);
+            MPLSLine mLine2 = new MPLSLine("host3", 1);
             sendingRouter.AddRoutingLine(line1);
             sendingRouter.AddRoutingLineMPLS(mLine1);
             sendingRouter.AddRoutingLineMPLS(mLine2);
             sendingRouter.AddReceivingSocket(socket0);
 
             FTNLine ftn1 = new FTNLine(1, 1);
-            sendingRouter.AddFTNLine(ftn1);
+            //sendingRouter.AddFTNLine(ftn1);
             NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 27000, 0); //wyslij portem 2700 z etykieta 20
             sendingRouter.AddNHLFELine(nhlfe1);
 
             Router midRouter = new Router("midRouter");
             UDPSocket socket = new UDPSocket();
             socket.Server(Utils.destinationIP, 27000, midRouter);
-            RoutingLine line2 = new RoutingLine(27001, "host2");
+            IPLine line2 = new IPLine(27001, "host2");
             midRouter.AddReceivingSocket(socket);
             midRouter.AddRoutingLine(line2);
             sendingRouter.AddRoutingLineMPLS(mLine1);
@@ -38,7 +38,7 @@ namespace RouterV1
             Router receivingRouter = new Router("receivingRouter");
             UDPSocket socket2 = new UDPSocket();
             socket2.Server(Utils.destinationIP, 27001, receivingRouter);
-            RoutingLine line3 = new RoutingLine(27002, "host2");
+            IPLine line3 = new IPLine(27002, "host2");
             receivingRouter.AddRoutingLine(line3);
             sendingRouter.AddRoutingLineMPLS(mLine1);
             receivingRouter.AddReceivingSocket(socket2);

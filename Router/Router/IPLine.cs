@@ -15,12 +15,12 @@ namespace RouterV1
      * Jesli np. tablica wyglada 10 | A, to znaczy, ze jesli chcemy wyslac pakiet do hosta A, 
      * musimy kierowac go do portu nr 10
      */
-    class RoutingLine
+    class IPLine
     {
         private int _port; //nr portu
         private string _hostName; //nazwa hosta docelowego
 
-        public RoutingLine(int port, string hostName="null")
+        public IPLine(int port, string hostName="null")
         {
             _port = port;
             _hostName = hostName;

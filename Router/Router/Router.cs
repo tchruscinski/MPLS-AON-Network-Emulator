@@ -15,9 +15,8 @@ namespace RouterV1
     class Router
     {
         private string _name = " "; //nazwa routera
-        private List<RoutingLine> tableIP_FIB = new List<RoutingLine>(); //tablica routingowa IP
-        private List<RoutingLineMPLS> tableMPLS_FIB = new List<RoutingLineMPLS>(); //tablica routingowa MPLS
-        private List<FTNLine> tableFTN = new List<FTNLine>();//tablica FTN
+        private List<IPLine> tableIP_FIB = new List<IPLine>(); //tablica routingowa IP
+        private List<MPLSLine> tableMPLS_FIB = new List<MPLSLine>(); //tablica routingowa MPLS
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
         //sockety, ktorymi pakiety sa przesylane dalej
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
@@ -38,7 +37,7 @@ namespace RouterV1
          * @ newLine, nowy wiersz do tablicy routingowej 
          * oraz tworzy UDP socket nasluchujacy na tym porcie
          */
-        public void AddRoutingLine(RoutingLine newLine)
+        public void AddRoutingLine(IPLine newLine)
         {
             tableIP_FIB.Add(newLine);
             UDPSocket socket = new UDPSocket();
@@ -47,8 +46,7 @@ namespace RouterV1
             sendingSockets.Add(socket);
         }
 
-        public void AddRoutingLineMPLS(RoutingLineMPLS newLine) { tableMPLS_FIB.Add(newLine); }
-        public void AddFTNLine(FTNLine newLine) { tableFTN.Add(newLine); }
+        public void AddRoutingLineMPLS(MPLSLine newLine) { tableMPLS_FIB.Add(newLine); }
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
 
         public string GetDestinationHost() { return destinationHost; }
@@ -171,10 +169,10 @@ namespace RouterV1
         public void SendPacket()
         {
             int port = 0; //nr portu, ktorym wyslemy pakiet
-            int FEC = CheckMPLSTable(); //odczytujemy wartosc FEC z tablicy MPLS-FIB
-            if (FEC != 0)
+            int NHLFE_ID = CheckMPLSTable(); //odczytuje ID wpisu tablicy NHLFE
+            if (NHLFE_ID != 0)
             {
-                int NHLFE_ID = CheckFTNTable(FEC); //odczytujemy ID wpisu NHLFE z tablicy FTN
+                 //odczytujemy ID wpisu NHLFE z tablicy FTN
                                                    //petla zakomentowana do testow
                                                    //while(NHLFE_ID != 0) //sprawdzamy wpisy NHLFE, az dojdziemy do wpisu o numerze 0
                                                    //{
@@ -241,7 +239,7 @@ namespace RouterV1
             for (int i = 0; i < tableMPLS_FIB.Count; i++)
                 if (tableMPLS_FIB[i].GetHostName().Equals(destinationHost))
                 {
-                    if (tableMPLS_FIB[i].GetFEC() != 0) return tableMPLS_FIB[i].GetFEC(); 
+                    if (tableMPLS_FIB[i].GetNHLFE() != 0) return tableMPLS_FIB[i].GetNHLFE(); 
                     
                 }
             return 0;
@@ -267,15 +265,15 @@ namespace RouterV1
          * zwraca ID wpisu NHLFE
          * @ FEC poszukiwana wartosc FEC
          */
-        public int CheckFTNTable(int FEC)
-        {
-            for (int i = 0; i < tableFTN.Count; i++)
-                if (tableFTN[i].GetFEC() == FEC)
-                {
-                    return tableFTN[i].GetId();
-                }
-            return 0; //jezeli nie ma takiego wiersza zwraca 0
-        }
+        //public int CheckFTNTable(int FEC)
+        //{
+        //    for (int i = 0; i < tableFTN.Count; i++)
+        //        if (tableFTN[i].GetFEC() == FEC)
+        //        {
+        //            return tableFTN[i].GetId();
+        //        }
+        //    return 0; //jezeli nie ma takiego wiersza zwraca 0
+        //}
         /*
          * Metoda sprawdza tablice NHLFE, 
          * szukajac wpisu o odpowiednim ID
