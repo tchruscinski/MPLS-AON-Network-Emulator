@@ -74,6 +74,7 @@ namespace RouterV1
                     _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                     timeStamp = time.GetTimestamp(DateTime.Now);
                     Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                    router.SetIncPort(_port);
                     router.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     counter++;
                 }
