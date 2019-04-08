@@ -30,7 +30,7 @@ namespace ConnectionCloud
                 Console.WriteLine("Hostname: {0}, Port: {1}, Label: {2}", _processedText[1], _processedText[2], _processedText[3]);
                 return _processedText;
             }
-            else
+            else 
             {
                 return _processedText;
             }

@@ -25,7 +25,7 @@ namespace ConnectionCloud
             public byte[] buffer = new byte[bufSize];
         }
 
-        public void Server(string address, int port, ConnectionCloud connectionCloud)
+        public void Server(string address, int port, ConnectionCloud connectionCloud) 
         {   
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
@@ -47,7 +47,8 @@ namespace ConnectionCloud
 
         public void Connect(string address, int port)
         {
-            _socket.Connect(IPAddress.Parse(address), port);
+            // _socket.Connect(address, port);
+            _socket.Connect("127.0.0.1", port);
             Receive();
         }
 
@@ -78,6 +79,7 @@ namespace ConnectionCloud
         private void AsyncTransfer(ConnectionCloud connectionCloud)
         {
             string msg = "";
+            String[] packet;
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
                 State so = (State)ar.AsyncState;
@@ -85,7 +87,14 @@ namespace ConnectionCloud
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
-                connectionCloud.ReadPacket(msg);
+                packet = connectionCloud.ReadPacket(msg);
+                if(packet.Length == 4)
+                {
+                    int port = Convert.ToInt32(packet[2]);
+                    this.Connect(packet[2], port);
+                    this.Send(msg);
+
+                }
             }, state);
         }
 

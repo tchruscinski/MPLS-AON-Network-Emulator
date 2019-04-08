@@ -48,8 +48,8 @@ namespace Host
                        //po inkrementacji przechodzi na pierwszy bajt wiadomosci
 
             //zapisuje ilosc bajtow rowna (bytes.Length - counter), zaczynajac od indeksu counter
-            String message = Encoding.ASCII.GetString(bytes, counter, (bytes.Length - counter));
-            Console.WriteLine(_name + " otrzymal:" + message);
+            //String message = Encoding.ASCII.GetString(bytes, counter, (bytes.Length - counter));
+            Console.WriteLine(_name + " otrzymal:" + "message");
         }
         /*
          * Wysyla pakiet danych, dodajac w naglowku nazwe hosta docelowego
@@ -65,17 +65,11 @@ namespace Host
             sendingSocket.Send(builder.ToString());
         }
 
-
-
-
-
-
-
-
-
-
-
-
+        public string getName()
+        {
+            string name = this._name;
+            return name;
+        }
 
         /**
          * metoda konfigurująca parametry hosta:
