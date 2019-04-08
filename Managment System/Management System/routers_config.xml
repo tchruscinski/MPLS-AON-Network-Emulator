@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Router>
+		<Name>Router1</Name>
+		<Row>
+			<IP>192.168.60.193</IP>
+			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
+			<Action>PUSH</Action>
+			<OutPortID>200</OutPortID>
+			<OutLabel>1</OutLabel>
+			<OutPortN>NULL</OutPortN>
+			<NextID>4</NextID>
+			<IncPort>133</IncPort>
+			<IncLabel>16</IncLabel>
+			<PoppedLabelStack>1-2</PoppedLabelStack>
+			<NHLFE_ID_ILM>3</NHLFE_ID_ILM>
+		</Row>
+	</Router>
+</Config>

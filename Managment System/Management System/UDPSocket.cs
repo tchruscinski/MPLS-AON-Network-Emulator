@@ -48,19 +48,18 @@ namespace Management_System
             }, state);
         }
 
-        private string Receive()
+        private void Receive()
         {
-            string msg = "";
+            string message = "";
             socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
                 State so = (State)ar.AsyncState;
                 int bytes = socket.EndReceiveFrom(ar, ref epFrom);
                 socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
-                msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
+                message = Encoding.ASCII.GetString(so.buffer, 0, bytes);
+                ManagementSystem.ProcessRequest(message);
             }, state);
-
-            return msg;
         }
 
         //private string MessageProcessing(string message)

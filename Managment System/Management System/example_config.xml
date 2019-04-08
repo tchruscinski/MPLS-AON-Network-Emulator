@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Config>
-<Router Name="Router1" ListeningPort="100" SendingPort="150"/>
-<Router Name="Router1" ListeningPort="200" SendingPort="250"/>
-<Router Name="Router1" ListeningPort="300" SendingPort="350"/>
-<Router Name="Router1" ListeningPort="400" SendingPort="450"/>
-</Config>
