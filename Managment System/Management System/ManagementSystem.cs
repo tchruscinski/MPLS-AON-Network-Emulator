@@ -13,43 +13,41 @@ namespace Management_System
      * Klasa implementująca system zarządzający siecią MPLS
      * @ ManagementSystem
     */
-    class ManagementSystem
+    public static class ManagementSystem
     {
-        private UDPSocket listeningSocket = new UDPSocket();
-        private UDPSocket sendingSocket = new UDPSocket();
-        private Parser parser = new Parser();
-        private List<string> routersListeningPorts = new List<string>();
-        private List<string> routersSendingPorts = new List<string>();
-        private int portNumber = 100;
-        private int connectionCloudListeningPort = 100;
-        private string localIP;
-        private string listeningPorts;
-        private string sendingPorts;
+        private static UDPSocket listeningSocket = new UDPSocket();
+        private static UDPSocket sendingSocket = new UDPSocket();
+        private static Parser parser = new Parser();
+        private static List<string> routersListeningPorts = new List<string>();
+        private static List<string> routersSendingPorts = new List<string>();
+        private static int portNumber = 100;
+        private static int connectionCloudListeningPort = 100;
+        private static string localIP;
+        private static string listeningPorts;
+        private static string sendingPorts;
 
         /**
-        * metoda parsująca plik konfiguracyjny dla sieci
+        * metoda parsująca plik konfiguracyjny dla routerow
         * @ no arguments, void
         */
-        private void ReadConfig()
+        private static void ReadRouterConfig()
         {
-            routersListeningPorts = parser.ParseConfig("Router", "ListeningPort");
-            routersSendingPorts = parser.ParseConfig("Router", "SendingPort");
-            for(int i = 0; i < routersListeningPorts.Count; i++)
-            {
-                Console.WriteLine("nasłuchujący port routera: "+routersListeningPorts[i]);
-                Console.WriteLine("wysyłający port routera: "+routersSendingPorts[i]);
-            }
+            string routerConfig = parser.ParseRouterTable("routers_config.xml", "Router1");
+
+            Console.WriteLine("sparsowany xml: "+ routerConfig);
+            Console.ReadKey();
         }
 
         /**
         * Metoda ustawiająca lokalny adres IP maszyny
         * @ no arguments, void
         */
-        public void SetLocalIPAddress()
+        public static void SetLocalIPAddress()
         {
             if(!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()) 
             {
                 localIP = null;
+                throw new Exception("No network adapters with an IPv4 address in the system!");
             }
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
@@ -57,24 +55,25 @@ namespace Management_System
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
                     localIP = ip.ToString();
+                    Console.Write(localIP);
                 }
             }
-            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
         /**
         * metoda startująca serwer na listeningSockecie systemu zarządzania
         * @ no arguments, void
         */
-        private void StartServer()
+        private static void StartServer()
         {
+            SetLocalIPAddress();
             listeningSocket.RunServer(localIP, 100);
         }
         
         /* Metoda tworząca stringi z konfiguracją, które będą wysłane do chmury połączeń
         * @ no arguments, void
         */
-        private void prepareStringsToSend()
+        private static void prepareStringsToSend()
         {
             if(routersListeningPorts.Count == 0 || routersSendingPorts.Count == 0) 
             {
@@ -92,32 +91,59 @@ namespace Management_System
         * metoda wysyłająca tablice routingową do chmury połączeń
         * @ no arguments, void
         */
-        private void SendRoutingTable()
+        private static void SendRoutingTable()
         {   
             Console.WriteLine("Wysyłanie konfiguracji do chmury połączeń ...");
+            prepareStringsToSend();
             sendingSocket.Connect(localIP, connectionCloudListeningPort);
             sendingSocket.Send(listeningPorts);
             sendingSocket.Send(sendingPorts);
             Console.WriteLine("Wysyłano pomyślnie.");
         }
+
         /**
         * metoda wyświetlająca interfejs systemu zarządznia
         * @ no arguments, void
         */
-        private void ShowInterface()
+        private static void ShowInterface()
         {
             Console.WriteLine("System Zarządzania v1.0");
             StartServer();
-
-            Console.WriteLine("Wysyłanie konfiguracji do chmury połączeń ...");
+            ReadRouterConfig();
             SendRoutingTable();
             
             /*while ((line = Console.ReadLine()) != null)
             {
-                string newLine = line.Replace(("").PadRight(tabSize, ' '), "\t");
-                Console.WriteLine(newLine);
+                ReadInput();
             }*/
         }
+
+        /**
+         * Metoda czytająca komendy z konsoli
+         * @ no arguments, void
+        */
+        public static void ProcessRequest(string message)
+        {
+            if(message == null)
+            {
+                return;
+            }
+
+            if(message == "gettable")
+            {
+                //sendingSocket.Send(routertable);
+            }   
+        }
+
+         /**
+         * Metoda czytająca komendy z konsoli
+         * @ no arguments, void
+        */
+        /*private void ReadInput() 
+        {
+            string line = Console.ReadLine();
+            //if(line = "")
+        }*/
 
         /**
          * metoda konfigurująca Hosta, odpala apke Hosta z określonymi parametrami
@@ -152,8 +178,7 @@ namespace Management_System
         {
             //ConfigureHosts();
             UDPSocket udpSocket = new UDPSocket();
-            ManagementSystem ms = new ManagementSystem();
-            ms.ReadConfig();
+            ManagementSystem.ShowInterface();
             Console.ReadKey();
         }
     }
