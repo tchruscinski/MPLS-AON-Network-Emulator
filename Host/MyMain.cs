@@ -12,10 +12,9 @@ namespace Host
         {
             string userInput;
             UDPSocket clientSocket = new UDPSocket();
-            Host host1 = new Host("host1", 29001, 29002);
+            Host host1 = new Host("host1", 26999, 29002);
             clientSocket.Client("127.0.0.1", 27001, host1);
-            
-
+            host1.SendPacket("host3", "wiadomosc testowa");
             while (true)
             {
                 string command;
