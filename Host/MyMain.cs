@@ -10,15 +10,17 @@ namespace Host
     {
         public static void Main(string[] args)
         {
-            Host host1 = new Host("host1", 26999, 111);
-            Host host2 = new Host("host2", 112, 27002);
-            //Host host3 = new Host("host1", 111, 112);
-            //Host host4 = new Host("host2", 112, 111);
-            //Console.ReadLine();
-            //host3.SendPacket("host2", "wiadomosc");
-            host1.SendPacket("host3", "wiadomosc testowa");
+            string userInput;
+            UDPSocket clientSocket = new UDPSocket();
+            Host host1 = new Host("host1", 29001, 29002);
+            clientSocket.Client("127.0.0.1", 27001, host1);
 
-            Console.ReadLine();
+            while (true)
+            {
+                string msg;
+                msg = Console.ReadLine();
+                clientSocket.Send(msg);
+            }
         }
     }
 }
