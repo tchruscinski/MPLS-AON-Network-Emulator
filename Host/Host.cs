@@ -44,8 +44,8 @@ namespace Host
                 counter++;
 
             counter++; //po wyjsciu z petli counter jest na bajcie konczacym naglowek
-                       //ktory nie powinien byc wyswietlany
-                       //po inkrementacji przechodzi na pierwszy bajt wiadomosci
+                           //ktory nie powinien byc wyswietlany
+                           //po inkrementacji przechodzi na pierwszy bajt wiadomosci
 
             //zapisuje ilosc bajtow rowna (bytes.Length - counter), zaczynajac od indeksu counter
             //String message = Encoding.ASCII.GetString(bytes, counter, (bytes.Length - counter));
@@ -63,7 +63,7 @@ namespace Host
             builder.Append(";"); //znak konca naglowka
             builder.Append(message);
             sendingSocket.Send(builder.ToString());
-        }
+        }   
 
         public string getName()
         {

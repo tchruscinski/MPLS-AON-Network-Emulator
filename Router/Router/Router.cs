@@ -18,6 +18,7 @@ namespace RouterV1
         private List<IPLine> tableIP_FIB = new List<IPLine>(); //tablica routingowa IP
         private List<MPLSLine> tableMPLS_FIB = new List<MPLSLine>(); //tablica routingowa MPLS
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
+        private List<ILMLine> tableILM = new List<ILMLine>(); //tablica ILM
         //sockety, ktorymi pakiety sa przesylane dalej
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
         //sockety, ktore odbieraja pakiety
@@ -25,12 +26,16 @@ namespace RouterV1
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
         private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
+        private int _incPort; //port, ktorym przyszedl pakiet, potrzebny do tablicy ILM
+        private int _topLabel; //etykieta na szczycie stosu etykiet pakietu
+        private string _labels; //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
 
         public Router(string name)
         {
             _name = name;
         }
         public string GetName() { return _name; }
+        public void SetIncPort(int incPort) { _incPort = incPort; } 
 
         /*
          * Metoda dodaje 
@@ -48,6 +53,7 @@ namespace RouterV1
 
         public void AddRoutingLineMPLS(MPLSLine newLine) { tableMPLS_FIB.Add(newLine); }
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
+        public void AddILMLine(ILMLine newLine) { tableILM.Add(newLine); }
 
         public string GetDestinationHost() { return destinationHost; }
         /*
@@ -80,8 +86,14 @@ namespace RouterV1
             //jeezeli FEC != 0, to znaczy, ze jest etykieta mpls
             destinationHost = ReadDestinationHost(_packet);
             ShowMessage(_packet);
+            int port = RefactorPacket(); // nr portu, ktorym pakiet zostanie wyslany
+            if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
+            {
+                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+                return;
+            }
             //przesyla pakiet do nastepnego wezla
-            SendPacket();
+            SendPacket(port);
         }
         /*
          * Pomocnicza metoda, wypisuje tresc odebranej wiadomosci 
@@ -164,56 +176,73 @@ namespace RouterV1
 
         }
         /*
-         * Na postawie wartosci @ destinationHost wysyla pakiet odpowiednim portem
+         * Metoda sprawdza odpowiednie wpisy tablic routera i przetwarza jego naglowek
+         * pozostawia pakiet w postaci gotowej do wyslania
+         * zwraca nr portu, ktorym pakiet zostanie wyslany
          */
-        public void SendPacket()
+        public int RefactorPacket()
         {
             int port = 0; //nr portu, ktorym wyslemy pakiet
-            int NHLFE_ID = CheckMPLSTable(); //odczytuje ID wpisu tablicy NHLFE
-            if (NHLFE_ID != 0)
+            GetLabel(); //pobiera etykiety pakietu
+            int NHLFE_ID; //ID wpisu tablicy NHLFE
+            if (IsLabel()) //jezeli jest etykieta sprawdzamy tablice ILM
             {
-                 //odczytujemy ID wpisu NHLFE z tablicy FTN
-                                                   //petla zakomentowana do testow
-                                                   //while(NHLFE_ID != 0) //sprawdzamy wpisy NHLFE, az dojdziemy do wpisu o numerze 0
-                                                   //{
-                int index = CheckNHLFETable(NHLFE_ID); //szukamy indeksu wpisu o danym ID
-                if (index == -1) Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
-                else
+                Console.WriteLine("Is label = true");
+                NHLFE_ID = CheckILMTable();
+            }
+            else //w innym wypadku sprawdza tablice FIB-MPLS
+            {
+                NHLFE_ID = CheckMPLSTable();
+            }
+                if (NHLFE_ID != 0)
                 {
-                    NHLFELine line = tableNHLFE[index];
-                    //odczytujemy etykiete
-                    int label = line.getLabel();
-
-                    //obsluga wszystkich rodzajow akcji
-                    if (line.getAction() == Action.PUSH)
+                    //odczytujemy ID wpisu NHLFE z tablicy FTN
+                    //petla zakomentowana do testow
+                    while(NHLFE_ID != 0) //sprawdzamy wpisy NHLFE, az dojdziemy do wpisu o numerze 0
                     {
-                        AddLabel(label);
-                    }
-                    else if (line.getAction() == Action.POP)
-                    {
-                        //...
-                    }
+                    int index = CheckNHLFETable(NHLFE_ID); //szukamy indeksu wpisu o danym ID
+                    if (index == -1)
+                        return 0;
                     else
                     {
-                        //...
-                    }
-                    //odczytujemy nr portu
-                    port = line.getPort();
-                  
-                }
-                //}
+                        NHLFELine line = tableNHLFE[index];
+                        //odczytujemy etykiete
+                        int label = line.getLabel();
 
-            }
-            else
-            {
-                port = CheckIPTable(); //odczytujemy nr portu z tablicy IP-FIB
-                //jezeli metoda zwrocila nr portu 0, to znaczy, ze nie ma takiego portu
-                if (port == 0)
-                {
-                    Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
-                    return;
+                        //obsluga wszystkich rodzajow akcji
+                        if (line.getAction() == Action.PUSH)
+                        {
+                            AddLabel(label);
+                        }
+                        else if (line.getAction() == Action.POP)
+                        {
+                            //...
+                        }
+                        else
+                        {
+                            //...
+                        }
+                        //odczytujemy nr portu
+                        port = line.getPort();
+                        NHLFE_ID = line.getNextID();
+                    }
+                    
+                    }
+
                 }
-            }
+                else
+                    port = CheckIPTable(); //odczytujemy nr portu z tablicy IP-FIB
+
+                return port;
+            
+        }
+        /*
+         * Metoda wysyla pakiet podanym portem
+         * @ port, nr portu, ktorym pakiet zostanie wyslany
+         */
+        public void SendPacket(int port)
+        {
+            
                 //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
                 //pobrana przy odbiorze tresc pakietu
                 for (int j = 0; j < sendingSockets.Count; j++)
@@ -261,24 +290,8 @@ namespace RouterV1
             return 0; //jezeli nie ma takiego wiersza zwraca 0
         }
         /*
-         * Metoda sprawdza tablice FTN, 
-         * zwraca ID wpisu NHLFE
-         * @ FEC poszukiwana wartosc FEC
-         */
-        //public int CheckFTNTable(int FEC)
-        //{
-        //    for (int i = 0; i < tableFTN.Count; i++)
-        //        if (tableFTN[i].GetFEC() == FEC)
-        //        {
-        //            return tableFTN[i].GetId();
-        //        }
-        //    return 0; //jezeli nie ma takiego wiersza zwraca 0
-        //}
-        /*
-         * Metoda sprawdza tablice NHLFE, 
-         * szukajac wpisu o odpowiednim ID
-         * zwraca jego indeks
-         * @ ID, ID poszukiwanego wpisu
+         * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
+         * @ ID, ID wpisu NHLFE
          */
         public int CheckNHLFETable(int ID)
         {
@@ -288,6 +301,24 @@ namespace RouterV1
                     return i;
                 }
             return -1; //jezeli nie ma takiego wpisu zwraca -1
+        }
+        /*
+         * Sprawdza tablice ILM 
+         * @ 
+         */
+        public int CheckILMTable()
+        {
+            for(int i = 0; i < tableILM.Count; i++)
+            {
+                //Console.WriteLine(_incPort);
+                //Console.WriteLine(_topLabel);
+                //Console.WriteLine(tableILM[i].GetPort());
+                //Console.WriteLine(tableILM[i].GetLabel());
+                if (tableILM[i].GetPort() == _incPort && tableILM[i].GetLabel() == _topLabel)
+                    return tableILM[i].GetNHLFE(); //zwraca NHLFE danego wpisu
+            }
+            return 0; //jesli nie znaleziono 0
+            
         }
         /*
          * Dodaje etykiete do pakietu
@@ -328,7 +359,76 @@ namespace RouterV1
             Console.WriteLine(_packet);
 
         }
+        /*
+         * Sprawdza czy przychodzacy pakiet ma etykiete MPLS
+         * jesli tak, zwraca true
+         */
+        public bool IsLabel()
+        {
+            //tresc pakietu przekonwertowana do tablicy bajtow
+            byte[] packet = Encoding.ASCII.GetBytes(_packet);
+            for (int i = 0; i < packet.Length; i++)
+                if (packet[i] == ':')
+                    if (packet[i + 1] == ';') //jezeli ';' jest jeden bajt po ':' to znaczy, ze nie ma etykiety
+                        return false;
+                    else // w innym wypadku jest
+                        return true;
+            return true; //raczej nigdy nie powinno tutaj dojsc, jesli pakiet jest dobrze zrobiony
+        }
+        /*
+         * Pobiera etykiety pakietu
+         * 
+         */
+        public void GetLabel()
+        {
+            String[] extractHostName = _packet.Split(':'); //pakiet jest podzielony na czesc nazwy hosta i reszte
+            String[] extractLabelsPart = extractHostName[1].Split(';'); //reszta naglowka i wiadomosc
+            String[] extractLabels = extractLabelsPart[0].Split(','); //reszta naglowka podzielona na etykiety
+            Console.WriteLine("Etykiety:");
+            if (extractLabels[0].Length != 0)
+            {
+                for (int i = 0; i < extractLabels.Length; i++)
+                {
+                    Console.WriteLine(extractLabels[i]);
+                }
+                _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+                StringBuilder builder = new StringBuilder();
+                for (int i = 1; i < extractLabels.Length; i++) //pozostale etykiety dodane po myslniku
+                {
+                    builder.Append(extractLabels[i]);
+                    builder.Append('-');
+                }
+                builder.Length--; //usuniet ostatni '-'
+                _labels = builder.ToString();
+            }
 
 
+        }
+
+
+
+
+
+
+        /*
+ * Metoda sprawdza tablice FTN, 
+ * zwraca ID wpisu NHLFE
+ * @ FEC poszukiwana wartosc FEC
+ */
+        //public int CheckFTNTable(int FEC)
+        //{
+        //    for (int i = 0; i < tableFTN.Count; i++)
+        //        if (tableFTN[i].GetFEC() == FEC)
+        //        {
+        //            return tableFTN[i].GetId();
+        //        }
+        //    return 0; //jezeli nie ma takiego wiersza zwraca 0
+        //}
+        /*
+         * Metoda sprawdza tablice NHLFE, 
+         * szukajac wpisu o odpowiednim ID
+         * zwraca jego indeks
+         * @ ID, ID poszukiwanego wpisu
+         */
     }
 }
