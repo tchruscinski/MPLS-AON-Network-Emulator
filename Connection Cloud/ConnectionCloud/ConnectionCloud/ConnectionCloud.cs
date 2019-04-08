@@ -20,14 +20,19 @@ namespace ConnectionCloud
         Time time = new Time();
 
         //TODO - wypelnianie tabeli routingu danymi
-        public void ReadPacket(string packet)
+        public String[] ReadPacket(string packet)
         {
             _packet = packet;
             _processedText = _textProcessor.splitText(_packet);
             if (_processedText[0] == "TAB" && (_processedText.Length == 4))
             {
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received new routing table data: ");
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "ConnectionCloud: Received new routing table data: ");
                 Console.WriteLine("Hostname: {0}, Port: {1}, Label: {2}", _processedText[1], _processedText[2], _processedText[3]);
+                return _processedText;
+            }
+            else
+            {
+                return _processedText;
             }
         }
 

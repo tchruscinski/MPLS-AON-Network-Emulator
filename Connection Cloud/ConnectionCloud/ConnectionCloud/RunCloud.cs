@@ -12,14 +12,15 @@ namespace ConnectionCloud
             UDPSocket s = new UDPSocket();
             s.Server("127.0.0.1", 27000, cc);
             UDPSocket g = new UDPSocket();
-
-            g.Server("127.0.0.1", 28012, cc);
+            g.Client("127.0.0.1", 27098);
 
             while (true)
             {
-                userInput = Console.ReadLine();
-                g.Connect("127.0.0.1", 27000, cc);
-                g.Send(userInput);
+               
+                string msg;
+                msg = Console.ReadLine();
+                g.Connect("127.0.0.1", 27000);
+                g.Send(msg);
             }
             
         }

@@ -31,16 +31,24 @@ namespace ConnectionCloud
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
             _connectionCloud = connectionCloud;
-            Receive(_connectionCloud);
-            
-            
+            AsyncTransfer(_connectionCloud);
+              
+        }
+        //W celu testów tylko
+        public void Client(string address, int port)
+        {
+            _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
+            _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
+            Receive();
+
+
         }
 
-        public void Connect(string address, int port, ConnectionCloud connectionCloud)
+        public void Connect(string address, int port)
         {
             _socket.Connect(IPAddress.Parse(address), port);
-            _connectionCloud = connectionCloud;
-            Receive(_connectionCloud);
+            Receive();
         }
 
         public void Send(string text)
@@ -54,9 +62,22 @@ namespace ConnectionCloud
             }, state);
         }
 
-        private void Receive(ConnectionCloud connectionCloud)
+        private void Receive()
         {
              string msg = "";
+            _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
+            {
+                State so = (State)ar.AsyncState;
+                int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
+                _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
+                msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
+            }, state);
+        }
+
+        private void AsyncTransfer(ConnectionCloud connectionCloud)
+        {
+            string msg = "";
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
                 State so = (State)ar.AsyncState;
