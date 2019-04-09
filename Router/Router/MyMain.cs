@@ -14,38 +14,35 @@ namespace RouterV1
             Router sendingRouter = new Router("sendingRouter");
             UDPSocket socket0 = new UDPSocket();
             socket0.Server(Utils.destinationIP, 26999, sendingRouter);
-            IPLine line1 = new IPLine(27000, "host2");
-            MPLSLine mLine1 = new MPLSLine("host2", 0);
-            MPLSLine mLine2 = new MPLSLine("host3", 1);
-            sendingRouter.AddRoutingLine(line1);
-            sendingRouter.AddRoutingLineMPLS(mLine1);
-            sendingRouter.AddRoutingLineMPLS(mLine2);
+            UDPSocket socket3 = new UDPSocket();
+            socket3.Client(Utils.destinationIP, 27000, sendingRouter);
+            ILMLine ilm0 = new ILMLine(26999, 17, "", 1);
+            sendingRouter.AddSendingSocket(socket3);
             sendingRouter.AddReceivingSocket(socket0);
+            sendingRouter.AddILMLine(ilm0);
 
-            FTNLine ftn1 = new FTNLine(1, 1);
-            //sendingRouter.AddFTNLine(ftn1);
             NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 27000, 0); //wyslij portem 2700 z etykieta 20
             sendingRouter.AddNHLFELine(nhlfe1);
 
             Router midRouter = new Router("midRouter");
             UDPSocket socket = new UDPSocket();
+            UDPSocket socket4 = new UDPSocket();
+            socket4.Client(Utils.destinationIP, 27001, sendingRouter);
             socket.Server(Utils.destinationIP, 27000, midRouter);
-            IPLine line2 = new IPLine(27001, "host2");
             NHLFELine nhlfe2 = new NHLFELine(1, Action.PUSH, 30, 27001, 0);
             ILMLine ilm1 = new ILMLine(27000, 20, "", 1);
             midRouter.AddILMLine(ilm1);
             midRouter.AddReceivingSocket(socket);
             midRouter.AddNHLFELine(nhlfe2);
-            midRouter.AddRoutingLine(line2);
-            midRouter.AddRoutingLineMPLS(mLine1);
+            midRouter.AddSendingSocket(socket4);
 
             Router receivingRouter = new Router("receivingRouter");
             UDPSocket socket2 = new UDPSocket();
+            UDPSocket socket5 = new UDPSocket();
+            socket5.Client(Utils.destinationIP, 27002, sendingRouter);
             socket2.Server(Utils.destinationIP, 27001, receivingRouter);
-            IPLine line3 = new IPLine(27002, "host2");
-            receivingRouter.AddRoutingLine(line3);
-            sendingRouter.AddRoutingLineMPLS(mLine1);
             receivingRouter.AddReceivingSocket(socket2);
+            receivingRouter.AddSendingSocket(socket5);
 
 
             //for (int i = 0; i < 100; i++)
