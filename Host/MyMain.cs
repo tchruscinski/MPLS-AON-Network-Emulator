@@ -12,8 +12,8 @@ namespace Host
         {
             string userInput;
             UDPSocket clientSocket = new UDPSocket();
-            Host host1 = new Host("host1", 10001, 29002);
-            Host host2 = new Host("host2", 1000, 10001);
+            Host host1 = new Host("host1", 26999, 29002);
+            //Host host2 = new Host("host2", 1000, 10001);
             MPLSLine mpls1 = new MPLSLine("host3", 1);
             host1.AddRoutingLineMPLS(mpls1);
             NHLFELine nhlfe1 = new NHLFELine(1, 17, 0);

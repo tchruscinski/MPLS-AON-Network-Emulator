@@ -43,14 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FTNLine.cs" />
     <Compile Include="ILMLine.cs" />
     <Compile Include="MyMain.cs" />
     <Compile Include="NHLFELine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Router.cs" />
-    <Compile Include="IPLine.cs" />
-    <Compile Include="MPLSLine.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="UDPSocket.cs" />
     <Compile Include="Utils.cs" />

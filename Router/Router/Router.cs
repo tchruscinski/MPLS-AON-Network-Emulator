@@ -15,8 +15,6 @@ namespace RouterV1
     class Router
     {
         private string _name = " "; //nazwa routera
-        private List<IPLine> tableIP_FIB = new List<IPLine>(); //tablica routingowa IP
-        private List<MPLSLine> tableMPLS_FIB = new List<MPLSLine>(); //tablica routingowa MPLS
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
         private List<ILMLine> tableILM = new List<ILMLine>(); //tablica ILM
         //sockety, ktorymi pakiety sa przesylane dalej
@@ -37,21 +35,7 @@ namespace RouterV1
         public string GetName() { return _name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
 
-        /*
-         * Metoda dodaje 
-         * @ newLine, nowy wiersz do tablicy routingowej 
-         * oraz tworzy UDP socket nasluchujacy na tym porcie
-         */
-        public void AddRoutingLine(IPLine newLine)
-        {
-            tableIP_FIB.Add(newLine);
-            UDPSocket socket = new UDPSocket();
-            socket.Client(Utils.destinationIP, newLine.GetPort(), this);
-            //socket.Server(Utils.destinationIP, 27000, this);
-            sendingSockets.Add(socket);
-        }
 
-        public void AddRoutingLineMPLS(MPLSLine newLine) { tableMPLS_FIB.Add(newLine); }
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
         public void AddILMLine(ILMLine newLine) { tableILM.Add(newLine); }
 
@@ -64,6 +48,10 @@ namespace RouterV1
         {
             receivingSockets
                 .Add(newSocket);
+        }
+        public void AddSendingSocket(UDPSocket newSocket)
+        {
+            sendingSockets.Add(newSocket);
         }
         /*
         * Metoda dodaje,
@@ -83,8 +71,7 @@ namespace RouterV1
         public void ReadPacket(string packet)
         {
             _packet = packet;
-            //jeezeli FEC != 0, to znaczy, ze jest etykieta mpls
-            destinationHost = ReadDestinationHost(_packet);
+            //destinationHost = ReadDestinationHost(_packet);
             ShowMessage(_packet);
             int port = RefactorPacket(); // nr portu, ktorym pakiet zostanie wyslany
             if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
@@ -130,36 +117,6 @@ namespace RouterV1
 
 
         }
-        ///*
-        // * Odczytuje FEC czyli ID tunelu
-        // * @ message, tresc wiadomosci
-        // * @ return ID tunelu
-        // */
-        //public int ReadFECValue(string message)
-        //{
-        //    //wiadomosc przekonwertowana do tablicy bajtow
-        //    byte[] byteMessage = Encoding.ASCII.GetBytes(message);
-        //    int counter = 0;
-        //    //petla liczy na ktorym bajcie wiadomosci jest znak konca nazwy hosta 
-        //    while (counter < byteMessage.Length && byteMessage[counter] != ':')
-        //        counter++;
-        //    int startIndex = ++counter; //indeks, na ktorym zaczyna sie FEC
-        //                                //counter jest na znaku ':' stad inkrementacja
-        //    //petla liczy na ktorym bajcie wiadomosci jest znak konca naglowka 
-        //    while (counter < byteMessage.Length && byteMessage[counter] != ';')
-        //        counter++;
-        //    int FEC_Length = counter - startIndex; //dlugosc nr tunelu
-        //    byte[] FEC = new byte[FEC_Length];
-        //    for (int i = 0; i < FEC_Length; i++)
-        //    {
-        //        FEC[i] = byteMessage[startIndex];
-        //        Console.Write(FEC[i]);
-        //        startIndex++;
-        //    }
-        //    return Int32.Parse(Encoding.ASCII.GetString(FEC));    
-
-
-        //}
         /*
          * Metoda pomocnicza, do testowania
          * Wysyla pakiet odpowiednim portem, dla danego hosta docelowego
@@ -190,14 +147,11 @@ namespace RouterV1
                 Console.WriteLine("Is label = true");
                 NHLFE_ID = CheckILMTable();
             }
-            else //w innym wypadku sprawdza tablice FIB-MPLS
+            else //w innym wypadku nie mozna wyslac pakietu
             {
-                NHLFE_ID = CheckMPLSTable();
+                return 0;
             }
-                if (NHLFE_ID != 0)
-                {
-                    //odczytujemy ID wpisu NHLFE z tablicy FTN
-                    //petla zakomentowana do testow
+                
                     while(NHLFE_ID != 0) //sprawdzamy wpisy NHLFE, az dojdziemy do wpisu o numerze 0
                     {
                     int index = CheckNHLFETable(NHLFE_ID); //szukamy indeksu wpisu o danym ID
@@ -220,7 +174,7 @@ namespace RouterV1
                         }
                         else
                         {
-                            //...
+                            SwapLabel(label);
                         }
                         //odczytujemy nr portu
                         port = line.getPort();
@@ -228,12 +182,7 @@ namespace RouterV1
                     }   
                     
                     }
-
-                }
-                else
-                    port = CheckIPTable(); //odczytujemy nr portu z tablicy IP-FIB
-
-                return port;
+               return port;
             
         }
         /*
@@ -253,41 +202,6 @@ namespace RouterV1
                     }
                 //jezeli nie udalo sie wyslac, zwraca komunikat
                 Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
-        }
-
-        
-
-
-        /*
-         * Metoda sprawdza tablice MPLS-FIB, 
-         * zwraca wartosc NHLFE
-         * jesli nie znalazla zadnej wartosci zwraca 0
-         */
-        public int CheckMPLSTable()
-        {
-            for (int i = 0; i < tableMPLS_FIB.Count; i++)
-                if (tableMPLS_FIB[i].GetHostName().Equals(destinationHost))
-                {
-                    if (tableMPLS_FIB[i].GetNHLFE() != 0) return tableMPLS_FIB[i].GetNHLFE(); 
-                    
-                }
-            return 0;
-
-        }
-        /*
-         * Metoda sprawdza tablice IP-FIB, 
-         * zwraca nr portu, ktorym pakiet ma zostac wyslany
-         */
-        public int CheckIPTable()
-        {
-            //pierwszy for szuka odpowiedniego wiersza tablicy routingowej, po nazwie hosta
-            //i odczytuje jego nr portu
-            for (int i = 0; i < tableIP_FIB.Count; i++)
-                if (tableIP_FIB[i].GetHostName().Equals(destinationHost))
-                {
-                    return tableIP_FIB[i].GetPort();
-                }
-            return 0; //jezeli nie ma takiego wiersza zwraca 0
         }
         /*
          * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
@@ -326,38 +240,26 @@ namespace RouterV1
          */
         public void AddLabel(int label)
         {
-            //tresc pakietu przekonwertowana do tablicy bajtow
-            byte[] packet = Encoding.ASCII.GetBytes(_packet);
-            //nazwa hosta wraz z znakiem ':'
-            //labelStartIndex to dlugosc nazwy, wiec + 1, na znak ':'
-            byte[] hostName = new byte[labelStartIndex + 1];
-            //reszta wiadomosci
-            byte[] message = new byte[packet.Length - labelStartIndex];
-            //indeks pomocniczy
-            int index = labelStartIndex;
-            //labelStartIndex jest na znaku ':', 
-            //ktorego nie chcemy drugi raz, wiec stad inkrementacja
-            //stad rowniez - 1 w forze
-            index++;
-            for(int i = 0; i < packet.Length - labelStartIndex - 1; i++)
-            {
-                message[i] = packet[index];
-                index++;
-            }
-            for (int i = 0; i <= labelStartIndex; i++)
-                hostName[i] = packet[i];
-            //pakiet jest tworzony od nowa
-            // nazwa hosta: -> etykieta -> , -> reszta wiadomosci
-            //przecinek do oddzielenia kolejnych etykiet
-            StringBuilder newPacket = new StringBuilder(Encoding.ASCII.GetString(hostName));
-            newPacket.Append(label);
-            newPacket.Append(",");
-            newPacket.Append(Encoding.ASCII.GetString(message));
+            StringBuilder builder = new StringBuilder();
+            builder.Append(label);
+            builder.Append(',');
+            builder.Append(_packet);
+            _packet = builder.ToString();
+        }
+        /*
+         * Zamienia etykiete na szczycie stosu etykiet pakietu
+         * @ label nr etykiety
+         */
+        public void SwapLabel(int label)
+        {
+            String[] extractTopLabel = _packet.Split(','); //wydzielamy etykiete ze szczytu stosu, zeby ja podmienic
+            StringBuilder builder = new StringBuilder();
+            builder.Append(label);
+            builder.Append(',');
+            for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
+                builder.Append(extractTopLabel[i]);
 
-            //nowa tresc pakietu, z dodana etykieta mpls
-            _packet = newPacket.ToString();
-            Console.WriteLine(_packet);
-
+            _packet = builder.ToString();
         }
         /*
          * Sprawdza czy przychodzacy pakiet ma etykiete MPLS
@@ -381,8 +283,7 @@ namespace RouterV1
          */
         public void GetLabel()
         {
-            String[] extractHostName = _packet.Split(':'); //pakiet jest podzielony na czesc nazwy hosta i reszte
-            String[] extractLabelsPart = extractHostName[1].Split(';'); //reszta naglowka i wiadomosc
+            String[] extractLabelsPart = _packet.Split(':'); //pakiet jest podzielony na czesc etykiet i reszte
             String[] extractLabels = extractLabelsPart[0].Split(','); //reszta naglowka podzielona na etykiety
             Console.WriteLine("Etykiety:");
             if (extractLabels[0].Length != 0)
