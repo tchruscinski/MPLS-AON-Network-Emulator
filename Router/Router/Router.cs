@@ -225,7 +225,7 @@ namespace RouterV1
                         //odczytujemy nr portu
                         port = line.getPort();
                         NHLFE_ID = line.getNextID();
-                    }
+                    }   
                     
                     }
 
@@ -260,7 +260,7 @@ namespace RouterV1
 
         /*
          * Metoda sprawdza tablice MPLS-FIB, 
-         * zwraca true wartosc FEC odczytana z tablicy
+         * zwraca wartosc NHLFE
          * jesli nie znalazla zadnej wartosci zwraca 0
          */
         public int CheckMPLSTable()
