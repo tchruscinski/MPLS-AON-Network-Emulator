@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Host>
+		<Name>Host</Name>
+		<Row>
+			<DestinationHost>DestinationHost</DestinationHost>
+			<NHLFE_ID>3</NHLFE_ID>
+		</Row>
+	</Host>
+</Config>

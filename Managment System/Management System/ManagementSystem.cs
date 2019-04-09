@@ -18,24 +18,36 @@ namespace Management_System
         private static UDPSocket listeningSocket = new UDPSocket();
         private static UDPSocket sendingSocket = new UDPSocket();
         private static Parser parser = new Parser();
-        private static List<string> routersListeningPorts = new List<string>();
-        private static List<string> routersSendingPorts = new List<string>();
         private static int portNumber = 100;
         private static int connectionCloudListeningPort = 100;
         private static string localIP;
-        private static string listeningPorts;
-        private static string sendingPorts;
 
         /**
-        * metoda parsująca plik konfiguracyjny dla routerow
-        * @ no arguments, void
+        * Metoda parsująca plik konfiguracyjny dla routerow
+        * @ routerName - string, nazwa docelowego routera
         */
-        private static void ReadRouterConfig()
+        private static string ReadRouterConfig(string routerName)
         {
-            string routerConfig = parser.ParseRouterTable("routers_config.xml", "Router1");
+            string routerConfig = parser.ParseRouterTable("routers_config.xml", routerName);
 
             Console.WriteLine("sparsowany xml: "+ routerConfig);
             Console.ReadKey();
+
+            return routerConfig;
+        }
+
+        /**
+        * Metoda parsująca plik konfiguracyjny dla hostow
+        * @ hostName - string, nazwa docelowego hosta
+        */
+        private static string ReadHostConfig(string hostName)
+        {
+            string hostConfig = parser.ParseHostTable("host_config.xml", hostName);
+
+            Console.WriteLine("sparsowany xml: "+ hostConfig);
+            Console.ReadKey();
+
+            return hostConfig;
         }
 
         /**
@@ -69,35 +81,32 @@ namespace Management_System
             SetLocalIPAddress();
             listeningSocket.RunServer(localIP, 100);
         }
-        
-        /* Metoda tworząca stringi z konfiguracją, które będą wysłane do chmury połączeń
-        * @ no arguments, void
-        */
-        private static void prepareStringsToSend()
-        {
-            if(routersListeningPorts.Count == 0 || routersSendingPorts.Count == 0) 
-            {
-                return;
-            }
 
-            for(int i = 0; i < routersListeningPorts.Count; i++)
-            {   
-                listeningPorts += routersListeningPorts[i] + ",";
-                sendingPorts += routersSendingPorts[i] + ",";
-            }
+        /**
+        * metoda wysyłająca tablice routingową do routera
+        * @ routerName - string, nazwa docelowego routera
+        */
+        private static void SendRouterTable(string routerName)
+        {   
+            Console.WriteLine("Parosowanie konfiguracji dla " + routerName + " ...");
+            string routerTable = ReadRouterConfig(routerName);
+            Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
+            //sendingSocket.Connect(localIP, routerListeningPort);
+            //sendingSocket.Send(routerTable);
+            Console.WriteLine("Wysyłano pomyślnie.");
         }
 
         /**
-        * metoda wysyłająca tablice routingową do chmury połączeń
-        * @ no arguments, void
+        * metoda wysyłająca tablice routingową do hosta
+        * @ hostName - string, nazwa docelowego hosta
         */
-        private static void SendRoutingTable()
+        private static void SendHostTable(string hostName)
         {   
-            Console.WriteLine("Wysyłanie konfiguracji do chmury połączeń ...");
-            prepareStringsToSend();
-            sendingSocket.Connect(localIP, connectionCloudListeningPort);
-            sendingSocket.Send(listeningPorts);
-            sendingSocket.Send(sendingPorts);
+            Console.WriteLine("Parosowanie konfiguracji dla " + hostName + " ...");
+            string hostTable = ReadHostConfig(hostName);
+            Console.WriteLine("Wysyłanie konfiguracji do " + hostName + " ...");
+            //sendingSocket.Connect(localIP, hostListeningPort);
+            sendingSocket.Send(hostTable);
             Console.WriteLine("Wysyłano pomyślnie.");
         }
 
@@ -109,9 +118,7 @@ namespace Management_System
         {
             Console.WriteLine("System Zarządzania v1.0");
             StartServer();
-            ReadRouterConfig();
-            SendRoutingTable();
-            
+            ReadHostConfig("Host");
             /*while ((line = Console.ReadLine()) != null)
             {
                 ReadInput();
@@ -119,8 +126,8 @@ namespace Management_System
         }
 
         /**
-         * Metoda czytająca komendy z konsoli
-         * @ no arguments, void
+         * Metoda procesująca requesty przychodzące do systemu zarządzania
+         * @ message - string, wiadomość z przychodzącego pakietu
         */
         public static void ProcessRequest(string message)
         {
@@ -129,9 +136,17 @@ namespace Management_System
                 return;
             }
 
-            if(message == "gettable")
+            if(message.Contains("gettable"))
             {
-                //sendingSocket.Send(routertable);
+                if(message.Contains("host"))
+                {
+                    //obsluga requesta po tabele od hosta
+                }
+
+                if(message.Contains("router"))
+                {
+                    //obsluga requesta po tabele od routera
+                }
             }   
         }
 
@@ -144,31 +159,6 @@ namespace Management_System
             string line = Console.ReadLine();
             //if(line = "")
         }*/
-
-        /**
-         * metoda konfigurująca Hosta, odpala apke Hosta z określonymi parametrami
-         * w przyszłości konfiguracja będzie czytana z pliku
-         * @ no arguments, void
-        */
-        private static void ConfigureHosts()
-        {
-            try
-            {
-                Process startHost = new Process();
-                //chwilowo przykładowa ścieżka do procesu
-                startHost.StartInfo.FileName = "C://Users/tomas/Desktop/TSST Projekt/tsst-network-emulator/Host/Host/Host.exe";
-
-                // portNumber targetIP message
-                startHost.StartInfo.Arguments = "100 10.10.10 \"message\"";
-                startHost.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                startHost.Start();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.ReadKey();
-            }
-        }
 
         /**
          * metoda Systemu Zarządzania
