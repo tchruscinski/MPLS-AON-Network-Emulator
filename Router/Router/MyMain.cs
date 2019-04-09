@@ -29,7 +29,7 @@ namespace RouterV1
             UDPSocket socket4 = new UDPSocket();
             socket4.Client(Utils.destinationIP, 27001, sendingRouter);
             socket.Server(Utils.destinationIP, 27000, midRouter);
-            NHLFELine nhlfe2 = new NHLFELine(1, Action.PUSH, 30, 27001, 0);
+            NHLFELine nhlfe2 = new NHLFELine(1, Action.SWAP, 30, 27001, 0);
             ILMLine ilm1 = new ILMLine(27000, 20, "", 1);
             midRouter.AddILMLine(ilm1);
             midRouter.AddReceivingSocket(socket);

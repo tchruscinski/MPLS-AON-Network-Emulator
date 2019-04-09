@@ -15,8 +15,6 @@ namespace RouterV1
     class Router
     {
         private string _name = " "; //nazwa routera
-        private List<IPLine> tableIP_FIB = new List<IPLine>(); //tablica routingowa IP
-        private List<MPLSLine> tableMPLS_FIB = new List<MPLSLine>(); //tablica routingowa MPLS
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
         private List<ILMLine> tableILM = new List<ILMLine>(); //tablica ILM
         //sockety, ktorymi pakiety sa przesylane dalej
@@ -37,21 +35,7 @@ namespace RouterV1
         public string GetName() { return _name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
 
-        /*
-         * Metoda dodaje 
-         * @ newLine, nowy wiersz do tablicy routingowej 
-         * oraz tworzy UDP socket nasluchujacy na tym porcie
-         */
-        public void AddRoutingLine(IPLine newLine)
-        {
-            tableIP_FIB.Add(newLine);
-            UDPSocket socket = new UDPSocket();
-            socket.Client(Utils.destinationIP, newLine.GetPort(), this);
-            //socket.Server(Utils.destinationIP, 27000, this);
-            sendingSockets.Add(socket);
-        }
 
-        public void AddRoutingLineMPLS(MPLSLine newLine) { tableMPLS_FIB.Add(newLine); }
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
         public void AddILMLine(ILMLine newLine) { tableILM.Add(newLine); }
 
@@ -190,7 +174,7 @@ namespace RouterV1
                         }
                         else
                         {
-                            //...
+                            SwapLabel(label);
                         }
                         //odczytujemy nr portu
                         port = line.getPort();
@@ -218,41 +202,6 @@ namespace RouterV1
                     }
                 //jezeli nie udalo sie wyslac, zwraca komunikat
                 Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
-        }
-
-        
-
-
-        /*
-         * Metoda sprawdza tablice MPLS-FIB, 
-         * zwraca wartosc NHLFE
-         * jesli nie znalazla zadnej wartosci zwraca 0
-         */
-        public int CheckMPLSTable()
-        {
-            for (int i = 0; i < tableMPLS_FIB.Count; i++)
-                if (tableMPLS_FIB[i].GetHostName().Equals(destinationHost))
-                {
-                    if (tableMPLS_FIB[i].GetNHLFE() != 0) return tableMPLS_FIB[i].GetNHLFE(); 
-                    
-                }
-            return 0;
-
-        }
-        /*
-         * Metoda sprawdza tablice IP-FIB, 
-         * zwraca nr portu, ktorym pakiet ma zostac wyslany
-         */
-        public int CheckIPTable()
-        {
-            //pierwszy for szuka odpowiedniego wiersza tablicy routingowej, po nazwie hosta
-            //i odczytuje jego nr portu
-            for (int i = 0; i < tableIP_FIB.Count; i++)
-                if (tableIP_FIB[i].GetHostName().Equals(destinationHost))
-                {
-                    return tableIP_FIB[i].GetPort();
-                }
-            return 0; //jezeli nie ma takiego wiersza zwraca 0
         }
         /*
          * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
@@ -295,6 +244,21 @@ namespace RouterV1
             builder.Append(label);
             builder.Append(',');
             builder.Append(_packet);
+            _packet = builder.ToString();
+        }
+        /*
+         * Zamienia etykiete na szczycie stosu etykiet pakietu
+         * @ label nr etykiety
+         */
+        public void SwapLabel(int label)
+        {
+            String[] extractTopLabel = _packet.Split(','); //wydzielamy etykiete ze szczytu stosu, zeby ja podmienic
+            StringBuilder builder = new StringBuilder();
+            builder.Append(label);
+            builder.Append(',');
+            for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
+                builder.Append(extractTopLabel[i]);
+
             _packet = builder.ToString();
         }
         /*
