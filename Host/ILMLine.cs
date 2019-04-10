@@ -11,15 +11,15 @@ namespace Host
      */
     class ILMLine
     {
-        private string _label; //etykieta przychodzaca, 
+        private int _label; //etykieta przychodzaca, 
         private string _sender; //nazwa nadawcy
-        public ILMLine(string label, string sender)
+        public ILMLine(int label, string sender)
         {
             _label = label;
             _sender = sender;
         }
 
-        public string GetLabel() { return _label; }
+        public int GetLabel() { return _label; }
         public string GetSender() { return _sender; }
     }
 }

@@ -15,6 +15,7 @@ namespace Host
         //private static Socket sokcet; //socket ktory wysyla pakiety do chmury
         //private static IPEndPoint endPoint; //reprezentuje punkt koncowy sieci jako adres ip i numer portu
         //private static IPAddress destinationIP; //adres ip do ktorego beda skierowane pakiety
+        private int id; //id hosta
         private string _name = " "; //nazwa hosta
         private UDPSocket sendingSocket = new UDPSocket(); //socket, ktory wysyla pakiety
         private int _sendingPort; // nr portu, ktorym sendingSocket wysyla pakiety
@@ -27,6 +28,10 @@ namespace Host
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
         public void AddRoutingLineMPLS(MPLSLine newLine) { tableMPLS_FIB.Add(newLine); }
         public void AddILMLIne(ILMLine newLine) { tableILM.Add(newLine); }
+        public Host(string name)
+        {
+            _name = name;
+        }
 
         public Host(string name,int sendingPort, int receivingPort)
         {
@@ -147,7 +152,7 @@ namespace Host
             Console.WriteLine(tableILM[0]);
             for (int i = 0; i < tableILM.Count; i++)
             {
-                if (tableILM[i].GetLabel().Equals(label))
+                if ((tableILM[i].GetLabel().ToString()).Equals(label))
                 {
                     return tableILM[i].GetSender();
                 }
