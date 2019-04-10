@@ -15,13 +15,13 @@ namespace RouterV1
             UDPSocket socket0 = new UDPSocket();
             socket0.Server(Utils.destinationIP, 26999, sendingRouter);
             UDPSocket socket3 = new UDPSocket();
-            socket3.Client(Utils.destinationIP, 27000, sendingRouter);
+            socket3.Client(Utils.destinationIP, 21370, sendingRouter);
             ILMLine ilm0 = new ILMLine(26999, 17, "", 1);
             sendingRouter.AddSendingSocket(socket3);
             sendingRouter.AddReceivingSocket(socket0);
             sendingRouter.AddILMLine(ilm0);
 
-            NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 27000, 0); //wyslij portem 2700 z etykieta 20
+            NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 21370, 0); //wyslij portem 2700 z etykieta 20
             sendingRouter.AddNHLFELine(nhlfe1);
 
             Router midRouter = new Router("midRouter");

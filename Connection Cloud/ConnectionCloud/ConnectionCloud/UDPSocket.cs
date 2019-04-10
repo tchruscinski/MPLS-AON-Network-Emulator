@@ -88,6 +88,7 @@ namespace ConnectionCloud
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
                 packet = connectionCloud.ReadPacket(msg);
+                Console.WriteLine("{0}", msg);
                 if(packet.Length == 4)
                 {
                     int port = Convert.ToInt32(packet[2]);

@@ -10,7 +10,7 @@ namespace ConnectionCloud
             ConnectionCloud cc = new ConnectionCloud();
 
             UDPSocket s = new UDPSocket();
-            s.Server("127.0.0.1", 27001, cc);
+            s.Server("127.0.0.1", 21370, cc);
             //UDPSocket g = new UDPSocket();
             //g.Client("127.0.0.1", 27098);
 
