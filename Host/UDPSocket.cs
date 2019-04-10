@@ -55,7 +55,8 @@ namespace Host
             {
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndSend(ar);
-                Console.WriteLine("SEND: {0},{1}", bytes, text);
+                timeStamp = time.GetTimestamp(DateTime.Now);
+                Console.WriteLine(timeStamp+" SEND: {0},{1}", bytes, text);
             }, state);
         }
         /*
@@ -73,15 +74,16 @@ namespace Host
                         int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                         _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                         timeStamp = time.GetTimestamp(DateTime.Now);
-                        Console.WriteLine("Received MSG");
+                        Console.WriteLine(timeStamp+" Received MSG");
                         //Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
                         host.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                         counter++;
                     }
                     catch (SocketException e)
                     {
+                        timeStamp = time.GetTimestamp(DateTime.Now);
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Nie mozna nawiazac polaczenia");
+                        Console.WriteLine(timeStamp+" Nie mozna nawiazac polaczenia");
                         Console.ForegroundColor = ConsoleColor.Gray;
                         //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
                         //host/router nie jest dostepny
