@@ -19,30 +19,24 @@ namespace ConnectionCloud
     class RoutingTableLine
     {
         private int _incomingPort; //nr portu nadawcy
-        private string _incomingHostName; //nazwa hosta nadawcy
         private string _incomingLabel; //etykieta pakietu od nadawcy 
 
         private int _outgoingPort; //nr portu odbiorcy
-        private string _outgoingHostName; //nazwa hosta odbiorcy
         private string _outgoingLabel; //etykieta pakietu od odbiorcy 
 
-        public RoutingTableLine(int incomingPort, string incomingHostName, string incomingLabel, int outgoingPort, string outgoingHostName, string outgoingLabel)
+        public RoutingTableLine(int incomingPort, string incomingLabel, int outgoingPort, string outgoingLabel)
         {
             _incomingPort = incomingPort;
-            _incomingHostName = incomingHostName;
             _incomingLabel = incomingLabel;
 
-            _outgoingHostName = outgoingHostName;
             _outgoingLabel = outgoingLabel;
             _outgoingPort = outgoingPort;
 
         }
 
-        public String GetIncomingHostName() { return _incomingHostName; }
         public int GetIncomingPort() { return _incomingPort; }
         public String GetIncomingLabel() { return _incomingLabel; }
 
-        public String GetOutgoingHostName() { return _outgoingHostName; }
         public int GetOutgoingPort() { return _outgoingPort; }
         public String GetOutgoingLabel() { return _outgoingLabel; }
     }

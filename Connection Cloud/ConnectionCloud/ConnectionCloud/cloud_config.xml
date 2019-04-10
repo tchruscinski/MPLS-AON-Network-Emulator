@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+  <Cloud>
+    <RowId>CloudConfigTable</RowId>
+    <Row>
+      <incomingPort></incomingPort>
+      <incomingLabel></incomingLabel>
+      <outgoingPort></outgoingPort>
+      <outgoingLabel></outgoingLabel>
+    </Row>
+    <Row>
+      <incomingPort></incomingPort>
+      <incomingLabel></incomingLabel>
+      <outgoingPort></outgoingPort>
+      <outgoingLabel></outgoingLabel>
+    </Row>
+    <Row>
+      <incomingPort></incomingPort>
+      <incomingLabel></incomingLabel>
+      <outgoingPort></outgoingPort>
+      <outgoingLabel></outgoingLabel>
+    </Row>
+    <Row>
+      <incomingPort></incomingPort>
+      <incomingLabel></incomingLabel>
+      <outgoingPort></outgoingPort>
+      <outgoingLabel></outgoingLabel>
+    </Row>
+  </Cloud>
+</Config>
