@@ -26,7 +26,7 @@ namespace RouterV1
         private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
         private int _incPort; //port, ktorym przyszedl pakiet, potrzebny do tablicy ILM
         private int _topLabel; //etykieta na szczycie stosu etykiet pakietu
-        private string _labels; //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
+        private string _poppedLabels; //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
 
         public Router(string name)
         {
@@ -76,7 +76,7 @@ namespace RouterV1
             int port = RefactorPacket(); // nr portu, ktorym pakiet zostanie wyslany
             if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
             {
-                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem/");
                 return;
             }
             //przesyla pakiet do nastepnego wezla
@@ -129,7 +129,7 @@ namespace RouterV1
                     sendingSockets[i].Send(message);
                     return;
                 }
-            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem//");
 
         }
         /*
@@ -144,7 +144,6 @@ namespace RouterV1
             int NHLFE_ID; //ID wpisu tablicy NHLFE
             if (IsLabel()) //jezeli jest etykieta sprawdzamy tablice ILM
             {
-                Console.WriteLine("Is label = true");
                 NHLFE_ID = CheckILMTable();
             }
             else //w innym wypadku nie mozna wyslac pakietu
@@ -154,15 +153,18 @@ namespace RouterV1
                 
                     while(NHLFE_ID != 0) //sprawdzamy wpisy NHLFE, az dojdziemy do wpisu o numerze 0
                     {
+                    //jezeli akcja byl pop, schemat postepowania jest nieco inny, 
+                    //wartosc nextID wiersza NHLFE nie jest sprawdzana
+                    bool wasPop = false; 
                     int index = CheckNHLFETable(NHLFE_ID); //szukamy indeksu wpisu o danym ID
                     if (index == -1)
                         return 0;
                     else
                     {
+                   
                         NHLFELine line = tableNHLFE[index];
                         //odczytujemy etykiete
                         int label = line.getLabel();
-
                         //obsluga wszystkich rodzajow akcji
                         if (line.getAction() == Action.PUSH)
                         {
@@ -170,7 +172,11 @@ namespace RouterV1
                         }
                         else if (line.getAction() == Action.POP)
                         {
-                            //...
+                            PopLabel();
+                            GetTopLabel(); //pobiera etykiety pakietu
+                            NHLFE_ID = CheckILMTable(); //po zdjeciu etykiety ponownie sprawdzamy tablice ILM
+                         wasPop = true;
+                         Console.WriteLine("NHLFE " + NHLFE_ID);
                         }
                         else
                         {
@@ -178,7 +184,8 @@ namespace RouterV1
                         }
                         //odczytujemy nr portu
                         port = line.getPort();
-                        NHLFE_ID = line.getNextID();
+                       if(!wasPop)
+                          NHLFE_ID = line.getNextID();
                     }   
                     
                     }
@@ -201,7 +208,7 @@ namespace RouterV1
                         return;
                     }
                 //jezeli nie udalo sie wyslac, zwraca komunikat
-                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
         }
         /*
          * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
@@ -228,8 +235,16 @@ namespace RouterV1
                 //Console.WriteLine(_topLabel);
                 //Console.WriteLine(tableILM[i].GetPort());
                 //Console.WriteLine(tableILM[i].GetLabel());
-                if (tableILM[i].GetPort() == _incPort && tableILM[i].GetLabel() == _topLabel)
+                //Console.WriteLine("Popped labels")
+                //Console.WriteLine(_poppedLabels);
+                //Console.WriteLine(tableILM[i].GetPoppedLabels());
+
+                if (tableILM[i].GetPort() == _incPort && tableILM[i].GetLabel() == _topLabel
+                    && tableILM[i].GetPoppedLabels().Equals(_poppedLabels))
+                {
+                    //Console.WriteLine(tableILM[i].GetNHLFE());
                     return tableILM[i].GetNHLFE(); //zwraca NHLFE danego wpisu
+                }
             }
             return 0; //jesli nie znaleziono 0
             
@@ -258,8 +273,28 @@ namespace RouterV1
             builder.Append(',');
             for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
                 builder.Append(extractTopLabel[i]);
-
             _packet = builder.ToString();
+        }
+        /*
+         * Zdejmuje etykiete ze szczytu stosu etykiet
+         * @ label nr etykiety
+         */
+        public void PopLabel()
+        {
+            String[] extractTopLabel = _packet.Split(','); //wydzielamy etykiete ze szczytu stosu, zeby ja zdjac
+            StringBuilder poppedLabelBuilder = new StringBuilder(); //aktualizujemy wartosc poppedLabels pakietu
+            poppedLabelBuilder.Append(extractTopLabel[0]);
+            poppedLabelBuilder.Append("-");
+            poppedLabelBuilder.Append(_poppedLabels); //dopisujemy reszte zdjetych etykiet
+            poppedLabelBuilder.Length--; //usuwamy '-' na ostatnim polu
+            _poppedLabels = poppedLabelBuilder.ToString();
+
+            StringBuilder messageBuilder = new StringBuilder();
+            for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
+                messageBuilder.Append(extractTopLabel[i]);
+
+            _packet = messageBuilder.ToString();
+            Console.WriteLine("PAkiet: "+ _packet);
         }
         /*
          * Sprawdza czy przychodzacy pakiet ma etykiete MPLS
@@ -294,13 +329,34 @@ namespace RouterV1
                 }
                 _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
                 StringBuilder builder = new StringBuilder();
-                for (int i = 1; i < extractLabels.Length; i++) //pozostale etykiety dodane po myslniku
+                for (int i = 2; i < extractLabels.Length - 1; i++) //pozostale etykiety dodane po myslniku
                 {
                     builder.Append(extractLabels[i]);
                     builder.Append('-');
                 }
-                builder.Length--; //usuniet ostatni '-'
-                _labels = builder.ToString();
+                _poppedLabels = builder.ToString();
+
+            }
+
+
+        }
+        /*
+         * Pobiera tylko etykiete ze szczytu
+         * 
+         */
+        public void GetTopLabel()
+        {
+            String[] extractLabelsPart = _packet.Split(':'); //pakiet jest podzielony na czesc etykiet i reszte
+            String[] extractLabels = extractLabelsPart[0].Split(','); //reszta naglowka podzielona na etykiety
+            Console.WriteLine("Etykiety:");
+            if (extractLabels[0].Length != 0)
+            {
+                for (int i = 0; i < extractLabels.Length; i++)
+                {
+                    Console.WriteLine(extractLabels[i]);
+                }
+                _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+                Console.WriteLine("top" + _topLabel);
             }
 
 

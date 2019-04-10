@@ -39,8 +39,16 @@ namespace RouterV1
             Router receivingRouter = new Router("receivingRouter");
             UDPSocket socket2 = new UDPSocket();
             UDPSocket socket5 = new UDPSocket();
-            socket5.Client(Utils.destinationIP, 27002, sendingRouter);
+            socket5.Client(Utils.destinationIP, 29002, sendingRouter);
             socket2.Server(Utils.destinationIP, 27001, receivingRouter);
+            ILMLine ilm2 = new ILMLine(27001, 30, "", 1);
+            ILMLine ilm3 = new ILMLine(27001, 17, "30", 2);
+            NHLFELine nhlfe3 = new NHLFELine(1, Action.POP, 0, 0, 0);
+            NHLFELine nhlfe4 = new NHLFELine(2, Action.PUSH, 31, 29002, 0);
+            receivingRouter.AddILMLine(ilm2);
+            receivingRouter.AddILMLine(ilm3);
+            receivingRouter.AddNHLFELine(nhlfe3);
+            receivingRouter.AddNHLFELine(nhlfe4);
             receivingRouter.AddReceivingSocket(socket2);
             receivingRouter.AddSendingSocket(socket5);
 
