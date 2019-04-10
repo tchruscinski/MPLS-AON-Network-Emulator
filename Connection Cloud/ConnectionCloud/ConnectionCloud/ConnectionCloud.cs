@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ConnectionCloud
 {
@@ -47,14 +55,15 @@ namespace ConnectionCloud
 
         }
 
-        private static string ReadCloudConfig(string routerName)
+        public string ReadCloudConfig(string rowId)
         {
-            string routerConfig = cetParser.ParseCableCloudEmulatorTable("cloud_config.xml", routerName);
+            string rowConfig = cetParser.ParseCableCloudEmulatorTable("C:/Users/Mikolaj/Desktop/TSST_projekt/tsst-network-emulator/Connection Cloud/ConnectionCloud/ConnectionCloud/cloud_config.xml", rowId);
+            Console.WriteLine("{0}",rowConfig);
 
-            Console.WriteLine("sparsowany xml: " + routerConfig);
+            Console.WriteLine("sparsowany xml: " + rowConfig);
             Console.ReadKey();
 
-            return routerConfig;
+            return rowConfig;
         }
 
     }
