@@ -10,6 +10,12 @@ namespace RouterV1
     {
         static void Main(string[] args)
         {
+            if (args.Length != 0)
+            {
+                Router router = new Router(args[0]);
+            }
+
+
             // host1 <--> sendingRouter <--> midRouter <--> receivingRouter <--> host2
             Router sendingRouter = new Router("sendingRouter");
             UDPSocket socket0 = new UDPSocket();
