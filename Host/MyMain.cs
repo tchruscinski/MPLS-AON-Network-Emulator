@@ -17,7 +17,9 @@ namespace Host
             MPLSLine mpls1 = new MPLSLine("host3", 1);
             host1.AddRoutingLineMPLS(mpls1);
             NHLFELine nhlfe1 = new NHLFELine(1, 17, 0);
+            ILMLine ilm1 = new ILMLine("31", "host1");
             host1.AddNHLFELine(nhlfe1);
+            host1.AddILMLIne(ilm1);
             clientSocket.Client("127.0.0.1", 27001, host1);
             host1.SendPacket("host3", "wiadomosc testowa");
             Console.ReadLine();

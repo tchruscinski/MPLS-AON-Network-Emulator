@@ -346,7 +346,7 @@ namespace RouterV1
          */
         public void GetTopLabel()
         {
-            String[] extractLabelsPart = _packet.Split(':'); //pakiet jest podzielony na czesc etykiet i reszte
+            String[] extractLabelsPart = _packet.Split(';'); //pakiet jest podzielony na czesc etykiet i reszte
             String[] extractLabels = extractLabelsPart[0].Split(','); //reszta naglowka podzielona na etykiety
             Console.WriteLine("Etykiety:");
             if (extractLabels[0].Length != 0)

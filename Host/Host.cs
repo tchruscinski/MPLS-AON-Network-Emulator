@@ -22,9 +22,11 @@ namespace Host
         private int _receivingPort; //nr portu, na ktorym receivingPort nasluchuje
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
         private List<MPLSLine> tableMPLS_FIB = new List<MPLSLine>(); //tablica routingowa MPLS
+        private List<ILMLine> tableILM = new List<ILMLine>(); //tablica ILM
 
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
         public void AddRoutingLineMPLS(MPLSLine newLine) { tableMPLS_FIB.Add(newLine); }
+        public void AddILMLIne(ILMLine newLine) { tableILM.Add(newLine); }
 
         public Host(string name,int sendingPort, int receivingPort)
         {
@@ -53,11 +55,11 @@ namespace Host
                        //ktory nie powinien byc wyswietlany
                        //po inkrementacji przechodzi na pierwszy bajt wiadomosci
 
-            //zapisuje ilosc bajtow rowna (bytes.Length - counter), zaczynajac od indeksu counter
-            //String message = Encoding.ASCII.GetString(bytes, counter, (bytes.Length - counter));
-            String[] extractedLabels = packet.Split(':'); //wydzielamy czesc etykiet, bo jej nie potrzebujemy
-            String[] extractedSender = extractedLabels[1].Split(';'); //wydzielamy nadawce i tresc wiadomosci
-            Console.WriteLine(_name + " od: " + extractedSender[0] +  " otrzymal:" + extractedSender[1]);
+            String[] extractedLabel = packet.Split(','); //wydzielamy czesc etykiet, bo jej nie potrzebujemy
+            //nazwa nadawcy
+            String sender = GetSenderName(extractedLabel[0]);
+            String[] extractedSender = extractedLabel[1].Split(';'); //wydzielamy nadawce i tresc wiadomosci
+            Console.WriteLine(_name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
         }
         /*
          * Wysyla pakiet danych, dodajac w naglowku nazwe hosta docelowego
@@ -93,8 +95,6 @@ namespace Host
                     }
 
                 }
-                builder.Append(':'); //':' oddziela czesc etykiet od nazwy nadawcy
-                builder.Append(_name); //host dodaje swoja nazwe, zeby odbiorca mogl go rozpoznac
                 builder.Append(';'); //';' oddziela naglowek od wiadomosci
                 builder.Append(message);
                 sendingSocket.Send(builder.ToString());
@@ -137,7 +137,23 @@ namespace Host
                     }
                 return -1; //jezeli nie ma takiego wpisu zwraca -1
             }
-
+        /*
+         * Sprawdza tablice ILM 
+         * zwraca nazwe nadawcy
+         */
+        public string GetSenderName(string label)
+        {
+            Console.WriteLine(label);
+            Console.WriteLine(tableILM[0]);
+            for (int i = 0; i < tableILM.Count; i++)
+            {
+                if (tableILM[i].GetLabel().Equals(label))
+                {
+                    return tableILM[i].GetSender();
+                }
+            }
+            return ""; //jesli nie ma takiego wpisu w tabeli zwraca pustego stringa
+        }
 
             /**
              * metoda konfigurująca parametry hosta:
