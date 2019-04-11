@@ -91,7 +91,7 @@ namespace ConnectionCloud
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
-                isSend = connectionCloud.Proceed(msg);
+                isSend = connectionCloud.Proceed(msg, this._port);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received package: {0}", msg);
             }, state);
         }

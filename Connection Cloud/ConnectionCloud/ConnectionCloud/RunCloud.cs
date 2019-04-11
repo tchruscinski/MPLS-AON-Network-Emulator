@@ -15,7 +15,7 @@ namespace ConnectionCloud
 
             rtl = cb.ParseCableCloudEmulatorTable();
             //Console.WriteLine("{0}", RoutingTableLine);
-
+            cc.AddRoutingTable(rtl);
             //UDPSocket s = new UDPSocket();
             //s.Server("127.0.0.1", 21370, cc);
             UDPSocket a = new UDPSocket();
@@ -27,15 +27,16 @@ namespace ConnectionCloud
             UDPSocket g = new UDPSocket();
             UDPSocket h = new UDPSocket();
 
-            a.Server("127.0.0.1", rtl[0]._incomingPort, cc);
-            b.Server("127.0.0.1", rtl[1]._incomingPort, cc);
-            c.Server("127.0.0.1", rtl[2]._incomingPort, cc);
-            d.Server("127.0.0.1", rtl[3]._incomingPort, cc);
+            cc.AddReceivingSocket(a);
+            cc.AddReceivingSocket(b);
+            cc.AddReceivingSocket(c);
+            cc.AddReceivingSocket(d);
+            cc.AddSendingSocket(e);
+            cc.AddSendingSocket(f);
+            cc.AddSendingSocket(g);
+            cc.AddSendingSocket(h);
+            cc.StartSockets();
 
-            e.Client("127.0.0.1", rtl[0]._outgoingPort);
-            f.Client("127.0.0.1", rtl[1]._outgoingPort);
-            g.Client("127.0.0.1", rtl[2]._outgoingPort);
-            h.Client("127.0.0.1", rtl[3]._outgoingPort);
 
             Console.ReadKey();
             //while(true)

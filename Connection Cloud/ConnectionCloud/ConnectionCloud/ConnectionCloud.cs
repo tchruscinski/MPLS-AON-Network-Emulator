@@ -58,12 +58,24 @@ namespace ConnectionCloud
          */
         public void AddReceivingSocket(UDPSocket newSocket)
         {
-            receivingSockets
-                .Add(newSocket);
+            receivingSockets.Add(newSocket);
         }
         public void AddSendingSocket(UDPSocket newSocket)
         {
             sendingSockets.Add(newSocket);
+        }
+
+        public void StartSockets()
+        {
+            for (int i = 0; i < sendingSockets.Count; i++)
+            {
+                Console.WriteLine("{0} {1}", i, sendingSockets.Count);
+                sendingSockets[i].Client("127.0.0.1", routingTable[i]._outgoingPort);
+            }
+            for (int i = 0; i < receivingSockets.Count; i++)
+            {
+                receivingSockets[i].Server("127.0.0.1", routingTable[i]._incomingPort, this);
+            }
         }
         /*
          * Odczytuje z tresci wiadomosci nazwe hosta docelowego i przypisuje go do @ destinationHost
