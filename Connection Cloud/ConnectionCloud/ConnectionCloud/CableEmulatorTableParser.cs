@@ -45,43 +45,47 @@ namespace ConnectionCloud
         
 
         /**
-        * Metoda zwracająca konfigurację z wybranego pliku dla danego routera
-        * @routerName - string, nazwa routera, fileName - string, nazwa pliku z konfiguracją
+        * Metoda sciagajaca chmure XD
+        * Troche jeszcze do dokoncznia ale wale w kime elo
         */
-        public string ParseCableCloudEmulatorTable(string fileName, string rowId)
+        public string ParseCableCloudEmulatorTable(/*string fileName, string rowId*/)
         {
-            if (rowId == null || fileName == null)
+            XmlDocument doc = new XmlDocument();
+            try
             {
-                return null;
+                doc.Load(@"C:/Users/Mikolaj/Desktop/TSST_projekt/tsst-network-emulator/Connection Cloud/ConnectionCloud/ConnectionCloud/cloud_config.xml");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
 
-            string returnedString = "";
-            LoadFile(fileName);
-            XmlNodeList nodesList = config.SelectNodes("/Config/Cloud");
+            XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Cloud/Row");
 
-            foreach (XmlNode node in config.DocumentElement)
+            List<RoutingTableLine> rtl = new List<RoutingTableLine>();
+
+            foreach (XmlNode node in nodes)
             {
-                Console.WriteLine("dupa+{0}", node["Row"]?.InnerText);
-                string rId = node.Attributes[0].InnerText;
-                if (rId == rowId)
-                {
-                    XmlNodeList rowsList = config.SelectNodes("/Config/Cloud/Row");
-                    foreach (XmlNode row in rowsList)
-                    {
-                        returnedString += row["incomingPort"]?.InnerText + ",";
-                        returnedString += row["incomingLabel"]?.InnerText + ",";
-                        returnedString += row["outgoingPort"]?.InnerText + ",";
-                        returnedString += row["outgoingLabel"]?.InnerText + ",";
-                        
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("CHUJNIA COS EJJJJ");
-                }
+                RoutingTableLine routingTableLine = new RoutingTableLine(); 
+
+                routingTableLine._incomingPort = node.SelectSingleNode("incomingPort").InnerText;
+                routingTableLine._incomingLabel = node.SelectSingleNode("incomingLabel").InnerText;
+                routingTableLine._outgoingPort = node.SelectSingleNode("outgoingPort").InnerText;
+                routingTableLine._outgoingLabel = node.SelectSingleNode("outgoingLabel").InnerText;
+                
+
+                rtl.Add(routingTableLine);
             }
-            return returnedString;
+
+            System.Console.WriteLine("Total RTLs: " + rtl.Count);
+            return rtl[1]._incomingPort;
         }
 
+    }
+    class Book
+    {
+        public string id;
+        public string title;
+        public string author;
     }
 }

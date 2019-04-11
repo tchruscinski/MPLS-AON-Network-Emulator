@@ -8,10 +8,12 @@ namespace ConnectionCloud
         {
             string userInput;
             ConnectionCloud cc = new ConnectionCloud();
+            CableEmulatorTableParser cb = new CableEmulatorTableParser();
             string test;
 
-            test = cc.ReadCloudConfig("2");
+            test = cb.ParseCableCloudEmulatorTable();
             Console.WriteLine("{0}", test);
+            Console.ReadKey();
 
             //UDPSocket s = new UDPSocket();
             //s.Server("127.0.0.1", 21370, cc);

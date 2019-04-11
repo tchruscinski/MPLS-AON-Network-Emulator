@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Config>
-  <Cloud>
+<Cloud>
       <Row ID="1">
         <incomingPort>3</incomingPort>
         <incomingLabel>5</incomingLabel>
@@ -28,5 +27,6 @@
         <outgoingPort>daq</outgoingPort>
         <outgoingLabel>sf</outgoingLabel>
       </Row>
-  </Cloud>
-</Config>
+  
+</Cloud>
+

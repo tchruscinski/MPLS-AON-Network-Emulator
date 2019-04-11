@@ -18,26 +18,28 @@ namespace ConnectionCloud
      */
     class RoutingTableLine
     {
-        private int _incomingPort; //nr portu nadawcy
-        private string _incomingLabel; //etykieta pakietu od nadawcy 
+        public string _incomingPort; //nr portu nadawcy
+        public string _incomingLabel; //etykieta pakietu od nadawcy 
 
-        private int _outgoingPort; //nr portu odbiorcy
-        private string _outgoingLabel; //etykieta pakietu od odbiorcy 
+        public string _outgoingPort; //nr portu odbiorcy
+        public string _outgoingLabel; //etykieta pakietu od odbiorcy 
 
-        public RoutingTableLine(int incomingPort, string incomingLabel, int outgoingPort, string outgoingLabel)
-        {
-            _incomingPort = incomingPort;
-            _incomingLabel = incomingLabel;
+        //public RoutingTableLine(int incomingPort, string incomingLabel, int outgoingPort, string outgoingLabel)
+        //{
+        //    _incomingPort = incomingPort;
+        //    _incomingLabel = incomingLabel;
 
-            _outgoingLabel = outgoingLabel;
-            _outgoingPort = outgoingPort;
+        //    _outgoingLabel = outgoingLabel;
+        //    _outgoingPort = outgoingPort;
 
-        }
+        //}
 
-        public int GetIncomingPort() { return _incomingPort; }
-        public String GetIncomingLabel() { return _incomingLabel; }
 
-        public int GetOutgoingPort() { return _outgoingPort; }
-        public String GetOutgoingLabel() { return _outgoingLabel; }
+
+        //public int GetIncomingPort() { return _incomingPort; }
+        //public String GetIncomingLabel() { return _incomingLabel; }
+
+        //public int GetOutgoingPort() { return _outgoingPort; }
+        //public String GetOutgoingLabel() { return _outgoingLabel; }
     }
 }

@@ -55,16 +55,16 @@ namespace ConnectionCloud
 
         }
 
-        public string ReadCloudConfig(string rowId)
-        {
-            string rowConfig = cetParser.ParseCableCloudEmulatorTable("C:/Users/Mikolaj/Desktop/TSST_projekt/tsst-network-emulator/Connection Cloud/ConnectionCloud/ConnectionCloud/cloud_config.xml", rowId);
-            Console.WriteLine("{0}",rowConfig);
+        //public string ReadCloudConfig(string rowId)
+        //{
+        //    string rowConfig = cetParser.ParseCableCloudEmulatorTable("C:/Users/Mikolaj/Desktop/TSST_projekt/tsst-network-emulator/Connection Cloud/ConnectionCloud/ConnectionCloud/cloud_config.xml", rowId);
+        //    Console.WriteLine("{0}",rowConfig);
 
-            Console.WriteLine("sparsowany xml: " + rowConfig);
-            Console.ReadKey();
+        //    Console.WriteLine("sparsowany xml: " + rowConfig);
+        //    Console.ReadKey();
 
-            return rowConfig;
-        }
+        //    return rowConfig;
+        //}
 
     }
 }
