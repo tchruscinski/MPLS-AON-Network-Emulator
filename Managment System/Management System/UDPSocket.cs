@@ -15,6 +15,7 @@ namespace Management_System
         private EndPoint epFrom = new IPEndPoint(IPAddress.Any, 0);
         private AsyncCallback recv = null;
         private int portNumber;
+        private String timeStamp = time.GetTimestamp(DateTime.Now);
         private DateTime dt = DateTime.Now;
         private static Time time = new Time();
 
@@ -53,12 +54,20 @@ namespace Management_System
             string message = "";
             socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
-                State so = (State)ar.AsyncState;
-                int bytes = socket.EndReceiveFrom(ar, ref epFrom);
-                socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
-                message = Encoding.ASCII.GetString(so.buffer, 0, bytes);
-                ManagementSystem.ProcessRequest(message);
+                try
+                {
+                    State so = (State)ar.AsyncState;
+                    int bytes = socket.EndReceiveFrom(ar, ref epFrom);
+                    socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
+                    message = Encoding.ASCII.GetString(so.buffer, 0, bytes);
+                    ManagementSystem.ProcessRequest(message);
+                }
+                catch(Exception e)
+                {
+                    timeStamp = time.GetTimestamp(DateTime.Now);
+                    Console.WriteLine(timeStamp + " Nie mozna nawiazac polaczenia");
+                }
             }, state);
         }
 

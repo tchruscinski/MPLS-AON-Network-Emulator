@@ -20,7 +20,7 @@ namespace Management_System
         private static Parser parser = new Parser();
         private static int portNumber = 100;
         private static int connectionCloudListeningPort = 100;
-        private static string localIP;
+        private static string localIP = "127.0.0.1"; //docelowe ip;
 
         /**
         * Metoda parsująca plik konfiguracyjny dla routerow
@@ -31,7 +31,6 @@ namespace Management_System
             string routerConfig = parser.ParseRouterTable("routers_config.xml", routerName);
 
             Console.WriteLine("sparsowany xml: "+ routerConfig);
-            Console.ReadKey();
 
             return routerConfig;
         }
@@ -45,16 +44,17 @@ namespace Management_System
             string hostConfig = parser.ParseHostTable("host_config.xml", hostName);
 
             Console.WriteLine("sparsowany xml: "+ hostConfig);
-            Console.ReadKey();
 
             return hostConfig;
         }
 
+
+        //ON HOLD, używamy static stringa jako IP
         /**
         * Metoda ustawiająca lokalny adres IP maszyny
         * @ no arguments, void
         */
-        public static void SetLocalIPAddress()
+        /*public static void SetLocalIPAddress()
         {
             if(!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable()) 
             {
@@ -70,7 +70,7 @@ namespace Management_System
                     Console.Write(localIP);
                 }
             }
-        }
+        }*/
 
         /**
         * metoda startująca serwer na listeningSockecie systemu zarządzania
@@ -78,8 +78,7 @@ namespace Management_System
         */
         private static void StartServer()
         {
-            SetLocalIPAddress();
-            listeningSocket.RunServer(localIP, 100);
+            listeningSocket.RunServer(localIP, portNumber);
         }
 
         /**
@@ -90,10 +89,9 @@ namespace Management_System
         {   
             Console.WriteLine("Parosowanie konfiguracji dla " + routerName + " ...");
             string routerTable = ReadRouterConfig(routerName);
+            sendingSocket.Connect(localIP, 1);
+            sendingSocket.Send(routerTable);
             Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
-            //sendingSocket.Connect(localIP, routerListeningPort);
-            //sendingSocket.Send(routerTable);
-            Console.WriteLine("Wysyłano pomyślnie.");
         }
 
         /**
@@ -118,7 +116,6 @@ namespace Management_System
         {
             Console.WriteLine("System Zarządzania v1.0");
             StartServer();
-            ReadHostConfig("Host");
             /*while ((line = Console.ReadLine()) != null)
             {
                 ReadInput();
@@ -136,17 +133,21 @@ namespace Management_System
                 return;
             }
 
-            if(message.Contains("gettable"))
-            {
-                if(message.Contains("host"))
-                {
-                    //obsluga requesta po tabele od hosta
-                }
+            Console.WriteLine("otrzymano: " + message);
 
-                if(message.Contains("router"))
-                {
-                    //obsluga requesta po tabele od routera
-                }
+            if(message.Contains("Host"))
+            {
+                Console.WriteLine("Otrzymano request od " + message + " o tabele hosta");
+                //sendingSocket.Connect(localIP, 1);
+                SendHostTable(message);
+                Console.WriteLine("Tabela wysłana do " + message);
+            }
+
+            if(message.Contains("Router"))
+            {
+                Console.WriteLine("Otrzymano request od " + message + " o tabele routera");
+                SendRouterTable(message);
+                Console.WriteLine("Tabela wysłana do " + message);
             }   
         }
 

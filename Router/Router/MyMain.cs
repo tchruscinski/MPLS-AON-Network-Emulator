@@ -17,7 +17,7 @@ namespace RouterV1
 
 
             // host1 <--> sendingRouter <--> midRouter <--> receivingRouter <--> host2
-            Router sendingRouter = new Router("sendingRouter");
+            Router sendingRouter = new Router("Router1");
             UDPSocket socket0 = new UDPSocket();
             socket0.Server(Utils.destinationIP, 26999, sendingRouter);
             UDPSocket socket3 = new UDPSocket();
@@ -71,6 +71,14 @@ namespace RouterV1
             //    socket1.Send(i.ToString());
             //sendingRouter.SendPacket("host2;tresc wiadomosci.......sasgg", 27000);
             //sendingRouter.SendPacket();
+
+
+            //Tomek test połączenie router NMS
+            sendingRouter.SetReceivingManagementSocket(1);
+            sendingRouter.SetSendingManagementSocket(100);
+            sendingRouter.ManagementRequest();
+            //-----------
+
 
             Console.ReadLine();
             Console.WriteLine("Host: " + midRouter.GetDestinationHost());

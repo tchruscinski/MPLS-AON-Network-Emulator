@@ -387,6 +387,7 @@ namespace RouterV1
         public void ManagementRequest()
         {
             sendingManagementSocket.Send(_name);
+            Console.WriteLine("wyslano: " + _name);
         }
         /*
          * Wysyla do systemu zarzadzania informacje o awarii łącza
