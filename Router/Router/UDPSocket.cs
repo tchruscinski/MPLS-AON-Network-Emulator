@@ -82,6 +82,8 @@ namespace RouterV1
                 catch (SocketException e)
                 {
                     timeStamp = time.GetTimestamp(DateTime.Now);
+                    router.ActualizeNHFLETable(_port);
+                    router.RefactorPacket();
                     Console.WriteLine(timeStamp + " Nie mozna nawiazac polaczenia");
                     //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
                     //host/router nie jest dostepny

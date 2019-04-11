@@ -27,14 +27,16 @@ namespace RouterV1
             sendingRouter.AddSendingSocket(socket3);
             sendingRouter.AddReceivingSocket(socket0);
             sendingRouter.AddILMLine(ilm0);
+            
 
             NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 27000, 0); //wyslij portem 2700 z etykieta 20
             sendingRouter.AddNHLFELine(nhlfe1);
+            sendingRouter.ShowNHLFETable();
 
             Router midRouter = new Router("midRouter");
             UDPSocket socket = new UDPSocket();
             UDPSocket socket4 = new UDPSocket();
-            socket4.Client(Utils.destinationIP, 27001, sendingRouter);
+            socket4.Client(Utils.destinationIP, 27001, midRouter);
             socket.Server(Utils.destinationIP, 27000, midRouter);
             NHLFELine nhlfe2 = new NHLFELine(1, Action.SWAP, 30, 27001, 0);
             ILMLine ilm1 = new ILMLine(27000, 20, "", 1);
@@ -46,7 +48,7 @@ namespace RouterV1
             Router receivingRouter = new Router("receivingRouter");
             UDPSocket socket2 = new UDPSocket();
             UDPSocket socket5 = new UDPSocket();
-            socket5.Client(Utils.destinationIP, 29002, sendingRouter);
+            socket5.Client(Utils.destinationIP, 29002, receivingRouter);
             socket2.Server(Utils.destinationIP, 27001, receivingRouter);
             ILMLine ilm2 = new ILMLine(27001, 30, "", 1);
             ILMLine ilm3 = new ILMLine(27001, 17, "30", 2);
@@ -64,6 +66,7 @@ namespace RouterV1
             receivingRouter.AddSendingSocket(socket5);
 
 
+            
             //for (int i = 0; i < 100; i++)
             //    socket1.Send(i.ToString());
             //sendingRouter.SendPacket("host2;tresc wiadomosci.......sasgg", 27000);
@@ -73,7 +76,7 @@ namespace RouterV1
             Console.WriteLine("Host: " + midRouter.GetDestinationHost());
             Console.WriteLine(midRouter.GetName());
 
-
+            sendingRouter.ShowNHLFETable();
             Console.ReadLine();
             Console.WriteLine("Host: " + receivingRouter.GetDestinationHost());
             Console.WriteLine(receivingRouter.GetName());
