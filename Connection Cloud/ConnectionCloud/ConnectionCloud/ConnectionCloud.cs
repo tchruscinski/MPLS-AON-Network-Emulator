@@ -27,6 +27,7 @@ namespace ConnectionCloud
         private static CableEmulatorTableParser cetParser = new CableEmulatorTableParser();
         private String[] _processedText;
         Time time = new Time();
+        int outPort;
 
         //TODO - wypelnianie tabeli routingu danymi
         public bool Proceed(string packet, int receivingPort)
@@ -35,6 +36,7 @@ namespace ConnectionCloud
 
             try
             {
+
                 return true;
             }
 
@@ -46,6 +48,10 @@ namespace ConnectionCloud
         }
         
        
+        public void AddRoutingTable(List<RoutingTableLine> rtl_1)
+        {
+            routingTable = rtl_1;
+        }
         /*
          * Metoda dodaje,
          * @ newSocket, nowy socket do listy
@@ -70,11 +76,26 @@ namespace ConnectionCloud
         public void SendPacket(string message, int port)
         {
             for (int i = 0; i < sendingSockets.Count; i++)
-                if (sendingSockets[i].getPort() == port)
+            {
+                if (routingTable[i]._incomingPort == port)
                 {
-                    sendingSockets[i].Send(message);
-                    return;
+                    outPort = FindSendPort(port);
+                    for (int j = 0; j < sendingSockets.Count; i++)
+                        if (sendingSockets[j].getPort() == port)
+                        {
+                            sendingSockets[j].Send(message);
+                            Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Message sent over port: {0}", port);
+                            return;
+                        }
+
                 }
+                else
+                { 
+
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Message wasn't send");
+                }
+
+            }                 
             Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
             //usuniecie wpisu z tablicy
             Console.WriteLine("PORT:" + port);
@@ -85,24 +106,27 @@ namespace ConnectionCloud
          * pozostawia pakiet w postaci gotowej do wyslania
          * zwraca nr portu, ktorym pakiet zostanie wyslany
          */
-       
+
         /*
          * Metoda wysyla pakiet podanym portem
          * @ port, nr portu, ktorym pakiet zostanie wyslany
          */
-        public void SendPacket(int port)
+        public int FindSendPort(int port)
         {
 
             //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
             //pobrana przy odbiorze tresc pakietu
-            for (int j = 0; j < sendingSockets.Count; j++)
-                if (sendingSockets[j].getPort() == port)
+            for (int i = 0; i < sendingSockets.Count; i++)
+            {
+                if (routingTable[i]._incomingPort == port)
                 {
-                    sendingSockets[j].Send(_packet);
-                    return;
+
+                    return routingTable[i]._outgoingPort;
                 }
-            //jezeli nie udalo sie wyslac, zwraca komunikat
-            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
+            }
+            //jezeli nie udalo sie znalezc wlasciwego portu, zwraca komunikat
+            Console.WriteLine("Nie istnieje szukany port wysylajacy");
+            return 0;
         }
         
 
