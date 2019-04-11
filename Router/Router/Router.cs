@@ -383,6 +383,7 @@ namespace RouterV1
         public void ManagementRequest()
         {
             sendingManagementSocket.Send(_name);
+            Console.WriteLine("wyslano: " + _name);
         }
 
 

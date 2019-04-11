@@ -82,10 +82,8 @@ namespace Management_System
                     XmlNodeList rowsList = config.SelectNodes("/Config/Router/Row");
                     foreach (XmlNode row in rowsList)
                     {
-                        returnedString += row["IP"]?.InnerText + ",";
                         returnedString += row["NHLFE_ID_MPLS"]?.InnerText + ",";
                         returnedString += row["Action"]?.InnerText + ",";
-                        returnedString += row["OutPortID"]?.InnerText + ",";
                         returnedString += row["OutLabel"]?.InnerText + ",";
                         returnedString += row["OutPortN"]?.InnerText + ",";
                         returnedString += row["NextID"]?.InnerText + ",";
