@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Cloud>
-      <Row ID="1">
-        <incomingPort>1</incomingPort>
-        <outgoingPort>2</outgoingPort>
-     </Row>
+        <Row ID="1">
+          <incomingPort>1</incomingPort>
+          <outgoingPort>2</outgoingPort>
+       </Row>
     
       <Row ID="2">
         <incomingPort>3</incomingPort>
@@ -20,5 +20,14 @@
         <outgoingPort>8</outgoingPort>
       </Row>
   
+      <Row ID="5">
+        <incomingPort>9</incomingPort>
+        <outgoingPort>10</outgoingPort>
+      </Row>
+  
+      <Row ID="6">
+        <incomingPort>11</incomingPort>
+        <outgoingPort>12</outgoingPort>
+      </Row>
 </Cloud>
 

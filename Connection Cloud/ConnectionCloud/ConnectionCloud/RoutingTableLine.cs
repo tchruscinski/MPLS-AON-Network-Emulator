@@ -20,23 +20,5 @@ namespace ConnectionCloud
     {
         public int _incomingPort; //nr portu nadawcy 
         public int _outgoingPort; //nr portu odbiorcy 
-
-        //public RoutingTableLine(int incomingPort, string incomingLabel, int outgoingPort, string outgoingLabel)
-        //{
-        //    _incomingPort = incomingPort;
-        //    _incomingLabel = incomingLabel;
-
-        //    _outgoingLabel = outgoingLabel;
-        //    _outgoingPort = outgoingPort;
-
-        //}
-
-
-
-        //public int GetIncomingPort() { return _incomingPort; }
-        //public String GetIncomingLabel() { return _incomingLabel; }
-
-        //public int GetOutgoingPort() { return _outgoingPort; }
-        //public String GetOutgoingLabel() { return _outgoingLabel; }
     }
 }

@@ -22,10 +22,9 @@ namespace ConnectionCloud
         //sockety, ktore odbieraja pakiety
         private List<UDPSocket> receivingSockets = new List<UDPSocket>();
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez chmurę,
-        private String destinationHost = " "; //docelowy host pakietu obslugiwanego
         private TextProcessor _textProcessor = new TextProcessor();
         private static CableEmulatorTableParser cetParser = new CableEmulatorTableParser();
-        private String[] _processedText;
+
         Time time = new Time();
         int outPort;
 
@@ -33,10 +32,9 @@ namespace ConnectionCloud
         public void Proceed(string packet, int receivingPort)
         {
             _packet = packet;
-            Console.WriteLine("OK");
+            
             try
             {
-                Console.WriteLine("sending packet");
                 SendPacket(packet, receivingPort);
                 return;
             }
@@ -97,19 +95,24 @@ namespace ConnectionCloud
                         if (sendingSockets[j].getPort() == outPort)
                         {
                             sendingSockets[j].Send(message);
-                            Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Message sent over port: {0}", port);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message sent over port: {0}", port);
+                            Console.ForegroundColor = ConsoleColor.Gray;
                             return;
                         }
                     }
                 }
                 else
-                { 
-
-                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Message wasn't send");
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message wasn't send");
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
 
-            }                 
-            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+            }
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem");
+            Console.ForegroundColor = ConsoleColor.Gray;
             //usuniecie wpisu z tablicy
             Console.WriteLine("PORT:" + port);
 

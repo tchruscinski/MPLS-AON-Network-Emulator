@@ -10,7 +10,6 @@ namespace ConnectionCloud
     public class UDPSocket
     {
         private Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        private string _message = "";
         private const int bufSize = 8 * 1024;
         private State state = new State();
         private EndPoint epFrom = new IPEndPoint(IPAddress.Any, 0);
@@ -53,7 +52,9 @@ namespace ConnectionCloud
                 //_socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
                 //_socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
                 _socket.Connect(address, port);
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Receive();
             } 
         catch (Exception e)
@@ -79,7 +80,6 @@ namespace ConnectionCloud
             {
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndSend(ar);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " SEND: {0}, {1}", bytes, text);
             }, state);
         }
 
@@ -92,7 +92,9 @@ namespace ConnectionCloud
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", epFrom.ToString(), bytes);
+                Console.ForegroundColor = ConsoleColor.Gray;
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
             }, state);
         }
@@ -100,16 +102,18 @@ namespace ConnectionCloud
         private void AsyncTransfer(ConnectionCloud connectionCloud)
         {
             string msg = "";
-            bool isSend;
+            
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", epFrom.ToString(), bytes);
+                Console.ForegroundColor = ConsoleColor.Gray;
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
                 connectionCloud.Proceed(msg, this._port);
-                //Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received package: {0}", msg);
+                
             }, state);
         }
 

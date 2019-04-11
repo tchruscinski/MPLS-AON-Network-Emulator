@@ -23,6 +23,8 @@ namespace ConnectionCloud
     */
     public class CableEmulatorTableParser
     {
+
+        Time time = new Time();
         private static XmlDocument config = new XmlDocument();
         //private static XmlNode root = config.FirstChild;
 
@@ -64,7 +66,6 @@ namespace ConnectionCloud
 
             List<RoutingTableLine> rtl = new List<RoutingTableLine>();
 
-            int i = 0;
             foreach (XmlNode node in nodes)
             {
                 RoutingTableLine rtl_obj = new RoutingTableLine();
@@ -80,10 +81,9 @@ namespace ConnectionCloud
                 rtl.Add(rtl_obj);
                 
             }
-            Console.WriteLine("{0}", rtl[2]._outgoingPort);
-            Console.WriteLine("{0}", rtl[3]._outgoingPort);
-
-            System.Console.WriteLine("Total RTLs: " + rtl.Count);
+            Console.ForegroundColor = ConsoleColor.Green;
+            System.Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Total RTLs: " + rtl.Count);
+            Console.ForegroundColor = ConsoleColor.Gray;
             return rtl;
         }
 
