@@ -22,7 +22,7 @@ namespace Host
             s1.Client("127.0.0.1", 1, host1);
             s2.Server("127.0.0.1", 2, host2);
             Console.ReadKey();
-            s1.Send("chuj");
+            s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
             Console.ReadLine();
             //string userInput;
             //UDPSocket clientSocket = new UDPSocket();

@@ -29,6 +29,24 @@ namespace ConnectionCloud
             UDPSocket j = new UDPSocket();
             UDPSocket k = new UDPSocket();
             UDPSocket l = new UDPSocket();
+            //UDPSocket m = new UDPSocket();
+            //UDPSocket n = new UDPSocket();
+
+
+            UDPSocket a1 = new UDPSocket();
+            UDPSocket b1 = new UDPSocket();
+            UDPSocket c1 = new UDPSocket();
+            UDPSocket d1 = new UDPSocket();
+            UDPSocket e1 = new UDPSocket();
+            UDPSocket f1 = new UDPSocket();
+            UDPSocket g1 = new UDPSocket();
+            UDPSocket h1 = new UDPSocket();
+            UDPSocket i1 = new UDPSocket();
+            UDPSocket j1 = new UDPSocket();
+            UDPSocket k1 = new UDPSocket();
+            UDPSocket l1 = new UDPSocket();
+            //UDPSocket m1 = new UDPSocket();
+            //UDPSocket n1 = new UDPSocket();
 
             cc.AddReceivingSocket(a);
             cc.AddReceivingSocket(b);
@@ -36,13 +54,29 @@ namespace ConnectionCloud
             cc.AddReceivingSocket(d);
             cc.AddReceivingSocket(e);
             cc.AddReceivingSocket(f);
-            
-            cc.AddSendingSocket(g);
-            cc.AddSendingSocket(h);
-            cc.AddSendingSocket(i);
-            cc.AddSendingSocket(j);
-            cc.AddSendingSocket(k);
-            cc.AddSendingSocket(l);
+            cc.AddReceivingSocket(g);
+            cc.AddReceivingSocket(h);
+            cc.AddReceivingSocket(i);
+            cc.AddReceivingSocket(j);
+            cc.AddReceivingSocket(k);
+            cc.AddReceivingSocket(l);
+            //cc.AddReceivingSocket(m);
+            //cc.AddReceivingSocket(n);
+
+            cc.AddSendingSocket(a1);
+            cc.AddSendingSocket(b1);
+            cc.AddSendingSocket(c1);
+            cc.AddSendingSocket(d1);
+            cc.AddSendingSocket(e1);
+            cc.AddSendingSocket(f1);
+            cc.AddSendingSocket(g1);
+            cc.AddSendingSocket(h1);
+            cc.AddSendingSocket(i1);
+            cc.AddSendingSocket(j1);
+            cc.AddSendingSocket(k1);
+            cc.AddSendingSocket(l1);
+            //cc.AddSendingSocket(m1);
+            //cc.AddSendingSocket(n1);
 
             cc.StartSockets();
 
