@@ -53,7 +53,7 @@ namespace ConnectionCloud
             XmlDocument doc = new XmlDocument();
             try
             {
-                doc.Load(@"C:/Users/Mikolaj/Desktop/TSST_projekt/tsst-network-emulator/Connection Cloud/ConnectionCloud/ConnectionCloud/cloud_config.xml");
+                doc.Load(@"../../cloud_config.xml");
             }
             catch (Exception e)
             {
