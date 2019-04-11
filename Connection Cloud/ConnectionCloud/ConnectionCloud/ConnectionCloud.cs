@@ -30,7 +30,7 @@ namespace ConnectionCloud
         int outPort;
 
         //TODO - wypelnianie tabeli routingu danymi
-        public bool Proceed(string packet, int receivingPort)
+        public void Proceed(string packet, int receivingPort)
         {
             _packet = packet;
             Console.WriteLine("OK");
@@ -38,12 +38,12 @@ namespace ConnectionCloud
             {
                 Console.WriteLine("sending packet");
                 SendPacket(packet, receivingPort);
-                return true;
+                return;
             }
 
             catch(Exception e)
             {
-                return false;
+                return;
             }
             
         }
@@ -92,14 +92,15 @@ namespace ConnectionCloud
                 if (routingTable[i]._incomingPort == port)
                 {
                     outPort = FindSendPort(port);
-                    for (int j = 0; j < sendingSockets.Count; i++)
-                        if (sendingSockets[j].getPort() == port)
+                    for (int j = 0; j < sendingSockets.Count; j++)
+                    {
+                        if (sendingSockets[j].getPort() == outPort)
                         {
                             sendingSockets[j].Send(message);
                             Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Message sent over port: {0}", port);
                             return;
                         }
-
+                    }
                 }
                 else
                 { 

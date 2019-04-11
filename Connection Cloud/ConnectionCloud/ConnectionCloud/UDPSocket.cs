@@ -39,18 +39,28 @@ namespace ConnectionCloud
                 AsyncTransfer(_connectionCloud);
             } catch(Exception e)
             {
-                Console.WriteLine("wyjatek");
+                Console.WriteLine("wyjatekServer");
             }
               
         }
         //W celu testów tylko
         public void Client(string address, int port)
         {
-            _port = port;
-            _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
-            _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
-            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
-            //Receive();
+        
+        try
+            {
+                _port = port;
+                //_socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
+                //_socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
+                _socket.Connect(address, port);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
+                Receive();
+            } 
+        catch (Exception e)
+            {
+                Console.WriteLine("wyjatekCLient");
+            }
+            
 
 
         }
@@ -75,7 +85,7 @@ namespace ConnectionCloud
 
         private void Receive()
         {
-            Console.WriteLine("UDPReceiver");
+            //Console.WriteLine("UDPReceiver");
              string msg = "";
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
@@ -98,8 +108,8 @@ namespace ConnectionCloud
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
-                isSend = connectionCloud.Proceed(msg, this._port);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received package: {0}", msg);
+                connectionCloud.Proceed(msg, this._port);
+                //Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received package: {0}", msg);
             }, state);
         }
 

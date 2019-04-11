@@ -10,6 +10,7 @@ namespace Host
     {
         public static void Main(string[] args)
         {
+            
             if (args.Length != 0)
             {
                 Host host = new Host(args[0]);
@@ -20,6 +21,7 @@ namespace Host
             Host host2 = new Host("host2");
             s1.Client("127.0.0.1", 1, host1);
             s2.Server("127.0.0.1", 2, host2);
+            Console.ReadKey();
             s1.Send("chuj");
             Console.ReadLine();
             //string userInput;
