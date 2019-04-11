@@ -69,7 +69,6 @@ namespace ConnectionCloud
         {
             for (int i = 0; i < sendingSockets.Count; i++)
             {
-                Console.WriteLine("{0} {1}", i, sendingSockets.Count);
                 sendingSockets[i].Client("127.0.0.1", routingTable[i]._outgoingPort);
             }
             for (int i = 0; i < receivingSockets.Count; i++)
