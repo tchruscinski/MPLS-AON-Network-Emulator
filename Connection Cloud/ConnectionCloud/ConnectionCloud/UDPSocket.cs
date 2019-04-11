@@ -18,7 +18,9 @@ namespace ConnectionCloud
         DateTime dt = DateTime.Now;
         static Time time = new Time();
         ConnectionCloud _connectionCloud;
+        public int _port;
 
+        public int getPort() { return _port; }
 
         public class State
         {
@@ -26,7 +28,8 @@ namespace ConnectionCloud
         }
 
         public void Server(string address, int port, ConnectionCloud connectionCloud) 
-        {   
+        {
+            _port = port;
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
@@ -36,8 +39,8 @@ namespace ConnectionCloud
         }
         //W celu testów tylko
         public void Client(string address, int port)
-        {   
-            
+        {
+            _port = port;
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
@@ -80,7 +83,7 @@ namespace ConnectionCloud
         private void AsyncTransfer(ConnectionCloud connectionCloud)
         {
             string msg = "";
-            String[] packet;
+            bool isSend;
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
                 State so = (State)ar.AsyncState;
@@ -88,7 +91,7 @@ namespace ConnectionCloud
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
-                //packet = connectionCloud.ReadPacket(msg);
+                isSend = connectionCloud.Proceed(msg);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received package: {0}", msg);
             }, state);
         }

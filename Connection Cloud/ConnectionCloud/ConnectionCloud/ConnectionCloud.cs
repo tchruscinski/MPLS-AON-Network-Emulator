@@ -29,33 +29,84 @@ namespace ConnectionCloud
         Time time = new Time();
 
         //TODO - wypelnianie tabeli routingu danymi
-        public String[] ReadPacket(string packet)
+        public bool Proceed(string packet, int receivingPort)
         {
             _packet = packet;
-            _processedText = _textProcessor.splitText(_packet);
-            if (_processedText[0] == "TAB" && (_processedText.Length == 4))
-            {
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "ConnectionCloud: Received new packet: ");
-                Console.WriteLine("Hostname: {0}, Port: {1}, Label: {2}", _processedText[1], _processedText[2], _processedText[3]);
-                return _processedText;
 
-            }
-            else
+            try
             {
-                return _processedText;
+                return true;
             }
+
+            catch(Exception e)
+            {
+                return false;
+            }
+            
         }
+        
+       
+        /*
+         * Metoda dodaje,
+         * @ newSocket, nowy socket do listy
+         */
+        public void AddReceivingSocket(UDPSocket newSocket)
+        {
+            receivingSockets
+                .Add(newSocket);
+        }
+        public void AddSendingSocket(UDPSocket newSocket)
+        {
+            sendingSockets.Add(newSocket);
+        }
+        /*
+         * Odczytuje z tresci wiadomosci nazwe hosta docelowego i przypisuje go do @ destinationHost
+         * @ message, tresc wiadomoci
+         */
+        /*
+         * Metoda pomocnicza, do testowania
+         * Wysyla pakiet odpowiednim portem, dla danego hosta docelowego
+         */
+        public void SendPacket(string message, int port)
+        {
+            for (int i = 0; i < sendingSockets.Count; i++)
+                if (sendingSockets[i].getPort() == port)
+                {
+                    sendingSockets[i].Send(message);
+                    return;
+                }
+            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
+            //usuniecie wpisu z tablicy
+            Console.WriteLine("PORT:" + port);
 
-        //public string ReadCloudConfig(string rowId)
-        //{
-        //    string rowConfig = cetParser.ParseCableCloudEmulatorTable("C:/Users/Mikolaj/Desktop/TSST_projekt/tsst-network-emulator/Connection Cloud/ConnectionCloud/ConnectionCloud/cloud_config.xml", rowId);
-        //    Console.WriteLine("{0}",rowConfig);
+        }
+        /*
+         * Metoda sprawdza odpowiednie wpisy tablic routera i przetwarza jego naglowek
+         * pozostawia pakiet w postaci gotowej do wyslania
+         * zwraca nr portu, ktorym pakiet zostanie wyslany
+         */
+       
+        /*
+         * Metoda wysyla pakiet podanym portem
+         * @ port, nr portu, ktorym pakiet zostanie wyslany
+         */
+        public void SendPacket(int port)
+        {
 
-        //    Console.WriteLine("sparsowany xml: " + rowConfig);
-        //    Console.ReadKey();
+            //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
+            //pobrana przy odbiorze tresc pakietu
+            for (int j = 0; j < sendingSockets.Count; j++)
+                if (sendingSockets[j].getPort() == port)
+                {
+                    sendingSockets[j].Send(_packet);
+                    return;
+                }
+            //jezeli nie udalo sie wyslac, zwraca komunikat
+            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
+        }
+        
 
-        //    return rowConfig;
-        //}
+
 
     }
 }
