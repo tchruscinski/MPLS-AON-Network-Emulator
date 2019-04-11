@@ -33,10 +33,11 @@ namespace ConnectionCloud
         public bool Proceed(string packet, int receivingPort)
         {
             _packet = packet;
-
+            Console.WriteLine("OK");
             try
             {
-
+                Console.WriteLine("sending packet");
+                SendPacket(packet, receivingPort);
                 return true;
             }
 

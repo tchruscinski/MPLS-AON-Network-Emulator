@@ -29,12 +29,18 @@ namespace ConnectionCloud
 
         public void Server(string address, int port, ConnectionCloud connectionCloud) 
         {
-            _port = port;
-            _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
-            _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
-            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
-            _connectionCloud = connectionCloud;
-            AsyncTransfer(_connectionCloud);
+            try
+            {
+                _port = port;
+                _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
+                _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
+                _connectionCloud = connectionCloud;
+                AsyncTransfer(_connectionCloud);
+            } catch(Exception e)
+            {
+                Console.WriteLine("wyjatek");
+            }
               
         }
         //W celu testów tylko
@@ -44,7 +50,7 @@ namespace ConnectionCloud
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
-            Receive();
+            //Receive();
 
 
         }
@@ -69,6 +75,7 @@ namespace ConnectionCloud
 
         private void Receive()
         {
+            Console.WriteLine("UDPReceiver");
              string msg = "";
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
