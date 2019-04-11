@@ -145,6 +145,10 @@ namespace RouterV1
                     return;
                 }
             Console.WriteLine("Nie mozna wyslac pakietu zadanym portem//");
+            //usuniecie wpisu z tablicy
+            Console.WriteLine("PORT:" + port);
+            ActualizeNHFLETable(port);
+            ShowNHLFETable();
 
         }
         /*
@@ -384,31 +388,52 @@ namespace RouterV1
         {
             sendingManagementSocket.Send(_name);
         }
-
-
-
-
-
-
         /*
- * Metoda sprawdza tablice FTN, 
- * zwraca ID wpisu NHLFE
- * @ FEC poszukiwana wartosc FEC
- */
-        //public int CheckFTNTable(int FEC)
-        //{
-        //    for (int i = 0; i < tableFTN.Count; i++)
-        //        if (tableFTN[i].GetFEC() == FEC)
-        //        {
-        //            return tableFTN[i].GetId();
-        //        }
-        //    return 0; //jezeli nie ma takiego wiersza zwraca 0
-        //}
-        /*
-         * Metoda sprawdza tablice NHLFE, 
-         * szukajac wpisu o odpowiednim ID
-         * zwraca jego indeks
-         * @ ID, ID poszukiwanego wpisu
+         * Wysyla do systemu zarzadzania informacje o awarii łącza
+         * @ port, nr portu, ktorym nie udalo sie wyslac
+         * 
          */
+         public void SendConnectionError(int port)
+        {
+            sendingManagementSocket.Send(port.ToString());
+        }
+        /*
+         * Aktualizuje tablice NHFLE usuwajac wpisy o numerze portu, na ktorym wystapil blad
+         * @ port, nr portu, na ktorym wystapil blad
+         */
+         public void ActualizeNHFLETable(int port)
+        {
+            for (int i = 0; i < tableNHLFE.Count; i++)
+                if (tableNHLFE[i].getPort() == port)
+                    tableNHLFE.Remove(tableNHLFE[i]);
+        }
+        /*
+         * Wyswietla tablice NHLFE
+         */
+        public void ShowNHLFETable()
+        {
+            for (int i = 0; i < tableNHLFE.Count; i++)
+                Console.WriteLine("ID: {0}, Action: {1}, Label: {2}, Port: {3}, NextID: {4}",
+                    tableNHLFE[i].getID(), tableNHLFE[i].getAction(), tableNHLFE[i].getLabel(),
+                    tableNHLFE[i].getPort(), tableNHLFE[i].getNextID());
+        }
+        /*
+         * Pobiera odpowiedz systemu zarzadzania i wstawia ja do tablic ILM i NHLFE
+         */
+        public void GetManagementResponse(string response)
+        {
+            String[] splittedResponse = response.Split(',');
+            int counter = 0; //licznik konca wiersza
+            for(int i = 0; i < splittedResponse.Length; i++)
+            {
+                counter++;
+                if (counter == 8)
+                {
+                    counter = 0;
+                }
+                
+            }
+        }
+
     }
 }
