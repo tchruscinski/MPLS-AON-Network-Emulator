@@ -21,13 +21,14 @@ namespace RouterV1
             UDPSocket socket0 = new UDPSocket();
             socket0.Server(Utils.destinationIP, 26999, sendingRouter);
             UDPSocket socket3 = new UDPSocket();
-            socket3.Client(Utils.destinationIP, 21370, sendingRouter);
+            //socket3.Client(Utils.destinationIP, 21370, sendingRouter);
+            socket3.Client(Utils.destinationIP, 27000, sendingRouter);
             ILMLine ilm0 = new ILMLine(26999, 17, "", 1);
             sendingRouter.AddSendingSocket(socket3);
             sendingRouter.AddReceivingSocket(socket0);
             sendingRouter.AddILMLine(ilm0);
 
-            NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 21370, 0); //wyslij portem 2700 z etykieta 20
+            NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 27000, 0); //wyslij portem 2700 z etykieta 20
             sendingRouter.AddNHLFELine(nhlfe1);
 
             Router midRouter = new Router("midRouter");
@@ -49,12 +50,16 @@ namespace RouterV1
             socket2.Server(Utils.destinationIP, 27001, receivingRouter);
             ILMLine ilm2 = new ILMLine(27001, 30, "", 1);
             ILMLine ilm3 = new ILMLine(27001, 17, "30", 2);
+            ILMLine ilm4 = new ILMLine(27001, 17, "", 3);
             NHLFELine nhlfe3 = new NHLFELine(1, Action.POP, 0, 0, 0);
             NHLFELine nhlfe4 = new NHLFELine(2, Action.PUSH, 31, 29002, 0);
+            NHLFELine nhlfe5 = new NHLFELine(3, Action.PUSH, 35, 29002, 0);
             receivingRouter.AddILMLine(ilm2);
             receivingRouter.AddILMLine(ilm3);
+            receivingRouter.AddILMLine(ilm4);
             receivingRouter.AddNHLFELine(nhlfe3);
             receivingRouter.AddNHLFELine(nhlfe4);
+            receivingRouter.AddNHLFELine(nhlfe5);
             receivingRouter.AddReceivingSocket(socket2);
             receivingRouter.AddSendingSocket(socket5);
 

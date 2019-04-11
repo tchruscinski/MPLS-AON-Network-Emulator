@@ -46,6 +46,7 @@
     <Compile Include="ILMLine.cs" />
     <Compile Include="MyMain.cs" />
     <Compile Include="NHLFELine.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Router.cs" />
     <Compile Include="Time.cs" />

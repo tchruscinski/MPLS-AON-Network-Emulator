@@ -21,6 +21,9 @@ namespace RouterV1
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
         //sockety, ktore odbieraja pakiety
         private List<UDPSocket> receivingSockets = new List<UDPSocket>();
+        //sockety do komunikacji z systemem zarzadzania
+        private UDPSocket sendingManagementSocket = new UDPSocket();
+        private UDPSocket receivingManagementSocket = new UDPSocket();
         private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
         private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
@@ -35,7 +38,14 @@ namespace RouterV1
         public string GetName() { return _name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
 
-
+        public void SetSendingManagementSocket(int port)
+        {
+            sendingManagementSocket.Client(Utils.destinationIP, port, this);
+        }
+        public void SetReceivingManagementSocket(int port)
+        {
+            sendingManagementSocket.Server(Utils.destinationIP, port, this);
+        }
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
         public void AddILMLine(ILMLine newLine) { tableILM.Add(newLine); }
 
@@ -52,6 +62,11 @@ namespace RouterV1
         public void AddSendingSocket(UDPSocket newSocket)
         {
             sendingSockets.Add(newSocket);
+        }
+        public void DeleteNHLFELine(int ID)
+        {
+            for (int i = 0; i < tableNHLFE.Count; i++)
+                if (tableNHLFE[i].getID() == ID) tableNHLFE.Remove(tableNHLFE[i]);
         }
         /*
         * Metoda dodaje,
@@ -360,6 +375,14 @@ namespace RouterV1
             }
 
 
+        }
+        /*
+         * Wysyla zadanie tablic NHLFE i ILM do systemu zarzadzania,
+         * 
+         */
+        public void ManagementRequest()
+        {
+            sendingManagementSocket.Send(_name);
         }
 
 

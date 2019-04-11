@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+  <Router>
+    <Row>
+        <?"Type - {SEND, RECV}"?>
+        <Type>SEND</Type>
+        <Port></Port>
+    </Row>
+  </Router>
+</Config>
