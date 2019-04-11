@@ -16,13 +16,10 @@ namespace ConnectionCloud
      * Jesli np. tablica wyglada 10 | A, to znaczy, ze jesli chcemy wyslac pakiet do hosta A, 
      * musimy kierowac go do portu nr 10
      */
-    class RoutingTableLine
+    public class RoutingTableLine
     {
-        public string _incomingPort; //nr portu nadawcy
-        public string _incomingLabel; //etykieta pakietu od nadawcy 
-
-        public string _outgoingPort; //nr portu odbiorcy
-        public string _outgoingLabel; //etykieta pakietu od odbiorcy 
+        public int _incomingPort; //nr portu nadawcy 
+        public int _outgoingPort; //nr portu odbiorcy 
 
         //public RoutingTableLine(int incomingPort, string incomingLabel, int outgoingPort, string outgoingLabel)
         //{

@@ -48,7 +48,7 @@ namespace ConnectionCloud
         * Metoda sciagajaca chmure XD
         * Troche jeszcze do dokoncznia ale wale w kime elo
         */
-        public string ParseCableCloudEmulatorTable(/*string fileName, string rowId*/)
+        public List<RoutingTableLine> ParseCableCloudEmulatorTable(/*string fileName, string rowId*/)
         {
             XmlDocument doc = new XmlDocument();
             try
@@ -64,28 +64,28 @@ namespace ConnectionCloud
 
             List<RoutingTableLine> rtl = new List<RoutingTableLine>();
 
+            int i = 0;
             foreach (XmlNode node in nodes)
             {
-                RoutingTableLine routingTableLine = new RoutingTableLine(); 
+                RoutingTableLine rtl_obj = new RoutingTableLine();
 
-                routingTableLine._incomingPort = node.SelectSingleNode("incomingPort").InnerText;
-                routingTableLine._incomingLabel = node.SelectSingleNode("incomingLabel").InnerText;
-                routingTableLine._outgoingPort = node.SelectSingleNode("outgoingPort").InnerText;
-                routingTableLine._outgoingLabel = node.SelectSingleNode("outgoingLabel").InnerText;
+                string inP = " ";
+                string outP = " ";
+
+                inP = node.SelectSingleNode("incomingPort").InnerText;
+                outP = node.SelectSingleNode("outgoingPort").InnerText;
+
+                rtl_obj._incomingPort = Int32.Parse(inP);
+                rtl_obj._outgoingPort = Int32.Parse(outP);
+                rtl.Add(rtl_obj);
                 
-
-                rtl.Add(routingTableLine);
             }
+            Console.WriteLine("{0}", rtl[2]._outgoingPort);
+            Console.WriteLine("{0}", rtl[3]._outgoingPort);
 
             System.Console.WriteLine("Total RTLs: " + rtl.Count);
-            return rtl[1]._incomingPort;
+            return rtl;
         }
 
-    }
-    class Book
-    {
-        public string id;
-        public string title;
-        public string author;
     }
 }

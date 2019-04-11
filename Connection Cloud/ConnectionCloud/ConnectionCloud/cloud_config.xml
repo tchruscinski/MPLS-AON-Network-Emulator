@@ -1,31 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Cloud>
       <Row ID="1">
-        <incomingPort>3</incomingPort>
-        <incomingLabel>5</incomingLabel>
-        <outgoingPort>1</outgoingPort>
-        <outgoingLabel>5</outgoingLabel>
+        <incomingPort>30000</incomingPort>
+        <outgoingPort>30001</outgoingPort>
      </Row>
     
       <Row ID="2">
-        <incomingPort>test1</incomingPort>
-        <incomingLabel>test1</incomingLabel>
-        <outgoingPort>test3</outgoingPort>
-        <outgoingLabel>test5</outgoingLabel>
+        <incomingPort>30002</incomingPort>
+        <outgoingPort>30003</outgoingPort>
       </Row>
     
       <Row ID="3">
-        <incomingPort>elo</incomingPort>
-        <incomingLabel>wale</incomingLabel>
-        <outgoingPort>wiadro</outgoingPort>
-        <outgoingLabel>Xd</outgoingLabel>
+        <incomingPort>30004</incomingPort>
+        <outgoingPort>30005</outgoingPort>
       </Row>
      
       <Row ID="4">
-        <incomingPort>sdfa</incomingPort>
-        <incomingLabel>sad</incomingLabel>
-        <outgoingPort>daq</outgoingPort>
-        <outgoingLabel>sf</outgoingLabel>
+        <incomingPort>30006</incomingPort>
+        <outgoingPort>30007</outgoingPort>
       </Row>
   
 </Cloud>

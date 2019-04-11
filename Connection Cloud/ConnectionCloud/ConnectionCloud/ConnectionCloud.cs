@@ -50,11 +50,6 @@ namespace ConnectionCloud
             }
         }
 
-        public void FillRoutingTable(String[] data)
-        {
-
-        }
-
         //public string ReadCloudConfig(string rowId)
         //{
         //    string rowConfig = cetParser.ParseCableCloudEmulatorTable("C:/Users/Mikolaj/Desktop/TSST_projekt/tsst-network-emulator/Connection Cloud/ConnectionCloud/ConnectionCloud/cloud_config.xml", rowId);
