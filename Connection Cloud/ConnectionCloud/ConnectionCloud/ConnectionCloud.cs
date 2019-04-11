@@ -39,12 +39,8 @@ namespace ConnectionCloud
                 Console.WriteLine("Hostname: {0}, Port: {1}, Label: {2}", _processedText[1], _processedText[2], _processedText[3]);
                 return _processedText;
 
-                //[2019-04-10 22:21:03] Created UDPServer at: 127.0.0.1:21370
-                //[2019-04-10 22:21:20] RECV: 127.0.0.1:62523: 24
-                //20,17,;wiadomosc testowa
-
             }
-            else 
+            else
             {
                 return _processedText;
             }

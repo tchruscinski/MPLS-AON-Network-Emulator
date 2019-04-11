@@ -36,7 +36,8 @@ namespace ConnectionCloud
         }
         //W celu testów tylko
         public void Client(string address, int port)
-        {
+        {   
+            
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
@@ -87,15 +88,8 @@ namespace ConnectionCloud
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
-                packet = connectionCloud.ReadPacket(msg);
-                Console.WriteLine("{0}", msg);
-                if(packet.Length == 4)
-                {
-                    int port = Convert.ToInt32(packet[2]);
-                    this.Connect(packet[2], port);
-                    this.Send(msg);
-
-                }
+                //packet = connectionCloud.ReadPacket(msg);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Received package: {0}", msg);
             }, state);
         }
 
