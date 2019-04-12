@@ -28,6 +28,7 @@ namespace Host
         private List<ILMLine> tableILM = new List<ILMLine>(); //tablica ILM
         public static string destinationIP = "127.0.0.1"; //docelowe ip
         static Time time = new Time();
+        private static Parser parser = new Parser();
         private String timeStamp = time.GetTimestamp(DateTime.Now);
 
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
@@ -235,6 +236,15 @@ namespace Host
         public void SetReceivingManagementSocket(int port)
         {
             receivingManagementSocket.Server(destinationIP, port, this);
+        }
+
+        private void ParseLocalConfig()
+        {
+            string localConfig = parser.ParseLocalConfig(routerName+".xml", routerName);
+
+            Console.WriteLine("sparsowany xml: "+ localConfig);
+
+            //return localConfig;
         }
     }
 }

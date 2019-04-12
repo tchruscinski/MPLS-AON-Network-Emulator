@@ -53,6 +53,7 @@
     <Compile Include="Time.cs" />
     <Compile Include="UDPSocket.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="Parser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

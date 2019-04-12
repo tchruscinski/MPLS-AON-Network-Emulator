@@ -209,6 +209,13 @@ namespace Management_System
             }
         }
 
+        private static void ParseLocalConfig() 
+        {
+            string localConfig = parser.ParseLocalConfig("local.xml");
+
+            Console.WriteLine("sparsowany xml: "+ localConfig);
+        }
+
         /**
          * metoda Systemu Zarządzania
          * @ args - tablica typu string
@@ -218,12 +225,13 @@ namespace Management_System
             string command;
         
             ManagementSystem.ShowInterface();
+            ManagementSystem.ParseLocalConfig();
             while(true)
             {
                 Console.Write("NMS# ");
                 command = Console.ReadLine();
                 RunCommand(command);
-
+                
 
 
             }

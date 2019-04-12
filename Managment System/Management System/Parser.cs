@@ -138,5 +138,35 @@ namespace Management_System
             returnedString = returnedString.Remove(returnedString.Length - 1);
             return returnedString;
         }
+
+
+        /**
+       * Metoda zwracająca konfigurację z wybranego pliku dla Management Systemu
+       * @fileName - string, nazwa pliku z konfiguracją
+       */
+        public string ParseLocalConfig(string fileName)
+        {
+            if (fileName == null)
+            {
+                return null;
+            }
+
+            string returnedString = "";
+            LoadFile(fileName);
+            XmlNodeList nodesList = config.SelectNodes("/Config/Local");
+
+            foreach (XmlNode node in nodesList)
+            {
+                XmlNodeList rowsList = config.SelectNodes("/Config/Local/Row");
+                foreach (XmlNode row in rowsList)
+                {
+                    returnedString += row["Type"]?.InnerText + ",";
+                    returnedString += row["Port"]?.InnerText + ",";    
+                }
+                
+            }
+            returnedString = returnedString.Remove(returnedString.Length - 1);
+            return returnedString;
+        }
     }
 }
