@@ -19,12 +19,16 @@ namespace Host
 
 
 
-            //UDPSocket s1 = new UDPSocket();
-            //UDPSocket s2 = new UDPSocket();
-            //Host host1 = new Host("host");
+            UDPSocket s1 = new UDPSocket();
+            UDPSocket s2 = new UDPSocket();
+            Host host1 = new Host("Host1");
+            host1.SetReceivingManagementSocket(1);
+            host1.SetSendingManagementSocket(100);
+            host1.ManagementRequest();
             //Host host2 = new Host("host2");
             //s1.Client("127.0.0.1", 1, host1);
-            //s2.Server("127.0.0.1", 2, host2);
+            //s2.Server("127.0.0.1", 100, host1);
+            Console.ReadLine();
             //Console.ReadKey();
             //s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
             //Console.ReadLine();

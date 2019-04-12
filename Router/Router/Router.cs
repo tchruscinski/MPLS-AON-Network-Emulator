@@ -91,7 +91,6 @@ namespace RouterV1
             {
                 Console.WriteLine("Otrzymano pakiet od NMS...");
                 ParseNMSResponse(packet);
-                return;
             }
             _packet = packet;
             //destinationHost = ReadDestinationHost(_packet);
