@@ -75,8 +75,8 @@ namespace RouterV1
 
             //Tomek test połączenie router NMS
             sendingRouter.SetReceivingManagementSocket(1);
-            //sendingRouter.SetSendingManagementSocket(100);
-            //sendingRouter.ManagementRequest();
+            sendingRouter.SetSendingManagementSocket(100);
+            sendingRouter.ManagementRequest();
             Console.ReadLine();
             //-----------
 

@@ -214,10 +214,12 @@ namespace Management_System
         static void Main(string[] args)
         {
             string command;
-            //ConfigureHosts();
+        
             UDPSocket udpSocket = new UDPSocket();
             sendingSocket.Client("127.0.0.1", 1);
-            sendingSocket.Send("NMS;Chuj");
+            //ConfigureHosts();
+            //sendingSocket.Send("NMS;Chuj");
+            //SendRouterTable("Router1");
             ManagementSystem.ShowInterface();
             while(true)
             {

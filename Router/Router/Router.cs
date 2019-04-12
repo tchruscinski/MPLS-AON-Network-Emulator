@@ -44,7 +44,7 @@ namespace RouterV1
         }
         public void SetReceivingManagementSocket(int port)
         {
-            sendingManagementSocket.Server(Utils.destinationIP, port, this);
+            receivingManagementSocket.Server(Utils.destinationIP, port, this);
         }
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
         public void AddILMLine(ILMLine newLine) { tableILM.Add(newLine); }
