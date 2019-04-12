@@ -72,8 +72,48 @@ namespace Host
                 String sender = GetSenderName(extractedLabel[0]);//nazwa nadawcy
                 String[] extractedSender = extractedLabel[1].Split(';'); //wydzielamy nadawce i tresc wiadomosci
                 Console.WriteLine(_name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
+            } 
+            else 
+            {
+                Console.WriteLine("Otrzymano pakiet od NMS...");
+                ParseNMSResponse(packet);
             }
         }
+
+        /*
+         * Metoda parsująca responsa od NMS-a z konfiguracją(tabelą) dla hosta
+         * @ response - string, reponse od NMS-a
+         */
+         public void ParseNMSResponse(string response)
+         {
+            String[] deleteHeaderTab = response.Split(';');
+            String[] responseSplit = deleteHeaderTab[1].Split(',');
+           
+            while(responseSplit.Count() >= 7)
+            {
+                string DestinationHost = responseSplit[0];
+                int NHLFE_ID = (responseSplit[1] == null || responseSplit[1].Equals("")) ? 0 : Int32.Parse(responseSplit[1]);
+                tableMPLS_FIB.Add(new MPLSLine(DestinationHost, NHLFE_ID));
+
+                int Label = (responseSplit[2] == null || responseSplit[2].Equals("")) ? 0 : Int32.Parse(responseSplit[2]);
+                string Sender = responseSplit[3];
+                tableILM.Add(new ILMLine(Label, Sender));
+
+                int ID = (responseSplit[4] == null || responseSplit[4].Equals("")) ? 0 : Int32.Parse(responseSplit[4]);
+                int NLabel = (responseSplit[5] == null || responseSplit[5].Equals("")) ? 0 : Int32.Parse(responseSplit[5]);
+                int NNextIdLabel = (responseSplit[6] == null || responseSplit[6].Equals("")) ? 0 : Int32.Parse(responseSplit[6]);
+                tableNHLFE.Add(new NHLFELine(ID, NLabel, NNextIdLabel));
+
+                List<string> list = new List<string>(responseSplit);
+                if(list.Count == 7)
+                {
+                    break;
+                }
+                list.RemoveRange(1, 7);
+                responseSplit = list.ToArray();
+            }
+         }
+
         /*
          * Wysyla pakiet danych, dodajac w naglowku nazwe hosta docelowego
          * @ destinationHost, nazwa hosta docelowego, @ message, tresc wiadomosci
