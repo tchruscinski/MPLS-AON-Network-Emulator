@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Config>
 	<Router>
-		<Name>Assigned = "Router1"</Name>
-		<Row>
+		<Name>Router1</Name>
+		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>22</OutLabel>
@@ -13,7 +13,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
 		</Row>
-        <Row>
+		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>24</OutLabel>
@@ -24,7 +24,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
 		</Row>
-        <Row>
+		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>3</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>46</OutLabel>
@@ -36,7 +36,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>3</NHLFE_ID_ILM>
 		</Row>
-        <Row>
+		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>4</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>50</OutLabel>
@@ -50,8 +50,8 @@
 		</Row>
 	</Router>
     <Router>
-		<Name>Assigned = "Router2"</Name>
-		<Row>
+		<Name>Router2</Name>
+		<Row Assigned="Router2">
 			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>28</OutLabel>
@@ -63,7 +63,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
 		</Row>
-        <Row>
+		<Row Assigned="Router2">
 			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>48</OutLabel>
@@ -76,8 +76,8 @@
 			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
 		</Row>
 	<Router>
-		<Name>Assigned = "Router3"</Name>
-		<Row>
+		<Name>Router3</Name>
+		<Row Assigned="Router3">
 			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>24</OutLabel>
@@ -89,7 +89,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
 		</Row>
-        <Row>
+		<Row Assigned="Router3">
 			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>44</OutLabel>
@@ -103,8 +103,8 @@
         </Row>
 	</Router>
     <Router>
-        <Name>Assigned = "Router4"</Name>
-        <Row>
+        <Name>Router4</Name>
+		<Row Assigned="Router4">
             <NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>26</OutLabel>
@@ -116,7 +116,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
         </Row>
-        <Row>
+		<Row Assigned="Router4">
             <NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>31</OutLabel>
@@ -128,7 +128,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
         </Row>
-        <Row>
+		<Row Assigned="Router4">
             <NHLFE_ID_MPLS>3</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>42</OutLabel>
@@ -140,7 +140,7 @@
 			<PoppedLabelStack>0</PoppedLabelStack>
 			<NHLFE_ID_ILM>3</NHLFE_ID_ILM>
         </Row>
-        <Row>
+		<Row Assigned="Router4">
             <NHLFE_ID_MPLS>4</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>46</OutLabel>

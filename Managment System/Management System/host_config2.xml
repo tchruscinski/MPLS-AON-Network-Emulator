@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Config>
 	<Host>
-		<Name>Assigned = "Host1"</Name>
-		<Row>
+		<Name>Host1</Name>
+		<Row Assigned="Host1">
 			<DestinationHost>Host2</DestinationHost>
 			<NHLFE_ID>1</NHLFE_ID>
             <Label>44</Label>
@@ -11,7 +11,7 @@
             <NLabel>20</NLabel>
             <NextId>0</NextId>
 		</Row>
-        <Row>
+		<Row Assigned="Host1">
 			<DestinationHost>Host2</DestinationHost>
 			<NHLFE_ID>2</NHLFE_ID>
             <Label>50</Label>
@@ -22,8 +22,8 @@
 		</Row>
 	</Host>
 		<Host>
-		<Name>Assigned = "Host2"</Name>
-		<Row>
+		<Name>Host2</Name>
+		<Row Assigned="Host2">
 			<DestinationHost>Host1</DestinationHost>
 			<NHLFE_ID>1</NHLFE_ID>
             <Label>26</Label>
@@ -32,7 +32,7 @@
             <NLabel>40</NLabel>
             <NextId>0</NextId>
 		</Row>
-            <Row>
+		<Row Assigned="Host2">
 			<DestinationHost>Host1</DestinationHost>
 			<NHLFE_ID>2</NHLFE_ID>
             <Label>31</Label>
