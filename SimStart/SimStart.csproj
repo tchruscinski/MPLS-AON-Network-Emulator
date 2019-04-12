@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{38A06D52-F777-46CD-8BF6-7D645816D6AE}</ProjectGuid>
+    <ProjectGuid>{BF87B2E1-9449-4C90-9B49-EBC6882F5354}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Router</RootNamespace>
-    <AssemblyName>Router</AssemblyName>
+    <RootNamespace>SimStart</RootNamespace>
+    <AssemblyName>SimStart</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,16 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ILMLine.cs" />
-    <Compile Include="MyMain.cs" />
-    <Compile Include="NHLFELine.cs" />
-    <Compile Include="Parser.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Router.cs" />
-    <Compile Include="Sprawdzam.cs" />
-    <Compile Include="Time.cs" />
-    <Compile Include="UDPSocket.cs" />
-    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
