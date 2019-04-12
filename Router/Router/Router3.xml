@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+  <Router>
+    <Row>
+        <Type>NSEND</Type>
+        <Port>109</Port>
+            </Row>
+
+     <Row>    
+        <Type>NRECV</Type>
+        <Port>103</Port>
+          </Row>
+  
+      <Row>   
+        <Type>SEND</Type>
+        <Port>16</Port>
+            </Row>
+
+        <Row> 
+        <Type>SEND</Type>
+        <Port>18</Port>
+           </Row>
+ 
+        <Row> 
+        <Type>SEND</Type>
+        <Port>20</Port>
+            </Row>
+
+        <Row> 
+        <Type>RECV</Type>
+        <Port>15</Port>
+            </Row>
+
+         <Row>
+        <Type>RECV</Type>
+        <Port>17</Port>
+          </Row>
+  
+        <Row> 
+        <Type>RECV</Type>
+        <Port>19</Port>
+    </Row>
+  </Router>
+</Config>

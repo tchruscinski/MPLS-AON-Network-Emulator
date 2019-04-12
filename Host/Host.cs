@@ -250,9 +250,13 @@ namespace Host
                 return;
             }
             sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
+            sendingManagementSocket.Client(destinationIP, Int32.Parse(splitConfig[1]), this);
             receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
+            receivingManagementSocket.Server(destinationIP, Int32.Parse(splitConfig[3]), this);
             sendingSocket.SetPort(Int32.Parse(splitConfig[5]));
+            sendingSocket.Client(destinationIP, Int32.Parse(splitConfig[5]), this);
             receivingSocket.SetPort(Int32.Parse(splitConfig[7]));
+            receivingSocket.Server(destinationIP, Int32.Parse(splitConfig[7]), this);
 
             Console.WriteLine("Lokalna konfiguracja wczytana do hosta " + _name);
         }

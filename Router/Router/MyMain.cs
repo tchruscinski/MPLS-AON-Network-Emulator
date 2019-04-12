@@ -13,11 +13,17 @@ namespace RouterV1
             if (args.Length != 0)
             {
                 Router router = new Router(args[0]);
+                router.ParseLocalConfig();
+                //try
+                //{
+                //    router.ManagementRequest();
+                //}
+                //catch (Exception e) { Console.WriteLine(e); }
                 Console.ReadLine();
 
             }
-            Router rt = new Router("Router1");
-            rt.ParseLocalConfig();
+            //Router rt = new Router("Router1");
+            //rt.ParseLocalConfig();
             Console.ReadLine();
 
             //// host1 <--> sendingRouter <--> midRouter <--> receivingRouter <--> host2

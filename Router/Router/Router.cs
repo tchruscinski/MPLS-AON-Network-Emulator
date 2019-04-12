@@ -473,29 +473,37 @@ namespace RouterV1
 
             String[] splitConfig = localConfig.Split(',');
 
-            if(splitConfig.Contains(null) || splitConfig.Contains(""))
-            {
-                return;
-            }
-            sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
-            receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
+                //if(splitConfig.Contains(null) || splitConfig.Contains(""))
+                //{
+                //    return;
+                //}
+            //sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
+            sendingManagementSocket.Client(destinationIP, Int32.Parse(splitConfig[1]), this);
+            //receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
+            receivingManagementSocket.Server(destinationIP, Int32.Parse(splitConfig[3]), this);
 
             int numberOfPorts = (splitConfig.Count() - 4)/4;
             int c = 0;
 
             while(c < numberOfPorts)
             {
-                sendingSockets.Add(new UDPSocket());
-                sendingSockets[c].Client(destinationIP, Int32.Parse(splitConfig[5 + 2*c]), this);
+                UDPSocket socket = new UDPSocket();
+                socket.Client(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts * 2 + 2 * c]), this);
                 c++;
+                sendingSockets.Add(socket);
+                //sendingSockets[c].Client(destinationIP, Int32.Parse(splitConfig[5 + 2*c]), this);
+                //c++;
             }
 
             c = 0;
             while(c < numberOfPorts)
             {
-                receivingSockets.Add(new UDPSocket());
-                receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts*2 + 2*c]), this);
+                UDPSocket socket = new UDPSocket();
+                socket.Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts * 2 + 2 * c]), this);
                 c++;
+                receivingSockets.Add(socket);
+                //receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts*2 + 2*c]), this);
+                //c++;
             }
             Console.WriteLine("Lokalna konfiguracja wczytana do routera " + _name);
         }

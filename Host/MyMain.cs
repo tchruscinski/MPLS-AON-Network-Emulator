@@ -14,24 +14,29 @@ namespace Host
             if (args.Length != 0)
             {
                 Host host = new Host(args[0]);
+                host.ParseLocalConfig();        
+                try
+                {
+                    host.ManagementRequest();
+                } catch(Exception e) { Console.WriteLine(e); }
                 Console.ReadLine();
             }
 
 
 
-            UDPSocket s1 = new UDPSocket();
-            UDPSocket s2 = new UDPSocket();
-            Host host1 = new Host("Host1");
-            host1.SetReceivingManagementSocket(1);
-            host1.SetSendingManagementSocket(100);
-            host1.ManagementRequest();
-            //Host host2 = new Host("host2");
-            //s1.Client("127.0.0.1", 1, host1);
-            //s2.Server("127.0.0.1", 100, host1);
-            host1.ParseLocalConfig();
-            Console.ReadLine();
-            //Console.ReadKey();
-            //s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
+            //UDPSocket s1 = new UDPSocket();
+            //UDPSocket s2 = new UDPSocket();
+            //Host host1 = new Host("Host1");
+            //host1.SetReceivingManagementSocket(1);
+            //host1.SetSendingManagementSocket(100);
+            //host1.ManagementRequest();
+            ////Host host2 = new Host("host2");
+            ////s1.Client("127.0.0.1", 1, host1);
+            ////s2.Server("127.0.0.1", 100, host1);
+            //host1.ParseLocalConfig();
+            //Console.ReadLine();
+            ////Console.ReadKey();
+            ////s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
             //Console.ReadLine();
             //string userInput;
             //UDPSocket clientSocket = new UDPSocket();

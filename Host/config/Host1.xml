@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Config>
-  <Host>
+  <Router>
     <Row>
+        <?"Type - {SEND, RECV, NSEND, NRECV}"?>
         <Type>NSEND</Type>
         <Port>111</Port>
     </Row>
@@ -13,9 +14,9 @@
         <Type>SEND</Type>
         <Port>2</Port>
     </Row>
-      <Row>
+    <Row>
         <Type>RECV</Type>
         <Port>1</Port>
     </Row>
-  </Host>
+  </Router>
 </Config>

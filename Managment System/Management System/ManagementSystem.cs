@@ -84,6 +84,8 @@ namespace Management_System
             //listeningSocket.RunServer(localIP, portNumber);
             for (int i = 0; i < routerReceivingSockets.Count; i++)
                 routerReceivingSockets[i].RunServer(localIP, routerReceivingSockets[i].GetPort());
+            for (int i = 0; i < hostReceivingSockets.Count; i++)
+                hostReceivingSockets[i].RunServer(localIP, hostReceivingSockets[i].GetPort());
         }
 
         /**
@@ -167,7 +169,7 @@ namespace Management_System
             Console.WriteLine("\\_| \\_/\\_|  |_/\\____/  ");
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Gray;
-            StartServer();
+            //StartServer();
             /*while ((line = Console.ReadLine()) != null)
             {
                 ReadInput();
@@ -263,6 +265,7 @@ namespace Management_System
             routerReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[19])));
             hostReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[21])));
             hostReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[23])));
+            StartServer();
         }
 
         /**
