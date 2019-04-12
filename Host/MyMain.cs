@@ -15,15 +15,24 @@ namespace Host
             {
                 Host host = new Host(args[0]);
             }
-            UDPSocket s1 = new UDPSocket();
-            UDPSocket s2 = new UDPSocket();
-            Host host1 = new Host("host");
-            Host host2 = new Host("host2");
-            s1.Client("127.0.0.1", 1, host1);
-            s2.Server("127.0.0.1", 2, host2);
-            Console.ReadKey();
-            s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
+            Host host1 = new Host("Host1", 2, 1);
+            Host host2 = new Host("Host2", 28, 27);
+            MPLSLine m1 = new MPLSLine("Host2", 1);
+            NHLFELine n1 = new NHLFELine(1, 20, 0);
+
+            host1.AddRoutingLineMPLS(m1);
+            host1.AddNHLFELine(n1);
+
+            host1.SendPacket("Host2", "test");
+
             Console.ReadLine();
+            //Host host1 = new Host("host");
+            //Host host2 = new Host("host2");
+            //s1.Client("127.0.0.1", 1, host1);
+            //s2.Server("127.0.0.1", 2, host2);
+            //Console.ReadKey();
+            //s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
+            //Console.ReadLine();
             //string userInput;
             //UDPSocket clientSocket = new UDPSocket();
             //Host host1 = new Host("host1", 26999, 29002);

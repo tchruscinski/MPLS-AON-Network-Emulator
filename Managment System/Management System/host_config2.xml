@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Host>
+		<Name>Assigned = "Host1"</Name>
+		<Row>
+			<DestinationHost>Host2</DestinationHost>
+			<NHLFE_ID>1</NHLFE_ID>
+            <Label>44</Label>
+            <Sender>Host2</Sender>
+            <ID>1</ID>
+            <NLabel>20</NLabel>
+            <NextId>0</NextId>
+		</Row>
+        <Row>
+			<DestinationHost>Host2</DestinationHost>
+			<NHLFE_ID>2</NHLFE_ID>
+            <Label>50</Label>
+            <Sender>Host2</Sender>
+            <ID>1</ID>
+            <NLabel>21</NLabel>
+            <NextId>0</NextId>
+		</Row>
+	</Host>
+		<Host>
+		<Name>Assigned = "Host2"</Name>
+		<Row>
+			<DestinationHost>Host1</DestinationHost>
+			<NHLFE_ID>1</NHLFE_ID>
+            <Label>26</Label>
+            <Sender>Host1</Sender>
+            <ID>1</ID>
+            <NLabel>40</NLabel>
+            <NextId>0</NextId>
+		</Row>
+            <Row>
+			<DestinationHost>Host1</DestinationHost>
+			<NHLFE_ID>2</NHLFE_ID>
+            <Label>31</Label>
+            <Sender>Host1</Sender>
+            <ID>2</ID>
+            <NLabel>41</NLabel>
+            <NextId>0</NextId>
+		</Row>
+	</Host>
+</Config>
