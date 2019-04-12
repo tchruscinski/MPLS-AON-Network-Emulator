@@ -18,12 +18,17 @@ namespace Host
         private int id; //id hosta
         private string _name = " "; //nazwa hosta
         private UDPSocket sendingSocket = new UDPSocket(); //socket, ktory wysyla pakiety
+        private UDPSocket sendingManagementSocket = new UDPSocket();
+        private UDPSocket receivingManagementSocket = new UDPSocket();
         private int _sendingPort; // nr portu, ktorym sendingSocket wysyla pakiety
         private UDPSocket receivingSocket = new UDPSocket(); //sokcet, ktory nasluchuje na przychodzace pakiety
         private int _receivingPort; //nr portu, na ktorym receivingPort nasluchuje
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
         private List<MPLSLine> tableMPLS_FIB = new List<MPLSLine>(); //tablica routingowa MPLS
         private List<ILMLine> tableILM = new List<ILMLine>(); //tablica ILM
+        public static string destinationIP = "127.0.0.1"; //docelowe ip
+        static Time time = new Time();
+        private String timeStamp = time.GetTimestamp(DateTime.Now);
 
         public void AddNHLFELine(NHLFELine newLine) { tableNHLFE.Add(newLine); }
         public void AddRoutingLineMPLS(MPLSLine newLine) { tableMPLS_FIB.Add(newLine); }
@@ -61,10 +66,13 @@ namespace Host
                        //po inkrementacji przechodzi na pierwszy bajt wiadomosci
 
             String[] extractedLabel = packet.Split(','); //wydzielamy czesc etykiet, bo jej nie potrzebujemy
-            //nazwa nadawcy
-            String sender = GetSenderName(extractedLabel[0]);
-            String[] extractedSender = extractedLabel[1].Split(';'); //wydzielamy nadawce i tresc wiadomosci
-            Console.WriteLine(_name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
+
+            if(!packet.Contains("NMS"))
+            {
+                String sender = GetSenderName(extractedLabel[0]);//nazwa nadawcy
+                String[] extractedSender = extractedLabel[1].Split(';'); //wydzielamy nadawce i tresc wiadomosci
+                Console.WriteLine(_name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
+            }
         }
         /*
          * Wysyla pakiet danych, dodajac w naglowku nazwe hosta docelowego
@@ -129,19 +137,21 @@ namespace Host
             return 0;
 
         }
-            /*
-         * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
-         * @ ID, ID wpisu NHLFE
-         */
-            public int CheckNHLFETable(int ID)
-            {
-                for (int i = 0; i < tableNHLFE.Count; i++)
-                    if (tableNHLFE[i].getID() == ID)
-                    {
-                        return i;
-                    }
-                return -1; //jezeli nie ma takiego wpisu zwraca -1
-            }
+
+        /*
+        * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
+        * @ ID, ID wpisu NHLFE
+        */
+        public int CheckNHLFETable(int ID)
+        {
+            for (int i = 0; i < tableNHLFE.Count; i++)
+                if (tableNHLFE[i].getID() == ID)
+                {
+                    return i;
+                }
+            return -1; //jezeli nie ma takiego wpisu zwraca -1
+        }
+
         /*
          * Sprawdza tablice ILM 
          * zwraca nazwe nadawcy
@@ -159,68 +169,32 @@ namespace Host
             }
             return ""; //jesli nie ma takiego wpisu w tabeli zwraca pustego stringa
         }
-
-            /**
-             * metoda konfigurująca parametry hosta:
-             * @ portNumber port, na który będzie wysyłać pakiety 
-             * @ targetIP IP docelowe
-            */
-            //private static void ConfigureHost(int portNumber, string targetIP)
-            //{
-            //    destinationIP = IPAddress.Parse(targetIP);
-            //    endPoint = new IPEndPoint(destinationIP, portNumber);
-            //}
-
-            /**
-             * metoda wysyłająca wiadomość
-             * @ message - treść wiadomości
-            */
-            //private static void SendMessage(string message)
-            //{
-            //    //String text = "testtestest";
-            //    byte[] sendbuf = Encoding.ASCII.GetBytes(message);
-
-            //    socket.SendTo(sendbuf, endPoint);
-            //    Console.WriteLine("Message sent to the broadcast address");
-            //}
-
-            /**
-             * metoda zwracająca lokalny adres IP
-             * @ no arguments, string return type
-            */
-            //private static string GetLocalIPAddress()
-            //{
-            //    if (!System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable())
-            //    {
-            //        return null;
-            //    }
-            //    var host = Dns.GetHostEntry(Dns.GetHostName());
-            //    foreach (var ip in host.AddressList)
-            //    {
-            //        if (ip.AddressFamily == AddressFamily.InterNetwork)
-            //        {
-            //            return ip.ToString();
-            //        }
-            //    }
-            //    throw new Exception("No network adapters with an IPv4 address in the system!");
-            //}
-
-            /**
-             * metoda parsująca argumenty metody Main Hosta, configurująca Hosta i wysyłająca wiadomość
-             * @ args - tablica typu string
-            */
-            //private static void ParseAndExecuteForHostArguments(string[] args)
-            //{
-            //    int portNumber = Int32.Parse(args[0]);
-            //    string targetIP = args[1];
-            //    string message = args[2];
-
-            //    Console.WriteLine(portNumber + " " + targetIP + " " + message);
-            //    Console.ReadKey();
-
-            //    //ConfigureHost(portNumber, targetIP);
-            //    //SendMessage(message);
-            //}
-
+    
+        /*
+         * Wysyla zadanie tablic NHLFE i ILM do systemu zarzadzania,
+         * 
+         */
+        public void ManagementRequest()
+        {
+            sendingManagementSocket.Send(_name);
         }
+
+        /*
+         * Ustawia port wysyłający do połączeń z NMS
+         * 
+         */
+        public void SetSendingManagementSocket(int port)
+        {
+            sendingManagementSocket.Client(destinationIP, port, this);
+        }
+
+        /*
+         * Ustawia port nasłuchujący do połączeń z NMS
+         * 
+         */
+        public void SetReceivingManagementSocket(int port)
+        {
+            receivingManagementSocket.Server(destinationIP, port, this);
+        }
+    }
 }

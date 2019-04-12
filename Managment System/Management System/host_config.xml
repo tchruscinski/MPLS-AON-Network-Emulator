@@ -12,7 +12,7 @@
             <NextId>0</NextId>
 		</Row>
 	</Host>
-		<Host>
+	<Host>
 		<Name>Host2</Name>
 		<Row Assigned="Host2">
 			<DestinationHost>Host1</DestinationHost>
