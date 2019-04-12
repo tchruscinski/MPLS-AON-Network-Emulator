@@ -85,12 +85,5 @@ namespace Management_System
             }, state);
         }
 
-        //private string MessageProcessing(string message)
-        //{
-        //    //TODO
-        //    string proceeded_message = "";
-        //    return proceeded_message;
-        //}
-
     }
 }

@@ -43,7 +43,7 @@ namespace Management_System
         {
             string hostConfig = parser.ParseHostTable("host_config.xml", hostName);
 
-            Console.WriteLine("sparsowany xml: "+ hostConfig);
+            Console.WriteLine("sparsowany xml: " + hostConfig);
 
             return hostConfig;
         }
@@ -88,8 +88,11 @@ namespace Management_System
         private static void SendRouterTable(string routerName)
         {   
             Console.WriteLine("Parosowanie konfiguracji dla " + routerName + " ...");
-            string routerTable = ReadRouterConfig(routerName);
-            //sendingSocket.Connect(localIP, 1);
+            StringBuilder builder = new StringBuilder();
+            builder.Append("NMS;");
+            builder.Append(ReadRouterConfig(routerName));          
+            string routerTable = builder.ToString();
+            sendingSocket.Client(localIP, 1);
             sendingSocket.Send(routerTable);
             Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
         }
@@ -101,11 +104,13 @@ namespace Management_System
         private static void SendHostTable(string hostName)
         {   
             Console.WriteLine("Parosowanie konfiguracji dla " + hostName + " ...");
-            string hostTable = ReadHostConfig(hostName);
-            Console.WriteLine("Wysyłanie konfiguracji do " + hostName + " ...");
-            //sendingSocket.Connect(localIP, hostListeningPort);
+            StringBuilder builder = new StringBuilder();
+            builder.Append("NMS;");
+            builder.Append(ReadHostConfig(hostName));          
+            string hostTable = builder.ToString();
+            sendingSocket.Client(localIP, 1);
             sendingSocket.Send(hostTable);
-            Console.WriteLine("Wysyłano pomyślnie.");
+            Console.WriteLine("Wysyłanie konfiguracji do " + hostName + " ...");
         }
 
         /**
@@ -144,12 +149,9 @@ namespace Management_System
                 return;
             }
 
-            Console.WriteLine("otrzymano: " + message);
-
             if(message.Contains("Host"))
             {
                 Console.WriteLine("Otrzymano request od " + message + " o tabele hosta");
-                //sendingSocket.Connect(localIP, 1);
                 SendHostTable(message);
                 Console.WriteLine("Tabela wysłana do " + message);
             }
@@ -215,11 +217,6 @@ namespace Management_System
         {
             string command;
         
-            UDPSocket udpSocket = new UDPSocket();
-            sendingSocket.Client("127.0.0.1", 1);
-            //ConfigureHosts();
-            //sendingSocket.Send("NMS;Chuj");
-            //SendRouterTable("Router1");
             ManagementSystem.ShowInterface();
             while(true)
             {

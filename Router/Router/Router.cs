@@ -89,7 +89,6 @@ namespace RouterV1
             String[] extractedHead = packet.Split(';');
             if(extractedHead[0].Equals("NMS"))
             {
-                Console.WriteLine("kurwa");
                 Console.WriteLine(extractedHead[1]);
                 return;
             }
@@ -387,9 +386,8 @@ namespace RouterV1
                 _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
                 Console.WriteLine("top" + _topLabel);
             }
-
-
         }
+
         /*
          * Wysyla zadanie tablic NHLFE i ILM do systemu zarzadzania,
          * 
@@ -397,7 +395,6 @@ namespace RouterV1
         public void ManagementRequest()
         {
             sendingManagementSocket.Send(_name);
-            Console.WriteLine("wyslano: " + _name);
         }
         /*
          * Wysyla do systemu zarzadzania informacje o awarii łącza

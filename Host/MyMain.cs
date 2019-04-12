@@ -10,19 +10,21 @@ namespace Host
     {
         public static void Main(string[] args)
         {
-            
             if (args.Length != 0)
             {
                 Host host = new Host(args[0]);
             }
             UDPSocket s1 = new UDPSocket();
             UDPSocket s2 = new UDPSocket();
-            Host host1 = new Host("host");
-            Host host2 = new Host("host2");
-            s1.Client("127.0.0.1", 1, host1);
-            s2.Server("127.0.0.1", 2, host2);
-            Console.ReadKey();
-            s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
+            Host host1 = new Host("Host1");
+            Host host2 = new Host("Host2");
+
+            //s1.Client("127.0.0.1", 1, host1);
+            //s2.Server("127.0.0.1", 2, host2);
+
+            host1.SetReceivingManagementSocket(1);
+            host1.SetSendingManagementSocket(100);
+            host1.ManagementRequest();
             Console.ReadLine();
             //string userInput;
             //UDPSocket clientSocket = new UDPSocket();
