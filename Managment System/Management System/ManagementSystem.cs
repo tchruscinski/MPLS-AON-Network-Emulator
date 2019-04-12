@@ -15,13 +15,16 @@ namespace Management_System
     */
     public static class ManagementSystem
     {
-        private static UDPSocket listeningSocket = new UDPSocket();
-        private static UDPSocket sendingSocket = new UDPSocket();
+        //private static UDPSocket listeningSocket = new UDPSocket();
+        //private static UDPSocket sendingSocket = new UDPSocket();
         private static Parser parser = new Parser();
         private static int portNumber = 100;
         private static int connectionCloudListeningPort = 100;
         private static string localIP = "127.0.0.1"; //docelowe ip;
-
+        private static List<UDPSocket> routerSendingSockets = new List<UDPSocket>();
+        private static List<UDPSocket> routerReceivingSockets = new List<UDPSocket>();
+        private static List<UDPSocket> hostSendingSockets = new List<UDPSocket>();
+        private static List<UDPSocket> hostReceivingSockets = new List<UDPSocket>();
         /**
         * Metoda parsująca plik konfiguracyjny dla routerow
         * @ routerName - string, nazwa docelowego routera
@@ -78,7 +81,9 @@ namespace Management_System
         */
         private static void StartServer()
         {
-            listeningSocket.RunServer(localIP, portNumber);
+            //listeningSocket.RunServer(localIP, portNumber);
+            for (int i = 0; i < routerReceivingSockets.Count; i++)
+                routerReceivingSockets[i].RunServer(localIP, routerReceivingSockets[i].GetPort());
         }
 
         /**
@@ -92,8 +97,28 @@ namespace Management_System
             builder.Append("NMS;");
             builder.Append(ReadRouterConfig(routerName));          
             string routerTable = builder.ToString();
-            sendingSocket.Client(localIP, 1);
-            sendingSocket.Send(routerTable);
+            //sendingSocket.Client(localIP, 1);
+            //sendingSocket.Send(routerTable);
+            if(routerName.Equals("Router1"))
+            {
+                routerSendingSockets[0].Client(localIP, 1);
+                routerSendingSockets[0].Send(routerTable);
+            }
+            if (routerName.Equals("Router2"))
+            {
+                routerSendingSockets[1].Client(localIP, 1);
+                routerSendingSockets[1].Send(routerTable);
+            }
+            if (routerName.Equals("Router3"))
+            {
+                routerSendingSockets[2].Client(localIP, 1);
+                routerSendingSockets[2].Send(routerTable);
+            }
+            if (routerName.Equals("Router4"))
+            {
+                routerSendingSockets[3].Client(localIP, 1);
+                routerSendingSockets[3].Send(routerTable);
+            }
             Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
         }
 
@@ -108,8 +133,19 @@ namespace Management_System
             builder.Append("NMS;");
             builder.Append(ReadHostConfig(hostName));          
             string hostTable = builder.ToString();
-            sendingSocket.Client(localIP, 1);
-            sendingSocket.Send(hostTable);
+            //sendingSocket.Client(localIP, 1);
+            //sendingSocket.Send(routerTable);
+            if (hostName.Equals("Host1"))
+            {
+                hostSendingSockets[0].Client(localIP, 1);
+                hostSendingSockets[0].Send(hostTable);
+            }
+            else if (hostName.Equals("Host2"))
+            {
+                hostSendingSockets[1].Client(localIP, 1);
+                hostSendingSockets[1].Send(hostTable);
+            }
+
             Console.WriteLine("Wysyłanie konfiguracji do " + hostName + " ...");
         }
 
@@ -214,6 +250,19 @@ namespace Management_System
             string localConfig = parser.ParseLocalConfig("local.xml");
 
             Console.WriteLine("sparsowany xml: "+ localConfig);
+            String[] splittedConfig = localConfig.Split(',');
+            routerSendingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[1])));
+            routerSendingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[3])));
+            routerSendingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[5])));
+            routerSendingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[7])));
+            hostSendingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[9])));
+            hostSendingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[11])));
+            routerReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[13])));
+            routerReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[15])));
+            routerReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[17])));
+            routerReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[19])));
+            hostReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[21])));
+            hostReceivingSockets.Add(new UDPSocket(Int32.Parse(splittedConfig[23])));
         }
 
         /**

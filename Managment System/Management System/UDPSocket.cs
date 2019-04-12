@@ -23,6 +23,8 @@ namespace Management_System
         {
             public byte[] buffer = new byte[bufSize];
         }
+        public UDPSocket(int p) { portNumber = p; }
+        public int GetPort() { return portNumber; }
 
         public void RunServer(string serverAddress, int portNumber)
         {
@@ -40,14 +42,14 @@ namespace Management_System
         public void Server(string address, int port)
         {
             socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
-            socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
-            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
+            socket.Bind(new IPEndPoint(IPAddress.Parse(address), portNumber));
+            Console.WriteLine("Created UDPServer at: " + address + ":" + portNumber);
             Receive();
         }
         public void Client(string address, int port)
         {
-            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
-            socket.Connect(address, port);
+            Console.WriteLine("Created UDPServer at: " + address + ":" + portNumber);
+            socket.Connect(address, portNumber);
             Receive();
         }
 
