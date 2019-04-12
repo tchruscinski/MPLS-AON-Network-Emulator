@@ -76,8 +76,7 @@ namespace Host
                         int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                         _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                         timeStamp = time.GetTimestamp(DateTime.Now);
-                        Console.WriteLine(timeStamp+" Received MSG");
-                        //Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                        Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
                         host.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                         counter++;
                     }

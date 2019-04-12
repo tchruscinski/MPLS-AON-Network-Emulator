@@ -2,7 +2,7 @@
 <Config>
 	<Router>
 		<Name>Router1</Name>
-		<Row>
+		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
 			<OutLabel>22</OutLabel>
@@ -13,7 +13,7 @@
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
 		</Row>
-        <Row>
+        <Row Assigned="Router1">
 			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
 			<Action>PUSH</Action>
 			<OutLabel>24</OutLabel>
@@ -27,7 +27,7 @@
 	</Router>
 	<Router>
 		<Name>Router3</Name>
-		<Row>
+		<Row Assigned="Router3">
 			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
 			<Action>PUSH</Action>
 			<OutLabel>1</OutLabel>
