@@ -4,21 +4,21 @@
     <Row>
         <?"Type - {SEND, RECV, NSEND, NRECV}"?>
         <Type>NSEND</Type>
-        <Port>107</Port>
+        <Port>108</Port>
         <Type>NRECV</Type>
-        <Port>101</Port>
+        <Port>102</Port>
         <Type>SEND</Type>
-        <Port>4</Port>
+        <Port>10</Port>
         <Type>SEND</Type>
-        <Port>6</Port>
+        <Port>12</Port>
         <Type>SEND</Type>
-        <Port>8</Port>
+        <Port>14</Port>
         <Type>RECV</Type>
-        <Port>3</Port>
+        <Port>9</Port>
         <Type>RECV</Type>
-        <Port>5</Port>
+        <Port>11</Port>
         <Type>RECV</Type>
-        <Port>7</Port>
+        <Port>13</Port>
     </Row>
   </Router>
 </Config>
