@@ -13,11 +13,12 @@ namespace RouterV1
             if (args.Length != 0)
             {
                 Router router = new Router(args[0]);
+                Console.ReadLine();
+
             }
 
-
             //// host1 <--> sendingRouter <--> midRouter <--> receivingRouter <--> host2
-            Router sendingRouter = new Router("Router1");
+
             //UDPSocket socket0 = new UDPSocket();
             //socket0.Server(Utils.destinationIP, 26999, sendingRouter);
             //UDPSocket socket3 = new UDPSocket();
@@ -27,7 +28,7 @@ namespace RouterV1
             //sendingRouter.AddSendingSocket(socket3);
             //sendingRouter.AddReceivingSocket(socket0);
             //sendingRouter.AddILMLine(ilm0);
-            
+
 
             //NHLFELine nhlfe1 = new NHLFELine(1, Action.PUSH, 20, 27000, 0); //wyslij portem 2700 z etykieta 20
             //sendingRouter.AddNHLFELine(nhlfe1);
@@ -66,7 +67,7 @@ namespace RouterV1
             //receivingRouter.AddSendingSocket(socket5);
 
 
-            
+
             //for (int i = 0; i < 100; i++)
             //    socket1.Send(i.ToString());
             //sendingRouter.SendPacket("host2;tresc wiadomosci.......sasgg", 27000);
@@ -74,10 +75,10 @@ namespace RouterV1
 
 
             //Tomek test połączenie router NMS
-            sendingRouter.SetReceivingManagementSocket(1);
+            //sendingRouter.SetReceivingManagementSocket(1);
             //sendingRouter.SetSendingManagementSocket(100);
             //sendingRouter.ManagementRequest();
-            Console.ReadLine();
+            //Console.ReadLine();
             //-----------
 
 
