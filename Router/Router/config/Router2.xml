@@ -5,18 +5,32 @@
         <?"Type - {SEND, RECV, NSEND, NRECV}"?>
         <Type>NSEND</Type>
         <Port>108</Port>
+       </Row> 
+          <Row>  
         <Type>NRECV</Type>
         <Port>102</Port>
+        </Row>
+         <Row>   
         <Type>SEND</Type>
         <Port>10</Port>
+        </Row>
+          <Row>  
         <Type>SEND</Type>
         <Port>12</Port>
+        </Row>
+           <Row> 
         <Type>SEND</Type>
         <Port>14</Port>
+      </Row>  
+            <Row>
         <Type>RECV</Type>
         <Port>9</Port>
+       </Row> 
+           <Row> 
         <Type>RECV</Type>
         <Port>11</Port>
+        </Row>
+           <Row> 
         <Type>RECV</Type>
         <Port>13</Port>
     </Row>
