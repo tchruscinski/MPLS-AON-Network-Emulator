@@ -89,7 +89,8 @@ namespace RouterV1
             String[] extractedHead = packet.Split(';');
             if(extractedHead[0].Equals("NMS"))
             {
-                Console.WriteLine(extractedHead[1]);
+                Console.WriteLine("Otrzymano pakiet od NMS...");
+                ParseNMSResponse(packet);
                 return;
             }
             _packet = packet;
@@ -104,6 +105,42 @@ namespace RouterV1
             //przesyla pakiet do nastepnego wezla
             SendPacket(port);
         }
+
+         /*
+         * Metoda parsująca responsa od NMS-a z konfiguracją(tabelą) dla routera
+         * @ response - string, reponse od NMS-a
+         */
+         public void ParseNMSResponse(string response)
+         {
+            String[] deleteHeaderTab = response.Split(';');
+            String[] responseSplit = deleteHeaderTab[1].Split(',');
+           
+            while(responseSplit.Count() >= 9)
+            {
+                int NHLFE_ID = (responseSplit[0] == null || responseSplit[0].Equals("")) ? 0 : Int32.Parse(responseSplit[0]);
+                Action action = (Action) Enum.Parse(typeof(Action), responseSplit[1]);
+                int OutLabel = (responseSplit[2] == null || responseSplit[2].Equals("")) ? 0 : Int32.Parse(responseSplit[2]);
+                int OutPortN = (responseSplit[3] == null || responseSplit[3].Equals("")) ? 0 : Int32.Parse(responseSplit[3]);
+                int NexID = (responseSplit[4] == null || responseSplit[4].Equals("")) ? 0 : Int32.Parse(responseSplit[4]);        
+                tableNHLFE.Add(new NHLFELine(NHLFE_ID, action, OutLabel, OutPortN, NexID));
+
+                int IncPort = (responseSplit[5] == null || responseSplit[5].Equals("")) ? 0 : Int32.Parse(responseSplit[5]);   
+                int IncLabel = (responseSplit[6] == null || responseSplit[6].Equals("")) ? 0 : Int32.Parse(responseSplit[6]);   
+                string PoppedLabelStack = responseSplit[7];
+                int NHLFE_ID_ILM = (responseSplit[8] == null || responseSplit[8].Equals("")) ? 0 : Int32.Parse(responseSplit[8]);   
+                tableILM.Add(new ILMLine(IncPort, IncLabel, PoppedLabelStack, NHLFE_ID_ILM));
+
+                List<string> list = new List<string>(responseSplit);
+                if(list.Count == 9)
+                {
+                    break;
+                }
+                list.RemoveRange(1, 9);
+                responseSplit = list.ToArray();
+            }
+         }
+
+
         /*
          * Pomocnicza metoda, wypisuje tresc odebranej wiadomosci 
          * @ message, tresc wiadomosci
