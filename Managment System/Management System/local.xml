@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Local>
+		<Row>
+            <Type>SEND</Type>
+            <Port>101</Port>
+        </Row>
+        <Row>
+            <Type>SEND</Type>
+            <Port>102</Port>
+        </Row>
+        <Row>
+            <Type>SEND</Type>
+            <Port>103</Port>
+        </Row>
+        <Row>
+            <Type>SEND</Type>
+            <Port>104</Port>
+        </Row>
+        <Row>
+            <Type>SEND</Type>
+            <Port>105</Port>
+        </Row>
+        <Row>
+            <Type>SEND</Type>
+            <Port>106</Port>
+        </Row>
+        <Row>
+            <Type>RECV</Type>
+            <Port>107</Port>
+        </Row>
+        <Row>
+            <Type>RECV</Type>
+            <Port>108</Port>
+        </Row>
+        <Row>
+            <Type>RECV</Type>
+            <Port>109</Port>
+        </Row>
+        <Row>
+            <Type>RECV</Type>
+            <Port>110</Port>
+        </Row>
+        <Row>
+            <Type>RECV</Type>
+            <Port>111</Port>
+        </Row>
+        <Row>
+            <Type>RECV</Type>
+            <Port>112</Port>
+        </Row>
+        
+    </Local>
+</Config>
