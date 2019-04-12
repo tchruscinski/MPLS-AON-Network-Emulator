@@ -238,13 +238,12 @@ namespace Host
             receivingManagementSocket.Server(destinationIP, port, this);
         }
 
-        private void ParseLocalConfig()
+        public void ParseLocalConfig()
         {
-            string localConfig = parser.ParseLocalConfig(routerName+".xml", routerName);
+            string localConfig = parser.ParseLocalConfig(_name+".xml");
 
             Console.WriteLine("sparsowany xml: "+ localConfig);
 
-            //return localConfig;
         }
     }
 }

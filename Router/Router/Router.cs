@@ -30,6 +30,7 @@ namespace RouterV1
         private int _incPort; //port, ktorym przyszedl pakiet, potrzebny do tablicy ILM
         private int _topLabel; //etykieta na szczycie stosu etykiet pakietu
         private string _poppedLabels; //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
+        private static Parser parser = new Parser();
 
         public Router(string name)
         {
@@ -461,22 +462,14 @@ namespace RouterV1
                     tableNHLFE[i].getID(), tableNHLFE[i].getAction(), tableNHLFE[i].getLabel(),
                     tableNHLFE[i].getPort(), tableNHLFE[i].getNextID());
         }
-        /*
-         * Pobiera odpowiedz systemu zarzadzania i wstawia ja do tablic ILM i NHLFE
-         */
-        public void GetManagementResponse(string response)
+
+
+        public void ParseLocalConfig()
         {
-            String[] splittedResponse = response.Split(',');
-            int counter = 0; //licznik konca wiersza
-            for(int i = 0; i < splittedResponse.Length; i++)
-            {
-                counter++;
-                if (counter == 8)
-                {
-                    counter = 0;
-                }
-                
-            }
+            string localConfig = parser.ParseLocalConfig(_name+".xml");
+
+            Console.WriteLine("sparsowany xml: "+ localConfig);
+
         }
 
     }

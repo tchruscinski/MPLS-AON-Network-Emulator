@@ -35,41 +35,34 @@ namespace Host
         }
 
         /**
-        * Metoda zwracająca konfigurację z wybranego pliku dla danego routera
-        * @routerName - string, nazwa routera, fileName - string, nazwa pliku z konfiguracją
+        * Metoda zwracająca konfigurację z wybranego pliku dla danego hosta
+        * @fileName - string, nazwa pliku z konfiguracją
         */
-        public string ParseLocalConfig(string fileName, string routerName)
+        public string ParseLocalConfig(string fileName)
         {
-            if (routerName == null || fileName == null)
+            if (fileName == null)
             {
                 return null;
             }
 
             string returnedString = "";
             LoadFile(fileName);
-            XmlNodeList nodesList = config.SelectNodes("/Config/Router");
+            XmlNodeList nodesList = config.SelectNodes("/Config/Host");
 
             foreach (XmlNode node in nodesList)
             {
-                if (node["Name"]?.InnerText == routerName)
-                {
-                    XmlNodeList rowsList = config.SelectNodes("/Config/Router/Row");
-                    foreach (XmlNode row in rowsList)
-                    {
-                        if (row.Attributes["Assigned"]?.InnerText == routerName)
-                        {
-                            returnedString += row["NHLFE_ID_MPLS"]?.InnerText + ",";
-                            returnedString += row["Action"]?.InnerText + ",";
-                            returnedString += row["OutLabel"]?.InnerText + ",";
-                            returnedString += row["OutPortN"]?.InnerText + ",";
-                            returnedString += row["NextID"]?.InnerText + ",";
-                            returnedString += row["IncPort"]?.InnerText + ",";
-                            returnedString += row["IncLabel"]?.InnerText + ",";
-                            returnedString += row["PoppedLabelStack"]?.InnerText + ",";
-                            returnedString += row["NHLFE_ID_ILM"]?.InnerText + ",";
-                        }
-                    }
+                XmlNodeList rowsList = config.SelectNodes("/Config/Host/Row");
+                foreach (XmlNode row in rowsList)
+                {     
+                    returnedString += row["Type"]?.InnerText + ",";
+                    returnedString += row["Port"]?.InnerText + ",";                    
                 }
+          
+            }
+
+            if (returnedString.Equals(""))
+            {
+                return null;
             }
             returnedString = returnedString.Remove(returnedString.Length - 1);
             return returnedString;
