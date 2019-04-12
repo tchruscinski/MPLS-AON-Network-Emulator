@@ -97,6 +97,7 @@ namespace Management_System
                     }
                 }
             }
+            returnedString = returnedString.Remove(returnedString.Length - 1);
             return returnedString;
         }
 
@@ -134,6 +135,7 @@ namespace Management_System
                     }
                 }
             }
+            returnedString = returnedString.Remove(returnedString.Length - 1);
             return returnedString;
         }
     }
