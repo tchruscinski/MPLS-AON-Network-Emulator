@@ -28,6 +28,7 @@ namespace Host
             //Host host2 = new Host("host2");
             //s1.Client("127.0.0.1", 1, host1);
             //s2.Server("127.0.0.1", 100, host1);
+            host1.ParseLocalConfig();
             Console.ReadLine();
             //Console.ReadKey();
             //s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");

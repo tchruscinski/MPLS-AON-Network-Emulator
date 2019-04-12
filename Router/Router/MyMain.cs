@@ -16,6 +16,9 @@ namespace RouterV1
                 Console.ReadLine();
 
             }
+            Router rt = new Router("Router1");
+            rt.ParseLocalConfig();
+            Console.ReadLine();
 
             //// host1 <--> sendingRouter <--> midRouter <--> receivingRouter <--> host2
 

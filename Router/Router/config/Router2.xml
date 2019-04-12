@@ -2,7 +2,6 @@
 <Config>
   <Router>
     <Row>
-        <?"Type - {SEND, RECV, NSEND, NRECV}"?>
         <Type>NSEND</Type>
         <Port>108</Port>
        </Row> 
