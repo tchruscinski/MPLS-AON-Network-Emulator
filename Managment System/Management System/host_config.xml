@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Host>
+		<Name>Host</Name>
+		<Row>
+			<DestinationHost>Host2</DestinationHost>
+			<NHLFE_ID>1</NHLFE_ID>
+            <Label></Label>
+            <Sender></Sender>
+            <ID>1</ID>
+            <NLabel>20</NLabel>
+            <NextId>0</NextId>
+		</Row>
+	</Host>
+		<Host>
+		<Name>Host2</Name>
+		<Row>
+			<DestinationHost>Host2</DestinationHost>
+			<NHLFE_ID>1</NHLFE_ID>
+            <Label>30</Label>
+            <Sender>Host</Sender>
+            <ID>1</ID>
+            <NLabel>20</NLabel>
+            <NextId>0</NextId>
+		</Row>
+	</Host>
+</Config>
