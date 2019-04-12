@@ -31,6 +31,11 @@ namespace Host
 
         public int getPort() { return _port; }
 
+        public void SetPort(int portNumber) 
+        {
+            _port = portNumber;
+        }
+
         public void Server(string address, int port, Host host)
         {
             _port = port;

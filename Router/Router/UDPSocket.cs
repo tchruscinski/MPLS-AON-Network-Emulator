@@ -31,6 +31,11 @@ namespace RouterV1
 
         public int getPort() { return _port; }
 
+        public void SetPort(int portNumber) 
+        {
+            _port = portNumber;
+        }
+
         public void Server(string address, int port, Router router)
         {
             _port = port;

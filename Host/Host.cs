@@ -18,10 +18,10 @@ namespace Host
         private int id; //id hosta
         private string _name = " "; //nazwa hosta
         private UDPSocket sendingSocket = new UDPSocket(); //socket, ktory wysyla pakiety
+        private UDPSocket receivingSocket = new UDPSocket(); //sokcet, ktory nasluchuje na przychodzace pakiety
         private UDPSocket sendingManagementSocket = new UDPSocket();
         private UDPSocket receivingManagementSocket = new UDPSocket();
         private int _sendingPort; // nr portu, ktorym sendingSocket wysyla pakiety
-        private UDPSocket receivingSocket = new UDPSocket(); //sokcet, ktory nasluchuje na przychodzace pakiety
         private int _receivingPort; //nr portu, na ktorym receivingPort nasluchuje
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
         private List<MPLSLine> tableMPLS_FIB = new List<MPLSLine>(); //tablica routingowa MPLS
@@ -46,6 +46,7 @@ namespace Host
             _receivingPort = receivingPort;
             sendingSocket.Client(Utils.destinationIP, _sendingPort, this);
             receivingSocket.Server(Utils.destinationIP, _receivingPort, this);
+            ParseLocalConfig();
         }
 
 
@@ -241,9 +242,19 @@ namespace Host
         public void ParseLocalConfig()
         {
             string localConfig = parser.ParseLocalConfig(_name+".xml");
+            //Console.WriteLine("Zparsowany local config xml: "+ localConfig);
 
-            Console.WriteLine("sparsowany xml: "+ localConfig);
+            String[] splitConfig = localConfig.Split(',');
+            if(splitConfig.Contains(null) || splitConfig.Contains(""))
+            {
+                return;
+            }
+            sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
+            receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
+            sendingSocket.SetPort(Int32.Parse(splitConfig[5]));
+            receivingSocket.SetPort(Int32.Parse(splitConfig[7]));
 
+            Console.WriteLine("Lokalna konfiguracja wczytana do hosta " + _name);
         }
     }
 }

@@ -31,6 +31,7 @@ namespace RouterV1
         private int _topLabel; //etykieta na szczycie stosu etykiet pakietu
         private string _poppedLabels; //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
         private static Parser parser = new Parser();
+        public static string destinationIP = "127.0.0.1"; //docelowe ip
 
         public Router(string name)
         {
@@ -468,8 +469,35 @@ namespace RouterV1
         {
             string localConfig = parser.ParseLocalConfig(_name+".xml");
 
-            Console.WriteLine("sparsowany xml: "+ localConfig);
+            //Console.WriteLine("sparsowany xml: "+ localConfig);
 
+            String[] splitConfig = localConfig.Split(',');
+
+            if(splitConfig.Contains(null) || splitConfig.Contains(""))
+            {
+                return;
+            }
+            sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
+            receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
+
+            int numberOfPorts = (splitConfig.Count() - 4)/4;
+            int c = 0;
+
+            while(c < numberOfPorts)
+            {
+                sendingSockets.Add(new UDPSocket());
+                sendingSockets[c].Client(destinationIP, Int32.Parse(splitConfig[5 + 2*c]), this);
+                c++;
+            }
+
+            c = 0;
+            while(c < numberOfPorts)
+            {
+                receivingSockets.Add(new UDPSocket());
+                receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts*2 + 2*c]), this);
+                c++;
+            }
+            Console.WriteLine("Lokalna konfiguracja wczytana do routera " + _name);
         }
 
     }
