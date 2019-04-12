@@ -114,7 +114,18 @@ namespace Management_System
         */
         private static void ShowInterface()
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("System Zarządzania v1.0");
+
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine(" _   _ ___  ___ _____  ");
+            Console.WriteLine("| \\ | ||  \\/  |/  ___|");
+            Console.WriteLine("|  \\| || .  . |\\ `--.  ");
+            Console.WriteLine("| . ` || |\\/| | `--. \\");
+            Console.WriteLine("| |\\  || |  | |/\\__/ / ");
+            Console.WriteLine("\\_| \\_/\\_|  |_/\\____/  ");
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Gray;
             StartServer();
             /*while ((line = Console.ReadLine()) != null)
             {
@@ -161,16 +172,61 @@ namespace Management_System
             //if(line = "")
         }*/
 
+        private static void ShowHelp()
+        {
+            Console.WriteLine(" ");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("---POMOC---");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(" ");
+            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("change-config [router_name]");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.WriteLine("Zmiana konfiguracji routera na podstawie odpowiadajacego mu pliku XML");
+        }
+
+
+        private static void RunCommand(string input)
+        {
+            String[] comm;
+            if(input == "help" || input == "h" || input == "?")
+            {
+                ShowHelp();
+
+            }
+            else
+            {
+                comm = input.Split(' ');
+
+                if(comm[0] == "change-config")
+                {
+                    Console.WriteLine("TODO");
+
+                }
+                
+            }
+        }
+
         /**
          * metoda Systemu Zarządzania
          * @ args - tablica typu string
         */
         static void Main(string[] args)
         {
+            string command;
             //ConfigureHosts();
             UDPSocket udpSocket = new UDPSocket();
             ManagementSystem.ShowInterface();
-            Console.ReadKey();
+            while(true)
+            {
+                Console.Write("NMS# ");
+                command = Console.ReadLine();
+                RunCommand(command);
+
+
+
+            }
+            
         }
     }
 }
