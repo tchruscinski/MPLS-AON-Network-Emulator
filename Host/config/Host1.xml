@@ -8,17 +8,9 @@
         <Type>NRECV</Type>
         <Port>105</Port>
         <Type>SEND</Type>
-        <Port>4</Port>
-        <Type>SEND</Type>
-        <Port>6</Port>
-        <Type>SEND</Type>
-        <Port>8</Port>
+        <Port>2</Port>
         <Type>RECV</Type>
-        <Port>3</Port>
-        <Type>RECV</Type>
-        <Port>5</Port>
-        <Type>RECV</Type>
-        <Port>7</Port>
+        <Port>1</Port>
     </Row>
   </Router>
 </Config>
