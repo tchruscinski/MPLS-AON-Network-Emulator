@@ -89,7 +89,7 @@ namespace Management_System
         {   
             Console.WriteLine("Parosowanie konfiguracji dla " + routerName + " ...");
             string routerTable = ReadRouterConfig(routerName);
-            sendingSocket.Connect(localIP, 1);
+            //sendingSocket.Connect(localIP, 1);
             sendingSocket.Send(routerTable);
             Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
         }
@@ -169,6 +169,8 @@ namespace Management_System
         {
             //ConfigureHosts();
             UDPSocket udpSocket = new UDPSocket();
+            sendingSocket.Client("127.0.0.1", 1);
+            sendingSocket.Send("NMS;Chuj");
             ManagementSystem.ShowInterface();
             Console.ReadKey();
         }

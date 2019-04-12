@@ -85,6 +85,14 @@ namespace RouterV1
          */
         public void ReadPacket(string packet)
         {
+            //to do poprawy
+            String[] extractedHead = packet.Split(';');
+            if(extractedHead[0].Equals("NMS"))
+            {
+                Console.WriteLine("kurwa");
+                Console.WriteLine(extractedHead[1]);
+                return;
+            }
             _packet = packet;
             //destinationHost = ReadDestinationHost(_packet);
             ShowMessage(_packet);
@@ -159,6 +167,8 @@ namespace RouterV1
         public int RefactorPacket()
         {
             int port = 0; //nr portu, ktorym wyslemy pakiet
+            Console.WriteLine(_packet);
+            if (_packet.Equals("")) return 0;
             GetLabel(); //pobiera etykiety pakietu
             int NHLFE_ID; //ID wpisu tablicy NHLFE
             if (IsLabel()) //jezeli jest etykieta sprawdzamy tablice ILM
@@ -346,7 +356,7 @@ namespace RouterV1
                 {
                     Console.WriteLine(extractLabels[i]);
                 }
-                _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+                    _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
                 StringBuilder builder = new StringBuilder();
                 for (int i = 2; i < extractLabels.Length - 1; i++) //pozostale etykiety dodane po myslniku
                 {

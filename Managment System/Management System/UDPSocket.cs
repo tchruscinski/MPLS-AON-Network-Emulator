@@ -37,6 +37,20 @@ namespace Management_System
             socket.Connect(IPAddress.Parse(address), port);
             Receive();
         }
+        public void Server(string address, int port)
+        {
+            socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
+            socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
+            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
+            Receive();
+        }
+        public void Client(string address, int port)
+        {
+            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
+            socket.Connect(address, port);
+            Receive();
+        }
+
 
         public void Send(string text)
         {
