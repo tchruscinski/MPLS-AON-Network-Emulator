@@ -48,7 +48,7 @@ namespace Host
         public void Client(string address, int port, Host host)
         {
             _port = port;
-            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
+            Console.WriteLine("Created UDPClient at: " + address + ":" + port);
             _socket.Connect(address, port);
 
             _host = host;

@@ -37,6 +37,7 @@ namespace Host
         public Host(string name)
         {
             _name = name;
+            ParseLocalConfig();
         }
 
         public Host(string name,int sendingPort, int receivingPort)
@@ -241,20 +242,30 @@ namespace Host
 
         public void ParseLocalConfig()
         {
-            string localConfig = parser.ParseLocalConfig(_name+".xml");
-            //Console.WriteLine("Zparsowany local config xml: "+ localConfig);
-
-            String[] splitConfig = localConfig.Split(',');
-            if(splitConfig.Contains(null) || splitConfig.Contains(""))
+            try
             {
-                return;
-            }
-            sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
-            receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
-            sendingSocket.SetPort(Int32.Parse(splitConfig[5]));
-            receivingSocket.SetPort(Int32.Parse(splitConfig[7]));
+                string localConfig = parser.ParseLocalConfig(_name + ".xml");
+                Console.WriteLine("Zparsowany local config xml: "+ localConfig);
 
-            Console.WriteLine("Lokalna konfiguracja wczytana do hosta " + _name);
+                String[] splitConfig = localConfig.Split(',');
+                if (splitConfig.Contains(null) || splitConfig.Contains(""))
+                {
+                    return;
+                }
+                //sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
+                //receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
+                //sendingSocket.SetPort(Int32.Parse(splitConfig[5]));
+                //receivingSocket.SetPort(Int32.Parse(splitConfig[7]));
+                sendingManagementSocket.Client(Utils.destinationIP, Int32.Parse(splitConfig[1]), this);
+                receivingManagementSocket.Server(Utils.destinationIP, Int32.Parse(splitConfig[3]), this);
+                sendingSocket.Client(Utils.destinationIP, Int32.Parse(splitConfig[5]), this);
+                receivingSocket.Server(Utils.destinationIP, Int32.Parse(splitConfig[7]), this);
+
+                Console.WriteLine("Lokalna konfiguracja wczytana do hosta " + _name);
+            } catch(NullReferenceException e)
+            {
+                Console.WriteLine("Nie mozna wczytac pliku konfiguracyjnego");
+            }
         }
     }
 }

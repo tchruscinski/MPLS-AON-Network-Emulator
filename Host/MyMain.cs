@@ -14,22 +14,27 @@ namespace Host
             if (args.Length != 0)
             {
                 Host host = new Host(args[0]);
+                host.ManagementRequest();
                 Console.ReadLine();
+                if (host.getName().Equals("Host1")) host.SendPacket("Host2", "test test test tset");
+                Console.ReadLine();
+                return;
             }
-
-
-
-            UDPSocket s1 = new UDPSocket();
-            UDPSocket s2 = new UDPSocket();
             Host host1 = new Host("Host1");
-            host1.SetReceivingManagementSocket(1);
-            host1.SetSendingManagementSocket(100);
             host1.ManagementRequest();
-            //Host host2 = new Host("host2");
-            //s1.Client("127.0.0.1", 1, host1);
-            //s2.Server("127.0.0.1", 100, host1);
-            host1.ParseLocalConfig();
             Console.ReadLine();
+
+            //UDPSocket s1 = new UDPSocket();
+            //UDPSocket s2 = new UDPSocket();
+            
+            //host1.SetReceivingManagementSocket(1);
+            //host1.SetSendingManagementSocket(100);
+            //host1.ManagementRequest();
+            ////Host host2 = new Host("host2");
+            ////s1.Client("127.0.0.1", 1, host1);
+            ////s2.Server("127.0.0.1", 100, host1);
+            //host1.ParseLocalConfig();
+            //Console.ReadLine();
             //Console.ReadKey();
             //s1.Send("!@#$%^&*({}:@#>%!}{!%}{!$:%>#$:!}$%!#:$>");
             //Console.ReadLine();

@@ -84,6 +84,20 @@ namespace Management_System
             //listeningSocket.RunServer(localIP, portNumber);
             for (int i = 0; i < routerReceivingSockets.Count; i++)
                 routerReceivingSockets[i].RunServer(localIP, routerReceivingSockets[i].GetPort());
+            for (int i = 0; i < hostReceivingSockets.Count; i++)
+                hostReceivingSockets[i].RunServer(localIP, hostReceivingSockets[i].GetPort());
+        }
+        /**
+       * metoda startująca clienty na receivingSocketach systemu zarządzania
+       * @ no arguments, void
+       */
+        private static void StartClient()
+        {
+            //listeningSocket.RunServer(localIP, portNumber);
+            for (int i = 0; i < routerSendingSockets.Count; i++)
+                routerSendingSockets[i].Client(localIP, routerSendingSockets[i].GetPort());
+            for (int i = 0; i < hostSendingSockets.Count; i++)
+                hostSendingSockets[i].Client(localIP, hostSendingSockets[i].GetPort());
         }
 
         /**
@@ -101,22 +115,22 @@ namespace Management_System
             //sendingSocket.Send(routerTable);
             if(routerName.Equals("Router1"))
             {
-                routerSendingSockets[0].Client(localIP, 1);
+                //routerSendingSockets[0].Client(localIP, 1);
                 routerSendingSockets[0].Send(routerTable);
             }
             if (routerName.Equals("Router2"))
             {
-                routerSendingSockets[1].Client(localIP, 1);
+                //routerSendingSockets[1].Client(localIP, 1);
                 routerSendingSockets[1].Send(routerTable);
             }
             if (routerName.Equals("Router3"))
             {
-                routerSendingSockets[2].Client(localIP, 1);
+                //routerSendingSockets[2].Client(localIP, 1);
                 routerSendingSockets[2].Send(routerTable);
             }
             if (routerName.Equals("Router4"))
             {
-                routerSendingSockets[3].Client(localIP, 1);
+                //routerSendingSockets[3].Client(localIP, 1);
                 routerSendingSockets[3].Send(routerTable);
             }
             Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
@@ -137,12 +151,12 @@ namespace Management_System
             //sendingSocket.Send(routerTable);
             if (hostName.Equals("Host1"))
             {
-                hostSendingSockets[0].Client(localIP, 1);
+                //hostSendingSockets[0].Client(localIP, 1);
                 hostSendingSockets[0].Send(hostTable);
             }
             else if (hostName.Equals("Host2"))
             {
-                hostSendingSockets[1].Client(localIP, 1);
+                //hostSendingSockets[1].Client(localIP, 1);
                 hostSendingSockets[1].Send(hostTable);
             }
 
@@ -275,15 +289,18 @@ namespace Management_System
         
             ManagementSystem.ShowInterface();
             ManagementSystem.ParseLocalConfig();
-            while(true)
-            {
-                Console.Write("NMS# ");
-                command = Console.ReadLine();
-                RunCommand(command);
+            ManagementSystem.StartServer();
+            ManagementSystem.StartClient();
+            Console.ReadLine();
+            //while(true)
+            //{
+            //    Console.Write("NMS# ");
+            //    command = Console.ReadLine();
+            //    RunCommand(command);
                 
 
 
-            }
+            //}
             
         }
     }

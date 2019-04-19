@@ -36,6 +36,7 @@ namespace RouterV1
         public Router(string name)
         {
             _name = name;
+            ParseLocalConfig();
         }
         public string GetName() { return _name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
@@ -93,6 +94,7 @@ namespace RouterV1
             {
                 Console.WriteLine("Otrzymano pakiet od NMS...");
                 ParseNMSResponse(packet);
+                return;
             }
             _packet = packet;
             //destinationHost = ReadDestinationHost(_packet);
@@ -384,6 +386,7 @@ namespace RouterV1
          */
         public void GetLabel()
         {
+       
             String[] extractLabelsPart = _packet.Split(':'); //pakiet jest podzielony na czesc etykiet i reszte
             String[] extractLabels = extractLabelsPart[0].Split(','); //reszta naglowka podzielona na etykiety
             Console.WriteLine("Etykiety:");
@@ -467,37 +470,43 @@ namespace RouterV1
 
         public void ParseLocalConfig()
         {
-            string localConfig = parser.ParseLocalConfig(_name+".xml");
-
-            //Console.WriteLine("sparsowany xml: "+ localConfig);
-
-            String[] splitConfig = localConfig.Split(',');
-
-            if(splitConfig.Contains(null) || splitConfig.Contains(""))
+            try
             {
-                return;
-            }
-            sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
-            receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
+                string localConfig = parser.ParseLocalConfig(_name + ".xml");
 
-            int numberOfPorts = (splitConfig.Count() - 4)/4;
-            int c = 0;
+                //Console.WriteLine("sparsowany xml: "+ localConfig);
 
-            while(c < numberOfPorts)
+                String[] splitConfig = localConfig.Split(',');
+
+                if (splitConfig.Contains(null) || splitConfig.Contains(""))
+                {
+                    return;
+                }
+                sendingManagementSocket.Client(Utils.destinationIP, Int32.Parse(splitConfig[1]), this);
+                receivingManagementSocket.Server(Utils.destinationIP, Int32.Parse(splitConfig[3]), this);
+
+                int numberOfPorts = (splitConfig.Count() - 4) / 4;
+                int c = 0;
+
+                while (c < numberOfPorts)
+                {
+                    sendingSockets.Add(new UDPSocket());
+                    sendingSockets[c].Client(destinationIP, Int32.Parse(splitConfig[5 + 2 * c]), this);
+                    c++;
+                }
+
+                c = 0;
+                while (c < numberOfPorts)
+                {
+                    receivingSockets.Add(new UDPSocket());
+                    receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts * 2 + 2 * c]), this);
+                    c++;
+                }
+                Console.WriteLine("Lokalna konfiguracja wczytana do routera " + _name);
+            } catch (NullReferenceException e)
             {
-                sendingSockets.Add(new UDPSocket());
-                sendingSockets[c].Client(destinationIP, Int32.Parse(splitConfig[5 + 2*c]), this);
-                c++;
+                Console.WriteLine("Nie mozna wczytac pliku konfiguracyjnego");
             }
-
-            c = 0;
-            while(c < numberOfPorts)
-            {
-                receivingSockets.Add(new UDPSocket());
-                receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts*2 + 2*c]), this);
-                c++;
-            }
-            Console.WriteLine("Lokalna konfiguracja wczytana do routera " + _name);
         }
 
     }

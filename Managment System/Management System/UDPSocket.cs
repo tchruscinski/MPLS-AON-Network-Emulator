@@ -48,7 +48,7 @@ namespace Management_System
         }
         public void Client(string address, int port)
         {
-            Console.WriteLine("Created UDPServer at: " + address + ":" + portNumber);
+            Console.WriteLine("Created UDPClient at: " + address + ":" + portNumber);
             socket.Connect(address, portNumber);
             Receive();
         }
@@ -77,6 +77,7 @@ namespace Management_System
                     socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                     Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
                     message = Encoding.ASCII.GetString(so.buffer, 0, bytes);
+                    Console.WriteLine("RCV MESSAGE: " + message);
                     ManagementSystem.ProcessRequest(message);
                 }
                 catch(Exception e)
