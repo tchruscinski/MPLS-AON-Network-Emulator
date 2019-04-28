@@ -133,6 +133,7 @@ namespace Management_System
                             returnedString += row["NHLFE_ID"]?.InnerText + ",";
                             returnedString += row["Label"]?.InnerText + ",";
                             returnedString += row["Sender"]?.InnerText + ",";
+                            returnedString += row["ID"]?.InnerText + ",";
                             returnedString += row["NLabel"]?.InnerText + ",";
                             returnedString += row["NextId"]?.InnerText + ",";
                         }

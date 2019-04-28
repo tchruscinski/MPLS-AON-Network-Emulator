@@ -91,8 +91,15 @@ namespace Host
          {
             String[] deleteHeaderTab = response.Split(';');
             String[] responseSplit = deleteHeaderTab[1].Split(',');
-           
-            while(responseSplit.Count() >= 7)
+            //int counter = 0;
+            //for(int i = 0; i < responseSplit.Length; i++)
+            //{
+            //    string DestinationHost;
+            //    if (counter == 0) DestinationHost = responseSplit[counter];
+            //    //else if(counter == 1) 
+
+            //}
+            while(responseSplit.Length >= 7)
             {
                 string DestinationHost = responseSplit[0];
                 int NHLFE_ID = (responseSplit[1] == null || responseSplit[1].Equals("")) ? 0 : Int32.Parse(responseSplit[1]);
