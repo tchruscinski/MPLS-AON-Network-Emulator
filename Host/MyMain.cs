@@ -23,6 +23,8 @@ namespace Host
             Host host1 = new Host("Host1");
             host1.ManagementRequest();
             Console.ReadLine();
+            host1.ShowRoutingLines();
+            Console.ReadLine();
 
             //UDPSocket s1 = new UDPSocket();
             //UDPSocket s2 = new UDPSocket();

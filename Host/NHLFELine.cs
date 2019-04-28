@@ -26,7 +26,7 @@ namespace Host
         public int getID() { return _ID; }
         public int getLabel() { return _label; }
         public int getNextID() { return _nextID; }
-
+        public void ShowNHLFELine() { Console.WriteLine("NHLFELine: {0}, {1}, {2}", _ID, _label, _nextID); }
 
 
 

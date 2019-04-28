@@ -267,5 +267,21 @@ namespace Host
                 Console.WriteLine("Nie mozna wczytac pliku konfiguracyjnego");
             }
         }
+        /*
+         * Wyswietla na ekran konsoli wartosci wszystkich wierszy tablic routingowych
+         */
+        public void ShowRoutingLines()
+        {
+            Console.WriteLine("ILMTable:");
+            for (int i = 0; i < tableILM.Count; i++)
+                tableILM[i].ShowILMLine();
+            Console.WriteLine("NHLFETable:");
+            for (int i = 0; i < tableNHLFE.Count; i++)
+                tableNHLFE[i].ShowNHLFELine();
+            Console.WriteLine("MPLSTable:");
+            for (int i = 0; i < tableMPLS_FIB.Count; i++)
+                tableMPLS_FIB[i].ShowMPLSLine();
+
+        }
     }
 }

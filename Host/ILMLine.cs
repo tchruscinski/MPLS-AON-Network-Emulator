@@ -21,5 +21,6 @@ namespace Host
 
         public int GetLabel() { return _label; }
         public string GetSender() { return _sender; }
+        public void ShowILMLine() { Console.WriteLine("ILMLine: {0}, {1}", _label, _sender); }
     }
 }
