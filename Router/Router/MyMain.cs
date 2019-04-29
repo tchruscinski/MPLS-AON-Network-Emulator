@@ -21,6 +21,8 @@ namespace RouterV1
             }
             Router rt = new Router("Router1");
             rt.ManagementRequest();
+            Router rter = new Router("Router3");
+            rter.ManagementRequest();
             //rt.ParseLocalConfig();
             Console.ReadLine();
 
