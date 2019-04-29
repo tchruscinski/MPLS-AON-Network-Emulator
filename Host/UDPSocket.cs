@@ -89,7 +89,7 @@ namespace Host
                     {
                         timeStamp = time.GetTimestamp(DateTime.Now);
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(timeStamp+" Nie mozna nawiazac polaczenia");
+                        Console.WriteLine(timeStamp+" Nie mozna nawiazac polaczenia.");
                         Console.ForegroundColor = ConsoleColor.Gray;
                         //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
                         //host/router nie jest dostepny

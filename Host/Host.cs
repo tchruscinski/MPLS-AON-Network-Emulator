@@ -125,13 +125,13 @@ namespace Host
         {
             StringBuilder builder = new StringBuilder();
             int NHLFE_ID = CheckMPLSTable(destinationHost);
-            if (NHLFE_ID == 0)
+            /*if (NHLFE_ID == 0)
             {
                 Console.WriteLine("Nie mozna wyslac pakietu zadanym portem");
                 return;
-            }
-            else
-            {
+            }*/
+            //else
+            //{
                 while (NHLFE_ID != 0)
                 {
                     int index = CheckNHLFETable(NHLFE_ID); //szukamy indeksu wpisu o danym ID
@@ -154,7 +154,7 @@ namespace Host
                 builder.Append(message);
                 sendingSocket.Send(builder.ToString());
                 Console.WriteLine(builder.ToString());
-            }
+            //}
                 
         }   
 

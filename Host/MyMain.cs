@@ -17,7 +17,14 @@ namespace Host
                 host.ParseLocalConfig();        
                 try
                 {
+                    System.Threading.Thread.Sleep(1000);
                     host.ManagementRequest();
+                    System.Threading.Thread.Sleep(1000);
+ 
+                    if(args[0].Equals("Host1"))
+                    {
+                        host.SendPacket("Host2", "Testowa wiadomosc");
+                    }
                 } catch(Exception e) { Console.WriteLine(e); }
                 Console.ReadLine();
             }

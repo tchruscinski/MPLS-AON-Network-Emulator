@@ -14,11 +14,12 @@ namespace RouterV1
             {
                 Router router = new Router(args[0]);
                 router.ParseLocalConfig();
-                //try
-                //{
-                //    router.ManagementRequest();
-                //}
-                //catch (Exception e) { Console.WriteLine(e); }
+                try
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    router.ManagementRequest();
+                }
+                catch (Exception e) { Console.WriteLine(e); }
                 Console.ReadLine();
 
             }

@@ -55,7 +55,7 @@ namespace ConnectionCloud
             XmlDocument doc = new XmlDocument();
             try
             {
-                doc.Load(@"..\..\..\Connection Cloud\ConnectionCloud\ConnectionCloud\cloud_config.xml");
+                doc.Load(@"..\..\ConnectionCloud\cloud_config.xml");
             }
             catch (Exception e)
             {
