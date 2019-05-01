@@ -292,16 +292,16 @@ namespace Management_System
             ManagementSystem.StartServer();
             ManagementSystem.StartClient();
             Console.ReadLine();
-            //while(true)
-            //{
-            //    Console.Write("NMS# ");
-            //    command = Console.ReadLine();
-            //    RunCommand(command);
-                
+            while (true)
+            {
+                Console.Write("NMS# ");
+                command = Console.ReadLine();
+                RunCommand(command);
 
 
-            //}
-            
+
+            }
+
         }
     }
 }

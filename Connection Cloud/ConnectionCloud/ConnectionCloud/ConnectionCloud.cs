@@ -28,7 +28,15 @@ namespace ConnectionCloud
         Time time = new Time();
         int outPort;
 
-        //TODO - wypelnianie tabeli routingu danymi
+        //TODO - wypelnianie tabeli routingu danymi''
+
+        public void StartText()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("--------------TSST - CABLE CLOUD EMULATOR------------------");
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
         public void Proceed(string packet, int receivingPort)
         {
             _packet = packet;
@@ -111,7 +119,7 @@ namespace ConnectionCloud
 
             }
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Port unavailable");
             Console.ForegroundColor = ConsoleColor.Gray;
             //usuniecie wpisu z tablicy
             Console.WriteLine("PORT:" + port);
@@ -141,7 +149,7 @@ namespace ConnectionCloud
                 }
             }
             //jezeli nie udalo sie znalezc wlasciwego portu, zwraca komunikat
-            Console.WriteLine("Nie istnieje szukany port wysylajacy");
+            Console.WriteLine("Port doesn't exist");
             return 0;
         }
         
