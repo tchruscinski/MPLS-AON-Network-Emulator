@@ -30,6 +30,7 @@ namespace ConnectionCloud
 
         //TODO - wypelnianie tabeli routingu danymi''
 
+
         public void StartText()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
