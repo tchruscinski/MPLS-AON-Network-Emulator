@@ -17,6 +17,7 @@ namespace Management_System
     {
         //private static UDPSocket listeningSocket = new UDPSocket();
         //private static UDPSocket sendingSocket = new UDPSocket();
+        static Time time = new Time();
         private static Parser parser = new Parser();
         private static int portNumber = 100;
         private static int connectionCloudListeningPort = 100;
@@ -32,10 +33,23 @@ namespace Management_System
         private static string ReadRouterConfig(string routerName)
         {
             string routerConfig = parser.ParseRouterTable("routers_config.xml", routerName);
-
             Console.WriteLine("sparsowany xml: "+ routerConfig);
-
             return routerConfig;
+        }
+        private static void DisplayRouterConfig(string routerName)
+        {
+            string routerConf = "";
+            routerConf = ReadRouterConfig(routerName);
+            Console.WriteLine("{0}", routerConf);
+            Console.WriteLine("| NHLFE_ID_MPLS | Action | Out Label | OutPortN | IncPort | IncLabel | PLS | NHLFE_ID_ILM |");
+            //String[] splittedConfig = routerConf.Split(',');
+            //for (int i = 0; i < splittedConfig.Length; i = i + 9)
+            //{
+            //    Console.WriteLine("|    {0}      |    {1}    |   {2}   |   {3}   |   {4}   |   {5}   |   {6}   |   {7}   |",
+            //        splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
+            //        splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6], splittedConfig[i + 7]);
+            //}
+
         }
 
         /**
@@ -45,9 +59,7 @@ namespace Management_System
         private static string ReadHostConfig(string hostName)
         {
             string hostConfig = parser.ParseHostTable("host_config.xml", hostName);
-
             Console.WriteLine("sparsowany xml: " + hostConfig);
-
             return hostConfig;
         }
 
@@ -201,22 +213,23 @@ namespace Management_System
 
             if(message.Contains("Host"))
             {
-                Console.WriteLine("Otrzymano request od " + message + " o tabele hosta");
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Otrzymano request od " + message + " o tabele hosta");
                 SendHostTable(message);
-                Console.WriteLine("Tabela wysłana do " + message);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Tabela wysłana do " + message);
             }
 
             if(message.Contains("Router"))
             {
-                Console.WriteLine("Otrzymano request od " + message + " o tabele routera");
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Otrzymano request od " + message + " o tabele routera");
                 SendRouterTable(message);
-                Console.WriteLine("Tabela wysłana do " + message);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Tabela wysłana do " + message);
             }   
         }
 
          /**
          * Metoda czytająca komendy z konsoli
          * @ no arguments, void
+         * 
         */
         /*private void ReadInput() 
         {
@@ -231,12 +244,21 @@ namespace Management_System
             Console.WriteLine("---POMOC---");
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(" ");
-            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("change-config [router_name]");
             Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("Zmiana konfiguracji routera na podstawie odpowiadajacego mu pliku XML");
         }
 
+        private static void WrongUsage()
+        {
+            Console.WriteLine(" ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Incorrect usage of CLI.");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Check help to get more info (\"help\")");
+            Console.WriteLine(" ");
+        }
 
         private static void RunCommand(string input)
         {
@@ -250,12 +272,64 @@ namespace Management_System
             {
                 comm = input.Split(' ');
 
-                if(comm[0] == "change-config")
+                if(comm[0] == "change-config" || comm[0] == "cc")
                 {
                     Console.WriteLine("TODO");
 
                 }
-                
+                else if(comm[0] == "display-local-config" || comm[0] == "dlc")
+                {
+                    Console.WriteLine(" ");
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("NMS local configuration:");
+                    DisplayLocalConfig();
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine(" ");
+                }
+                else if(comm[0] == "display-remote-config" || comm[0] == "drc")
+                {
+                    if (comm.Length == 3)
+                    {
+                        if (comm[1] == "host" || comm[1] == "h")
+                        {
+                            ReadHostConfig(comm[2]);
+                        }
+                        else if (comm[1] == "router" || comm[1] == "r")
+                        {
+                            DisplayRouterConfig(comm[2]);
+                        }
+                        else
+                        {
+                            WrongUsage();
+                        }
+                    }
+                    else
+                    {
+                        WrongUsage();
+                    }
+                }
+                else if(comm[0] == "display-config" || comm[0] == "dc")
+                {
+                    Console.WriteLine("TODO");
+                }
+                else if(comm[0] == "run-scenario" || comm[0] == "rs")
+                {
+                    Console.WriteLine("TODO");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid command. Please use \"help\" to display help");        
+                }   
+            }
+        }
+
+        public static void DisplayLocalConfig()
+        {
+            string localConfig = parser.ParseLocalConfig("local.xml");
+            String[] splittedConfig = localConfig.Split(',');
+            for(int i = 0; i < splittedConfig.Length; i=i+2 )
+            {
+                Console.WriteLine("role: [{0}] port: [{1}]", splittedConfig[i], splittedConfig[i + 1]);
             }
         }
 
@@ -291,15 +365,11 @@ namespace Management_System
             ManagementSystem.ParseLocalConfig();
             ManagementSystem.StartServer();
             ManagementSystem.StartClient();
-            Console.ReadLine();
             while (true)
             {
                 Console.Write("NMS# ");
                 command = Console.ReadLine();
                 RunCommand(command);
-
-
-
             }
 
         }
