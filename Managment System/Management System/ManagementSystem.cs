@@ -33,22 +33,27 @@ namespace Management_System
         private static string ReadRouterConfig(string routerName)
         {
             string routerConfig = parser.ParseRouterTable("routers_config.xml", routerName);
-            Console.WriteLine("sparsowany xml: "+ routerConfig);
             return routerConfig;
         }
         private static void DisplayRouterConfig(string routerName)
         {
             string routerConf = "";
             routerConf = ReadRouterConfig(routerName);
-            Console.WriteLine("{0}", routerConf);
-            Console.WriteLine("| NHLFE_ID_MPLS | Action | Out Label | OutPortN | IncPort | IncLabel | PLS | NHLFE_ID_ILM |");
-            //String[] splittedConfig = routerConf.Split(',');
-            //for (int i = 0; i < splittedConfig.Length; i = i + 9)
-            //{
-            //    Console.WriteLine("|    {0}      |    {1}    |   {2}   |   {3}   |   {4}   |   {5}   |   {6}   |   {7}   |",
-            //        splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
-            //        splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6], splittedConfig[i + 7]);
-            //}
+            try
+            {
+                String[] splittedConfig = routerConf.Split(',');
+                Console.WriteLine("| NHLFE_ID_MPLS | Action | Out Label | OutPortN | IncPort | IncLabel | PLS | NHLFE_ID_ILM |");
+                for (int i = 0; i < splittedConfig.Length; i = i + 9)
+                {
+                    Console.WriteLine("|    {0}      |    {1}    |   {2}   |   {3}   |   {4}   |   {5}   |   {6}   |   {7}   |",
+                        splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
+                        splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6], splittedConfig[i + 7]);
+                }
+            }
+            catch(NullReferenceException)
+            {
+                Console.WriteLine("Configuration for router {0} doesn't exist.", routerName);
+            }
 
         }
 
@@ -245,9 +250,19 @@ namespace Management_System
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(" ");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("change-config [router_name]");
+            Console.WriteLine("change-config [router_name] || cc [router_name]");
             Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("Zmiana konfiguracji routera na podstawie odpowiadajacego mu pliku XML");
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("display-remote-config [router|host] [router|host_name] || drc [r|h] [router|host_name]");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.WriteLine("Wyswietlenie konfiguracji zdalnego urzadzenia");
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("display-local-config [router_name] || dlc [router_name]");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.WriteLine("Wyswietlenie konfiguracji lokalnej");
         }
 
         private static void WrongUsage()
