@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicTerminal.cs" />
+    <Compile Include="CommandLineInterface.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="ILMLine.cs" />
     <Compile Include="MPLSLine.cs" />
