@@ -309,6 +309,12 @@ namespace Management_System
             Console.WriteLine("display-local-config [router_name] || dlc [router_name]");
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Wyswietlenie konfiguracji lokalnej");
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("quit || q");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Wyjscie z NMS");
+
         }
 
         private static void WrongUsage()
@@ -335,8 +341,22 @@ namespace Management_System
 
                 if (comm[0] == "change-config" || comm[0] == "cc")
                 {
-                    Console.WriteLine("TODO");
+                    if (comm.Length == 3)
+                    {
+                        if (comm[1] == "host" || comm[1] == "h")
+                        {
+                            SendHostTable(comm[2]);
+                        }
+                        else if (comm[1] == "router" || comm[1] == "r")
+                        {
+                            SendRouterTable(comm[2]);
+                        }
+                        else
+                        {
+                            WrongUsage();
+                        }
 
+                    }
                 }
                 else if (comm[0] == "display-local-config" || comm[0] == "dlc")
                 {
@@ -373,7 +393,7 @@ namespace Management_System
                 {
                     Console.WriteLine("TODO");
                 }
-                else if(comm[0] == "quit" || comm[0] == "exit" || comm[0] == "q")
+                else if (comm[0] == "quit" || comm[0] == "exit" || comm[0] == "q")
                 {
                     Environment.Exit(0);
                 }
