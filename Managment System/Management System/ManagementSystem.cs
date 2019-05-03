@@ -41,18 +41,57 @@ namespace Management_System
             routerConf = ReadRouterConfig(routerName);
             try
             {
+                IEnumerable<Tuple<string, string, string, string, string, string, string>> routerConfiguration;
                 String[] splittedConfig = routerConf.Split(',');
-                Console.WriteLine("| NHLFE_ID_MPLS | Action | Out Label | OutPortN | IncPort | IncLabel | PLS | NHLFE_ID_ILM |");
-                for (int i = 0; i < splittedConfig.Length; i = i + 9)
-                {
-                    Console.WriteLine("|    {0}      |    {1}    |   {2}   |   {3}   |   {4}   |   {5}   |   {6}   |   {7}   |",
-                        splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
-                        splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6], splittedConfig[i + 7]);
-                }
+
+                //zdaje sobie sprawe z tego ze to jest paskudnie zahardkodowane ale nie mam czasu rozkminiac ladniejszego rozwiazania :D 
+                int i = 0;
+                routerConfiguration =
+                       new[]
+                       {
+                          Tuple.Create(splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
+                          splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6]),
+                          Tuple.Create(splittedConfig[i+9], splittedConfig[i + 1+9], splittedConfig[i + 2+9], splittedConfig[i + 3+9],
+                          splittedConfig[i + 4+9], splittedConfig[i + 5+9], splittedConfig[i + 6+9]),
+                          Tuple.Create(splittedConfig[i+18], splittedConfig[i + 1+18], splittedConfig[i + 2+18], splittedConfig[i + 3+18],
+                          splittedConfig[i + 4+18], splittedConfig[i + 5+18], splittedConfig[i + 6+18]),
+                          Tuple.Create(splittedConfig[i+27], splittedConfig[i + 1+27], splittedConfig[i + 2+27], splittedConfig[i + 3+27],
+                          splittedConfig[i + 4+27], splittedConfig[i + 5+27], splittedConfig[i + 6+27]),
+                       };
+
+                Console.WriteLine(routerConfiguration.ToStringTable(
+                    new[] { "NHLFE_ID_MPLS", "Action", "Out Label", "OutPortN", "IncPort", "IncLabel", "PLS" },
+                       a => a.Item1, a => a.Item2, a => a.Item3, a => a.Item4, a => a.Item5, a => a.Item6, a => a.Item7));
+               
             }
             catch(NullReferenceException)
             {
                 Console.WriteLine("Configuration for router {0} doesn't exist.", routerName);
+            }
+
+        }
+
+        private static void DisplayHostConfig(string hostName)
+        {
+            string hostConf = "";
+            hostConf = ReadHostConfig(hostName);
+            try
+            {
+                String[] splittedConfig = hostConf.Split(',');
+                Console.WriteLine("| NHLFE_ID_MPLS | Action | Out Label | OutPortN | IncPort | IncLabel | PLS | NHLFE_ID_ILM |");
+
+
+
+                for (int i = 0; i < splittedConfig.Length; i = i + 9)
+                {
+                    Console.WriteLine("|    {0}      |    {1}    |   {2}   |   {3}   |   {4}   |   {5}   |   {6}  |",
+                        splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
+                        splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6]);
+                }
+            }
+            catch (NullReferenceException)
+            {
+                Console.WriteLine("Configuration for router {0} doesn't exist.", hostName);
             }
 
         }
@@ -251,17 +290,17 @@ namespace Management_System
             Console.WriteLine(" ");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("change-config [router_name] || cc [router_name]");
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Zmiana konfiguracji routera na podstawie odpowiadajacego mu pliku XML");
 
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("display-remote-config [router|host] [router|host_name] || drc [r|h] [router|host_name]");
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Wyswietlenie konfiguracji zdalnego urzadzenia");
 
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("display-local-config [router_name] || dlc [router_name]");
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Wyswietlenie konfiguracji lokalnej");
         }
 
@@ -287,12 +326,12 @@ namespace Management_System
             {
                 comm = input.Split(' ');
 
-                if(comm[0] == "change-config" || comm[0] == "cc")
+                if (comm[0] == "change-config" || comm[0] == "cc")
                 {
                     Console.WriteLine("TODO");
 
                 }
-                else if(comm[0] == "display-local-config" || comm[0] == "dlc")
+                else if (comm[0] == "display-local-config" || comm[0] == "dlc")
                 {
                     Console.WriteLine(" ");
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -301,13 +340,13 @@ namespace Management_System
                     Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine(" ");
                 }
-                else if(comm[0] == "display-remote-config" || comm[0] == "drc")
+                else if (comm[0] == "display-remote-config" || comm[0] == "drc")
                 {
                     if (comm.Length == 3)
                     {
                         if (comm[1] == "host" || comm[1] == "h")
                         {
-                            ReadHostConfig(comm[2]);
+                            DisplayHostConfig(comm[2]);
                         }
                         else if (comm[1] == "router" || comm[1] == "r")
                         {
@@ -323,17 +362,13 @@ namespace Management_System
                         WrongUsage();
                     }
                 }
-                else if(comm[0] == "display-config" || comm[0] == "dc")
-                {
-                    Console.WriteLine("TODO");
-                }
-                else if(comm[0] == "run-scenario" || comm[0] == "rs")
+                else if (comm[0] == "run-scenario" || comm[0] == "rs")
                 {
                     Console.WriteLine("TODO");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid command. Please use \"help\" to display help");        
+                    Console.WriteLine("Invalid command. Please use \"help\" to display help");
                 }   
             }
         }
