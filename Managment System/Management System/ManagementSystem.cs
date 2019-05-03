@@ -75,23 +75,31 @@ namespace Management_System
         {
             string hostConf = "";
             hostConf = ReadHostConfig(hostName);
+
             try
             {
+                IEnumerable<Tuple<string, string, string, string, string, string, string>> hostConfiguration;
                 String[] splittedConfig = hostConf.Split(',');
-                Console.WriteLine("| NHLFE_ID_MPLS | Action | Out Label | OutPortN | IncPort | IncLabel | PLS | NHLFE_ID_ILM |");
+                
+                //zdaje sobie sprawe z tego ze to jest paskudnie zahardkodowane ale nie mam czasu rozkminiac ladniejszego rozwiazania :D 
 
+                int i = 0;
+                hostConfiguration =
+                       new[]
+                       {
+                          Tuple.Create(splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
+                          splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6]),
+                       };
 
+                Console.WriteLine(hostConfiguration.ToStringTable(
 
-                for (int i = 0; i < splittedConfig.Length; i = i + 9)
-                {
-                    Console.WriteLine("|    {0}      |    {1}    |   {2}   |   {3}   |   {4}   |   {5}   |   {6}  |",
-                        splittedConfig[i], splittedConfig[i + 1], splittedConfig[i + 2], splittedConfig[i + 3],
-                        splittedConfig[i + 4], splittedConfig[i + 5], splittedConfig[i + 6]);
-                }
+                    new[] { "Destination Host", "NHLFE_ID", "Label", "Sender", "ID", "NLabel", "NextID" },
+                       a => a.Item1, a => a.Item2, a => a.Item3, a => a.Item4, a => a.Item5, a => a.Item6, a => a.Item7));
+
             }
             catch (NullReferenceException)
             {
-                Console.WriteLine("Configuration for router {0} doesn't exist.", hostName);
+                Console.WriteLine("Configuration for host {0} doesn't exist or has incorrect format.", hostName);
             }
 
         }
@@ -103,7 +111,6 @@ namespace Management_System
         private static string ReadHostConfig(string hostName)
         {
             string hostConfig = parser.ParseHostTable("host_config.xml", hostName);
-            Console.WriteLine("sparsowany xml: " + hostConfig);
             return hostConfig;
         }
 
@@ -365,6 +372,10 @@ namespace Management_System
                 else if (comm[0] == "run-scenario" || comm[0] == "rs")
                 {
                     Console.WriteLine("TODO");
+                }
+                else if(comm[0] == "quit" || comm[0] == "exit" || comm[0] == "q")
+                {
+                    Environment.Exit(0);
                 }
                 else
                 {
