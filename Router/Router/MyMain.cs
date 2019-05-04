@@ -16,15 +16,20 @@ namespace RouterV1
                 
                 router.ManagementRequest();
                 Console.ReadLine();
+                //Console.WriteLine("NHLFE Table");
+                //router.ShowNHLFETable();
+                //Console.WriteLine("ILM Table");
+                //router.ShowILMTable();
+                Console.ReadLine();
                 return;
 
             }
-            Router rt = new Router("Router1");
-            rt.ManagementRequest();
-            Router rter = new Router("Router3");
-            rter.ManagementRequest();
-            //rt.ParseLocalConfig();
-            Console.ReadLine();
+            //Router rt = new Router("Router1");
+            //rt.ManagementRequest();
+            //Router rter = new Router("Router3");
+            //rter.ManagementRequest();
+            ////rt.ParseLocalConfig();
+            //Console.ReadLine();
 
             //// host1 <--> sendingRouter <--> midRouter <--> receivingRouter <--> host2
 

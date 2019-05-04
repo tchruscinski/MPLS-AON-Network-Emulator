@@ -11,32 +11,32 @@ namespace Host
         public static void Main(string[] args)
         {
 
-            //if (args.Length != 0)
-            //{
-            //    Host host = new Host(args[0]);
-            //    host.ManagementRequest();
-            //    Console.ReadLine();
-            //    if (host.getName().Equals("Host1")) host.SendPacket("Host2", "test test test tset");
-            //    Console.ReadLine();
-            //    return;
-            //}
-            Host host1 = new Host("Host1");
-            host1.ManagementRequest();
-            host1.ShowRoutingLines();
-
-            Host host2 = new Host("Host2");
-            host2.ManagementRequest();
-            host2.ShowRoutingLines();
-            string command;
-
-            CommandLineInterface cli = new CommandLineInterface();
-
-            while (true)
+            if (args.Length != 0)
             {
-                Console.Write("HostCLI# ");
-                command = Console.ReadLine();
-                cli.RunCommand(command);
+                Host host = new Host(args[0]);
+                host.ManagementRequest();
+                Console.ReadLine();
+                if (host.getName().Equals("Host1")) host.SendPacket("Host2", "test test test tset");
+                Console.ReadLine();
+                return;
             }
+            //Host host1 = new Host("Host1");
+            //host1.ManagementRequest();
+            //host1.ShowRoutingLines();
+
+            //Host host2 = new Host("Host2");
+            //host2.ManagementRequest();
+            //host2.ShowRoutingLines();
+            //string command;
+
+            //CommandLineInterface cli = new CommandLineInterface();
+
+            //while (true)
+            //{
+            //    Console.Write("HostCLI# ");
+            //    command = Console.ReadLine();
+            //    cli.RunCommand(command);
+            //}
 
             //UDPSocket s1 = new UDPSocket();
             //UDPSocket s2 = new UDPSocket();

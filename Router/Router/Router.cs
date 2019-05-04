@@ -117,8 +117,19 @@ namespace RouterV1
          {
             String[] deleteHeaderTab = response.Split(';');
             String[] responseSplit = deleteHeaderTab[1].Split(',');
-           
-            while(responseSplit.Count() >= 9)
+            //int counter = 0;
+            //for (int i = 0; i < responseSplit.Length; i++)
+            //{
+            //    Console.WriteLine(responseSplit[i]);
+            //    counter++;
+            //    if (counter == 9)
+            //    {
+            //        counter = 0;
+            //        Console.WriteLine("///");
+            //    }
+            //}
+
+            while (responseSplit.Count() >= 9)
             {
                 int NHLFE_ID = (responseSplit[0] == null || responseSplit[0].Equals("")) ? 0 : Int32.Parse(responseSplit[0]);
                 Action action = (Action) Enum.Parse(typeof(Action), responseSplit[1]);
@@ -133,12 +144,13 @@ namespace RouterV1
                 int NHLFE_ID_ILM = (responseSplit[8] == null || responseSplit[8].Equals("")) ? 0 : Int32.Parse(responseSplit[8]);   
                 tableILM.Add(new ILMLine(IncPort, IncLabel, PoppedLabelStack, NHLFE_ID_ILM));
 
+
                 List<string> list = new List<string>(responseSplit);
                 if(list.Count == 9)
                 {
                     break;
                 }
-                list.RemoveRange(1, 9);
+                list.RemoveRange(0, 9);
                 responseSplit = list.ToArray();
             }
          }
@@ -396,7 +408,15 @@ namespace RouterV1
                 {
                     Console.WriteLine(extractLabels[i]);
                 }
-                    _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+                _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+
+                //try
+                //{
+                //    _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+                //} catch (SystemException e)
+                //{
+                //    Console.WriteLine(e);
+                //}
                 StringBuilder builder = new StringBuilder();
                 for (int i = 2; i < extractLabels.Length - 1; i++) //pozostale etykiety dodane po myslniku
                 {
@@ -465,6 +485,16 @@ namespace RouterV1
                 Console.WriteLine("ID: {0}, Action: {1}, Label: {2}, Port: {3}, NextID: {4}",
                     tableNHLFE[i].getID(), tableNHLFE[i].getAction(), tableNHLFE[i].getLabel(),
                     tableNHLFE[i].getPort(), tableNHLFE[i].getNextID());
+        }
+        /*
+         * Wyswietla tablice ILM
+         */
+        public void ShowILMTable()
+        {
+            for (int i = 0; i < tableILM.Count; i++)
+                Console.WriteLine("Port: {0}, Label: {1}, PoppedLabels: {2}, ValueNHLFE: {3}",
+                    tableILM[i].GetPort(), tableILM[i].GetLabel(), 
+                    tableILM[i].GetPoppedLabels(), tableILM[i].GetNHLFE());
         }
 
 
