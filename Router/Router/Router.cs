@@ -354,6 +354,7 @@ namespace RouterV1
             for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
                 builder.Append(extractTopLabel[i]);
             _packet = builder.ToString();
+            Console.WriteLine("Packet:" + _packet);
         }
         /*
          * Zdejmuje etykiete ze szczytu stosu etykiet
@@ -361,7 +362,8 @@ namespace RouterV1
          */
         public void PopLabel()
         {
-            String[] extractTopLabel = _packet.Split(','); //wydzielamy etykiete ze szczytu stosu, zeby ja zdjac
+            String[] extractLabels = _packet.Split(';');
+            String[] extractTopLabel = extractLabels[0].Split(','); //wydzielamy etykiete ze szczytu stosu, zeby ja zdjac
             StringBuilder poppedLabelBuilder = new StringBuilder(); //aktualizujemy wartosc poppedLabels pakietu
             poppedLabelBuilder.Append(extractTopLabel[0]);
             poppedLabelBuilder.Append("-");
@@ -370,9 +372,15 @@ namespace RouterV1
             _poppedLabels = poppedLabelBuilder.ToString();
 
             StringBuilder messageBuilder = new StringBuilder();
-            for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
+            for (int i = 1; i < extractTopLabel.Length; i++)
+            { //dodajemy reszte etykiet oddzielonych przecinkiem
                 messageBuilder.Append(extractTopLabel[i]);
+                messageBuilder.Append(',');
+               
+            }
 
+            messageBuilder.Append(';'); //dodajemy znak konca naglowka
+            messageBuilder.Append(extractLabels[1]); //dodajemy wiadomosc
             _packet = messageBuilder.ToString();
             Console.WriteLine("PAkiet: "+ _packet);
         }
@@ -426,7 +434,6 @@ namespace RouterV1
                 _poppedLabels = builder.ToString();
 
             }
-
 
         }
         /*
