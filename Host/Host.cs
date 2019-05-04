@@ -73,7 +73,7 @@ namespace Host
             if(!packet.Contains("NMS"))
             {
                 String sender = GetSenderName(extractedLabel[0]);//nazwa nadawcy
-                String[] extractedSender = extractedLabel[1].Split(';'); //wydzielamy nadawce i tresc wiadomosci
+                String[] extractedSender = packet.Split(';'); //wydzielamy nadawce i tresc wiadomosci
                 Console.WriteLine(_name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
             } 
             else 
