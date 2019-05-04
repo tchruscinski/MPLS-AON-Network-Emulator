@@ -16,8 +16,13 @@ namespace Host
                 Host host = new Host(args[0]);
                 host.ManagementRequest();
                 Console.ReadLine();
-                if (host.getName().Equals("Host1")) host.SendPacket("Host2", "test test test tset");
-                Console.ReadLine();
+                while (true)
+                {
+                    if (host.getName().Equals("Host1")) host.SendPacket("Host2", "test test test tset");
+                    else if (host.getName().Equals("Host2")) host.SendPacket("Host1", "test w druga strone");
+                    Console.ReadLine();
+                }
+                
                 return;
             }
             //Host host1 = new Host("Host1");

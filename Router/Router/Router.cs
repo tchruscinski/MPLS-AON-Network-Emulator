@@ -29,7 +29,9 @@ namespace RouterV1
         private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
         private int _incPort; //port, ktorym przyszedl pakiet, potrzebny do tablicy ILM
         private int _topLabel; //etykieta na szczycie stosu etykiet pakietu
-        private string _poppedLabels; //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
+        //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
+        //robie tak dziwnie, bo dla innych przypisan pustego stringa cos sie wywala potem
+        private string _poppedLabels = new StringBuilder().ToString(); 
         private static Parser parser = new Parser();
         public static string destinationIP = "127.0.0.1"; //docelowe ip
 
@@ -201,8 +203,10 @@ namespace RouterV1
                 if (sendingSockets[i].getPort() == port)
                 {
                     sendingSockets[i].Send(message);
+                    _poppedLabels = new StringBuilder().ToString();
                     return;
                 }
+            _poppedLabels = new StringBuilder().ToString();
             Console.WriteLine("Nie mozna wyslac pakietu zadanym portem//");
             //usuniecie wpisu z tablicy
             Console.WriteLine("PORT:" + port);
@@ -285,10 +289,13 @@ namespace RouterV1
                     if (sendingSockets[j].getPort() == port)
                     {
                         sendingSockets[j].Send(_packet);
+                        _poppedLabels = new StringBuilder().ToString(); //po wyslaniu czyscimy bufor zdjetych etykiet
                         return;
                     }
                 //jezeli nie udalo sie wyslac, zwraca komunikat
                 Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
+                _poppedLabels = new StringBuilder().ToString(); //czyscimy bufor zdjetych etykiet
+    
         }
         /*
          * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
@@ -318,13 +325,17 @@ namespace RouterV1
                 //Console.WriteLine("Popped labels")
                 //Console.WriteLine(_poppedLabels);
                 //Console.WriteLine(tableILM[i].GetPoppedLabels());
-
                 if (tableILM[i].GetPort() == _incPort && tableILM[i].GetLabel() == _topLabel
                     && tableILM[i].GetPoppedLabels().Equals(_poppedLabels))
                 {
-                    //Console.WriteLine(tableILM[i].GetNHLFE());
+                    Console.WriteLine("'{0}' '{1}'", tableILM[i].GetPoppedLabels(), _poppedLabels); 
                     return tableILM[i].GetNHLFE(); //zwraca NHLFE danego wpisu
                 }
+                //if (tableILM[i].GetPort() == _incPort && tableILM[i].GetLabel() == _topLabel)
+                //{
+                //    Console.WriteLine("'{0}' '{1}'", tableILM[i].GetPoppedLabels(), _poppedLabels);
+                //    Console.WriteLine(tableILM[i].GetNHLFE());
+                //}
             }
             return 0; //jesli nie znaleziono 0
             
@@ -425,13 +436,14 @@ namespace RouterV1
                 //{
                 //    Console.WriteLine(e);
                 //}
-                StringBuilder builder = new StringBuilder();
-                for (int i = 2; i < extractLabels.Length - 1; i++) //pozostale etykiety dodane po myslniku
-                {
-                    builder.Append(extractLabels[i]);
-                    builder.Append('-');
-                }
-                _poppedLabels = builder.ToString();
+                //StringBuilder builder = new StringBuilder();
+                //for (int i = 2; i < extractLabels.Length - 1; i++) //pozostale etykiety dodane po myslniku
+                //{
+                //    builder.Append(extractLabels[i]);
+                //    builder.Append('-');
+                //}
+                //_poppedLabels = builder.ToString(); //nie wiem czemu, bez tego sie wywala
+
 
             }
 

@@ -16,10 +16,10 @@ namespace RouterV1
                 
                 router.ManagementRequest();
                 Console.ReadLine();
-                //Console.WriteLine("NHLFE Table");
-                //router.ShowNHLFETable();
-                //Console.WriteLine("ILM Table");
-                //router.ShowILMTable();
+                Console.WriteLine("NHLFE Table");
+                router.ShowNHLFETable();
+                Console.WriteLine("ILM Table");
+                router.ShowILMTable();
                 Console.ReadLine();
                 return;
 
