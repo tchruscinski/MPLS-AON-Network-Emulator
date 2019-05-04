@@ -80,6 +80,7 @@ namespace Host
             {
                 Console.WriteLine("Otrzymano pakiet od NMS...");
                 ParseNMSResponse(packet);
+
             }
         }
 
