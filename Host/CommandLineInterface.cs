@@ -37,7 +37,7 @@ namespace Host
             Console.WriteLine(" ");
         }
 
-        public void RunCommand(string input)
+        public void RunCommand(string input, Host host)
         {
             String[] comm;
             if (input == "help" || input == "h" || input == "?")
@@ -54,7 +54,7 @@ namespace Host
                 {
                     if (comm.Length == 3)
                     {
-                       
+                        host.SendPacket(comm[1], comm[2]);
                     }
                     else
                     {

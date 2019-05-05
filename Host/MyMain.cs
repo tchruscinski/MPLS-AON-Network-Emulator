@@ -16,13 +16,23 @@ namespace Host
                 Host host = new Host(args[0]);
                 host.ManagementRequest();
                 Console.ReadLine();
-                while (true)
+                /*while (true)
                 {
                     if (host.getName().Equals("Host1")) host.SendPacket("Host2", "test test test tset");
                     else if (host.getName().Equals("Host2")) host.SendPacket("Host1", "test w druga strone");
                     Console.ReadLine();
+                }*/
+                string command;
+
+                CommandLineInterface cli = new CommandLineInterface();
+
+                while (true)
+                {
+                    Console.Write("HostCLI# ");
+                    command = Console.ReadLine();
+                    cli.RunCommand(command, host);
                 }
-                
+
                 return;
             }
             //Host host1 = new Host("Host1");
