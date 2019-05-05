@@ -49,32 +49,33 @@
 			<NHLFE_ID_ILM>4</NHLFE_ID_ILM>
 		</Row>
 	</Router>
-    <Router>
-		<Name>Router2</Name>
-		<Row Assigned="Router2">
-			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
-			<Action>SWAP</Action>
-			<OutLabel>28</OutLabel>
-			<OutPortN>12</OutPortN>
-			<NextID>0</NextID>
-            <?ILM?>
-			<IncPort>9</IncPort>
-			<IncLabel>24</IncLabel>
-			<PoppedLabelStack></PoppedLabelStack>
-			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
-		</Row>
-		<Row Assigned="Router2">
-			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
-			<Action>SWAP</Action>
-			<OutLabel>48</OutLabel>
-			<OutPortN>10</OutPortN>
-			<NextID>0</NextID>
-            <?ILM?>
-			<IncPort>11</IncPort>
-			<IncLabel>46</IncLabel>
-			<PoppedLabelStack></PoppedLabelStack>
-			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
-		</Row>
+  <Router>
+    <Name>Router2</Name>
+    <Row Assigned="Router2">
+      <NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
+      <Action>SWAP</Action>
+      <OutLabel>28</OutLabel>
+      <OutPortN>12</OutPortN>
+      <NextID>0</NextID>
+      <?ILM?>
+      <IncPort>9</IncPort>
+      <IncLabel>24</IncLabel>
+      <PoppedLabelStack></PoppedLabelStack>
+      <NHLFE_ID_ILM>1</NHLFE_ID_ILM>
+    </Row>
+    <Row Assigned="Router2">
+      <NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
+      <Action>SWAP</Action>
+      <OutLabel>48</OutLabel>
+      <OutPortN>10</OutPortN>
+      <NextID>0</NextID>
+      <?ILM?>
+      <IncPort>11</IncPort>
+      <IncLabel>46</IncLabel>
+      <PoppedLabelStack></PoppedLabelStack>
+      <NHLFE_ID_ILM>2</NHLFE_ID_ILM>
+    </Row>
+</Router>
 	<Router>
 		<Name>Router3</Name>
 		<Row Assigned="Router3">
