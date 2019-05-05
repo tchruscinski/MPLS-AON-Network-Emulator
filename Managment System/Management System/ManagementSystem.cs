@@ -22,6 +22,7 @@ namespace Management_System
         private static int portNumber = 100;
         private static int connectionCloudListeningPort = 100;
         private static string localIP = "127.0.0.1"; //docelowe ip;
+        private static int ConfigNb = 1;
         private static List<UDPSocket> routerSendingSockets = new List<UDPSocket>();
         private static List<UDPSocket> routerReceivingSockets = new List<UDPSocket>();
         private static List<UDPSocket> hostSendingSockets = new List<UDPSocket>();
@@ -32,9 +33,19 @@ namespace Management_System
         */
         private static string ReadRouterConfig(string routerName)
         {
-            string routerConfig = parser.ParseRouterTable("routers_config.xml", routerName);
+            StringBuilder builder = new StringBuilder();
+            builder.Append("routers_config");
+            if (ConfigNb > 1)
+            {
+                builder.Append(ConfigNb);
+            }
+            builder.Append(".xml");
+            string configName = builder.ToString();
+            string routerConfig = parser.ParseRouterTable(configName, routerName);
+            Console.WriteLine("routerConfig: " + routerConfig);
             return routerConfig;
         }
+
         private static void DisplayRouterConfig(string routerName)
         {
             string routerConf = "";
@@ -110,10 +121,17 @@ namespace Management_System
         */
         private static string ReadHostConfig(string hostName)
         {
-            string hostConfig = parser.ParseHostTable("host_config.xml", hostName);
+            StringBuilder builder = new StringBuilder();
+            builder.Append("host_config");
+            if (ConfigNb > 1)
+            {
+                builder.Append(ConfigNb);
+            }
+            builder.Append(".xml");
+            string configName = builder.ToString();
+            string hostConfig = parser.ParseHostTable(configName, hostName);
             return hostConfig;
         }
-
 
         //ON HOLD, używamy static stringa jako IP
         /**
@@ -306,6 +324,11 @@ namespace Management_System
             Console.WriteLine("Wyswietlenie konfiguracji zdalnego urzadzenia");
 
             Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("change-scenario [scenario_number] || chs [scenario_number]");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Zmiana scenariusza (numer configa dla hosta o routera)");
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("display-local-config [router_name] || dlc [router_name]");
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Wyswietlenie konfiguracji lokalnej");
@@ -366,6 +389,20 @@ namespace Management_System
                     DisplayLocalConfig();
                     Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine(" ");
+                }
+                else if (comm[0] == "change-scenario" || comm[0] == "chs")
+                {
+                    if (comm.Length == 2)
+                    {
+                        Int32.TryParse(comm[1], out ConfigNb);
+                        Console.WriteLine("co to tam wyszlo:" + ConfigNb);
+                        SendRouterTable("Router1");
+                        SendRouterTable("Router2");
+                        SendRouterTable("Router3");
+                        SendRouterTable("Router4");
+                        SendHostTable("Host1");
+                        SendHostTable("Host2");
+                    }
                 }
                 else if (comm[0] == "display-remote-config" || comm[0] == "drc")
                 {
