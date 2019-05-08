@@ -95,19 +95,14 @@ namespace ConnectionCloud
                     {
                         if (sendingSockets[j].getPort() == outPort)
                         {
-                            sendingSockets[j].Send(message);
+                            try { sendingSockets[j].Send(message); }
+                            catch (Exception e) { Console.WriteLine("Sending error!"); }
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message sent over port: {0}", port);
                             Console.ForegroundColor = ConsoleColor.Gray;
                             return;
                         }
                     }
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message wasn't send");
-                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
 
             }
