@@ -50,7 +50,7 @@ namespace Host
                 comm = input.Split(' ');
 
             
-                if (comm[0] == "send" || comm[0] == "drc")
+                if (comm[0] == "send" || comm[0] == "s")
                 {
                     if (comm.Length == 3)
                     {
