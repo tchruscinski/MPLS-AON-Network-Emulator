@@ -119,6 +119,13 @@ namespace RouterV1
          {
             String[] deleteHeaderTab = response.Split(';');
             String[] responseSplit = deleteHeaderTab[1].Split(',');
+
+            if(String.IsNullOrEmpty(response)) 
+            {
+                return;
+            }
+            tableNHLFE.Clear();
+            tableILM.Clear();
             //int counter = 0;
             //for (int i = 0; i < responseSplit.Length; i++)
             //{
