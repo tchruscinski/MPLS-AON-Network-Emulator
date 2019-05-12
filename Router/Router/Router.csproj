@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandLineInterface.cs" />
     <Compile Include="ILMLine.cs" />
     <Compile Include="MyMain.cs" />
     <Compile Include="NHLFELine.cs" />

@@ -20,10 +20,21 @@ namespace RouterV1
                 router.ShowNHLFETable();
                 Console.WriteLine("ILM Table");
                 router.ShowILMTable();
-                Console.ReadLine();
-                return;
+                string command;
 
+                CommandLineInterface cli = new CommandLineInterface();
+
+                while (true)
+                {
+                    Console.Write("HostCLI# ");
+                    command = Console.ReadLine();
+                    cli.RunCommand(command, router);
+                }
+
+                return;
             }
+
+        
             //Router rt = new Router("Router1");
             //rt.ManagementRequest();
             //Router rter = new Router("Router3");
