@@ -382,7 +382,7 @@ namespace Management_System
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(" ");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("change-config [router_name/host_name] [scenario_number] || cc [router_name/host_name] [scenario_number]");
+            Console.WriteLine("change-config [router/host] [scenario_number] || cc [r/h] [scenario_number]");
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Zmiana konfiguracji routera na podstawie wybranego pliku XML");
 
@@ -434,13 +434,17 @@ namespace Management_System
                 {
                     if (comm.Length == 3)
                     {
-                        if (comm[1].Contains("Host"))
+                        if (comm[1] == "host" || comm[1] == "h")
                         {
-                            SendHostTable(comm[1], comm[2]);
+                            SendHostTable("Host1", comm[2]);
+                            SendHostTable("Host2", comm[2]);
                         }
-                        else if (comm[1].Contains("Router"))
+                        else if (comm[1] == "router" || comm[1] == "r")
                         {
-                            SendRouterTable(comm[1], comm[2]);
+                            SendRouterTable("Router1", comm[2]);
+                            SendRouterTable("Router2", comm[2]);
+                            SendRouterTable("Router3", comm[2]);
+                            SendRouterTable("Router4", comm[2]);
                         }
                         else
                         {
