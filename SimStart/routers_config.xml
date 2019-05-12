@@ -115,7 +115,7 @@
 			<NHLFE_ID_MPLS>6</NHLFE_ID_MPLS>
 			<Action>PUSH</Action>
 			<OutLabel>48</OutLabel>
-			<OutPortN>20</OutPortN>
+			<OutPortN>16</OutPortN>
 			<NextID>0</NextID>
             <?ILM?>
 			<IncPort> </IncPort>
