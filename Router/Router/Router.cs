@@ -267,6 +267,7 @@ namespace RouterV1
                             GetTopLabel(); //pobiera etykiety pakietu
                             NHLFE_ID = CheckILMTable(); //po zdjeciu etykiety ponownie sprawdzamy tablice ILM
                          wasPop = true;
+                        Console.WriteLine("Popped: " + _poppedLabels);
                          Console.WriteLine("NHLFE " + NHLFE_ID);
                         }
                         else
@@ -386,7 +387,12 @@ namespace RouterV1
             poppedLabelBuilder.Append(extractTopLabel[0]);
             poppedLabelBuilder.Append("-");
             poppedLabelBuilder.Append(_poppedLabels); //dopisujemy reszte zdjetych etykiet
-            poppedLabelBuilder.Length--; //usuwamy '-' na ostatnim polu
+
+           
+            byte[] packet = Encoding.ASCII.GetBytes(_poppedLabels);
+            Console.WriteLine("Element: " + packet.Length);
+            if (packet.Length == 0)
+              poppedLabelBuilder.Length--; //usuwamy '-' na ostatnim polu
             _poppedLabels = poppedLabelBuilder.ToString();
 
             StringBuilder messageBuilder = new StringBuilder();
