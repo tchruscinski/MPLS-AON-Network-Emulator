@@ -98,7 +98,7 @@ namespace ConnectionCloud
                             try { sendingSockets[j].Send(message); }
                             catch (Exception e) { Console.WriteLine("Sending error!"); }
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message sent over port: {0}", port);
+                            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message sent over port: {0}", outPort);
                             Console.ForegroundColor = ConsoleColor.Gray;
                             return;
                         }
