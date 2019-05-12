@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Router>
+		<Name>Router1</Name>
+		<Row Assigned="Router1">
+			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
+			<Action>SWAP</Action>
+			<OutLabel>23</OutLabel>
+			<OutPortN>6</OutPortN>
+			<NextID>0</NextID>
+			<IncPort>3</IncPort>
+			<IncLabel>20</IncLabel>
+			<PoppedLabelStack> </PoppedLabelStack>
+			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
+		</Row>
+		<Row Assigned="Router1">
+			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
+			<Action>SWAP</Action>
+			<OutLabel>33</OutLabel>
+			<OutPortN>4</OutPortN>
+			<NextID>0</NextID>
+			<IncPort>5</IncPort>
+			<IncLabel>31</IncLabel>
+			<PoppedLabelStack> </PoppedLabelStack>
+			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
+		</Row>
+	</Router>
+	<Router>
+		<Name>Router2</Name>
+		<Row Assigned="Router2">
+			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
+			<Action>SWAP</Action>
+			<OutLabel>25</OutLabel>
+			<OutPortN>12</OutPortN>
+			<NextID>0</NextID>
+            <?ILM?>
+			<IncPort>9</IncPort>
+			<IncLabel>23</IncLabel>
+			<PoppedLabelStack> </PoppedLabelStack>
+			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
+		</Row>
+		<Row Assigned="Router2">
+			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
+			<Action>SWAP</Action>
+			<OutLabel>31</OutLabel>
+			<OutPortN>10</OutPortN>
+			<NextID>0</NextID>
+            <?ILM?>
+			<IncPort>11</IncPort>
+			<IncLabel>29</IncLabel>
+			<PoppedLabelStack> </PoppedLabelStack>
+			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
+		</Row>
+	</Router>
+    <Router>
+        <Name>Router4</Name>
+		<Row Assigned="Router4">
+            <NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
+			<Action>SWAP</Action>
+			<OutLabel>27</OutLabel>
+			<OutPortN>26</OutPortN>
+			<NextID>0</NextID>
+            <?ILM?>
+			<IncPort>23</IncPort>
+			<IncLabel>25</IncLabel>
+			<PoppedLabelStack> </PoppedLabelStack>
+			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
+        </Row>
+		<Row Assigned="Router4">
+            <NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
+			<Action>SWAP</Action>
+			<OutLabel>29</OutLabel>
+			<OutPortN>24</OutPortN>
+			<NextID>0</NextID>
+            <?ILM?>
+			<IncPort>25</IncPort>
+			<IncLabel>40</IncLabel>
+			<PoppedLabelStack> </PoppedLabelStack>
+			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
+        </Row>
+    </Router>
+</Config>
