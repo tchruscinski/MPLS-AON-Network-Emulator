@@ -27,20 +27,24 @@ namespace Management_System
         private static List<UDPSocket> routerReceivingSockets = new List<UDPSocket>();
         private static List<UDPSocket> hostSendingSockets = new List<UDPSocket>();
         private static List<UDPSocket> hostReceivingSockets = new List<UDPSocket>();
+
         /**
         * Metoda parsująca plik konfiguracyjny dla routerow
         * @ routerName - string, nazwa docelowego routera
         */
-        private static string ReadRouterConfig(string routerName)
+        private static string ReadRouterConfig(string routerName, Boolean isChangeScenario)
         {
+            //Console.WriteLine("przekazana nazwa "+routerName);
             StringBuilder builder = new StringBuilder();
             builder.Append("routers_config");
-            if (ConfigNb > 1)
+            if(isChangeScenario)
             {
-                builder.Append(ConfigNb);
+                builder.Append(routerName[routerName.Length - 1]);
+                routerName = routerName.Remove(routerName.Length - 1);
             }
             builder.Append(".xml");
             string configName = builder.ToString();
+            //Console.WriteLine("nazwa szukana "+routerName+" i nazwa pliku: "+configName);
             string routerConfig = parser.ParseRouterTable(configName, routerName);
             Console.WriteLine("routerConfig: " + routerConfig);
             return routerConfig;
@@ -49,7 +53,7 @@ namespace Management_System
         private static void DisplayRouterConfig(string routerName)
         {
             string routerConf = "";
-            routerConf = ReadRouterConfig(routerName);
+            routerConf = ReadRouterConfig(routerName, false);
             try
             {
                 IEnumerable<Tuple<string, string, string, string, string, string, string>> routerConfiguration;
@@ -85,7 +89,7 @@ namespace Management_System
         private static void DisplayHostConfig(string hostName)
         {
             string hostConf = "";
-            hostConf = ReadHostConfig(hostName);
+            hostConf = ReadHostConfig(hostName, false);
 
             try
             {
@@ -119,13 +123,14 @@ namespace Management_System
         * Metoda parsująca plik konfiguracyjny dla hostow
         * @ hostName - string, nazwa docelowego hosta
         */
-        private static string ReadHostConfig(string hostName)
+        private static string ReadHostConfig(string hostName, Boolean isChangeScenario)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append("host_config");
-            if (ConfigNb > 1)
+            if(isChangeScenario)
             {
-                builder.Append(ConfigNb);
+                builder.Append(hostName[hostName.Length - 1]);
+                hostName = hostName.Remove(hostName.Length - 1);
             }
             builder.Append(".xml");
             string configName = builder.ToString();
@@ -190,7 +195,43 @@ namespace Management_System
             Console.WriteLine("Parosowanie konfiguracji dla " + routerName + " ...");
             StringBuilder builder = new StringBuilder();
             builder.Append("NMS;");
-            builder.Append(ReadRouterConfig(routerName));          
+            builder.Append(ReadRouterConfig(routerName, false));          
+            string routerTable = builder.ToString();
+            //sendingSocket.Client(localIP, 1);
+            //sendingSocket.Send(routerTable);
+            if(routerName.Equals("Router1"))
+            {
+                //routerSendingSockets[0].Client(localIP, 1);
+                routerSendingSockets[0].Send(routerTable);
+            }
+            if (routerName.Equals("Router2"))
+            {
+                //routerSendingSockets[1].Client(localIP, 1);
+                routerSendingSockets[1].Send(routerTable);
+            }
+            if (routerName.Equals("Router3"))
+            {
+                //routerSendingSockets[2].Client(localIP, 1);
+                routerSendingSockets[2].Send(routerTable);
+            }
+            if (routerName.Equals("Router4"))
+            {
+                //routerSendingSockets[3].Client(localIP, 1);
+                routerSendingSockets[3].Send(routerTable);
+            }
+            Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
+        }
+
+        /**
+        * metoda wysyłająca tablice routingową do routera
+        * @ routerName - string, nazwa docelowego routera
+        */
+        private static void SendRouterTable(string routerName, string scenarioNumber)
+        {   
+            Console.WriteLine("Parsowanie konfiguracji dla " + routerName + " ...");
+            StringBuilder builder = new StringBuilder();
+            builder.Append("NMS;");
+            builder.Append(ReadRouterConfig(routerName + scenarioNumber, true));          
             string routerTable = builder.ToString();
             //sendingSocket.Client(localIP, 1);
             //sendingSocket.Send(routerTable);
@@ -223,10 +264,37 @@ namespace Management_System
         */
         private static void SendHostTable(string hostName)
         {   
-            Console.WriteLine("Parosowanie konfiguracji dla " + hostName + " ...");
+            Console.WriteLine("Parsowanie konfiguracji dla " + hostName + " ...");
             StringBuilder builder = new StringBuilder();
             builder.Append("NMS;");
-            builder.Append(ReadHostConfig(hostName));          
+            builder.Append(ReadHostConfig(hostName, false));          
+            string hostTable = builder.ToString();
+            //sendingSocket.Client(localIP, 1);
+            //sendingSocket.Send(routerTable);
+            if (hostName.Equals("Host1"))
+            {
+                //hostSendingSockets[0].Client(localIP, 1);
+                hostSendingSockets[0].Send(hostTable);
+            }
+            else if (hostName.Equals("Host2"))
+            {
+                //hostSendingSockets[1].Client(localIP, 1);
+                hostSendingSockets[1].Send(hostTable);
+            }
+
+            Console.WriteLine("Wysyłanie konfiguracji do " + hostName + " ...");
+        }
+
+        /**
+        * metoda wysyłająca tablice routingową do hosta
+        * @ hostName - string, nazwa docelowego hosta
+        */
+        private static void SendHostTable(string hostName, string scenarioNumber)
+        {   
+            Console.WriteLine("Parsowanie konfiguracji dla " + hostName + " ...");
+            StringBuilder builder = new StringBuilder();
+            builder.Append("NMS;");
+            builder.Append(ReadHostConfig(hostName + scenarioNumber, true));          
             string hostTable = builder.ToString();
             //sendingSocket.Client(localIP, 1);
             //sendingSocket.Send(routerTable);
@@ -314,9 +382,9 @@ namespace Management_System
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(" ");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("change-config [router_name] || cc [router_name]");
+            Console.WriteLine("change-config [router_name/host_name] [scenario_number] || cc [router_name/host_name] [scenario_number]");
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("Zmiana konfiguracji routera na podstawie odpowiadajacego mu pliku XML");
+            Console.WriteLine("Zmiana konfiguracji routera na podstawie wybranego pliku XML");
 
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("display-remote-config [router|host] [router|host_name] || drc [r|h] [router|host_name]");
@@ -366,13 +434,13 @@ namespace Management_System
                 {
                     if (comm.Length == 3)
                     {
-                        if (comm[1] == "host" || comm[1] == "h")
+                        if (comm[1].Contains("Host"))
                         {
-                            SendHostTable(comm[2]);
+                            SendHostTable(comm[1], comm[2]);
                         }
-                        else if (comm[1] == "router" || comm[1] == "r")
+                        else if (comm[1].Contains("Router"))
                         {
-                            SendRouterTable(comm[2]);
+                            SendRouterTable(comm[1], comm[2]);
                         }
                         else
                         {
@@ -408,11 +476,11 @@ namespace Management_System
                 {
                     if (comm.Length == 3)
                     {
-                        if (comm[1] == "host" || comm[1] == "h")
+                        if (comm[1].Contains("Host"))
                         {
                             DisplayHostConfig(comm[2]);
                         }
-                        else if (comm[1] == "router" || comm[1] == "r")
+                        else if (comm[1].Contains("Router"))
                         {
                             DisplayRouterConfig(comm[2]);
                         }
