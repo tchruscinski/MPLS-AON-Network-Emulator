@@ -62,7 +62,7 @@ namespace RouterV1
                 int bytes = _socket.EndSend(ar);
                 timeStamp = time.GetTimestamp(DateTime.Now);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " SEND: bytes: [{0}], message: [{1}]", bytes, text);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " SEND: bytes: [{0}], message: [{1}], port: [{2}]", bytes, text, _port);
                 Console.ForegroundColor = ConsoleColor.Gray;
             }, state);
         }
@@ -81,7 +81,7 @@ namespace RouterV1
                     int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                     _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                     timeStamp = time.GetTimestamp(DateTime.Now);
-                    Console.WriteLine(timeStamp+" RECV: {0}: bytes: [{1}], message: [{2}]", epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                    Console.WriteLine(timeStamp+" RECV: {0}: bytes: [{1}], message: [{2}], port: [{3}]", epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes), _port);
                     router.SetIncPort(_port);
                     router.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     counter++;

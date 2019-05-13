@@ -211,8 +211,6 @@ namespace Host
          */
         public string GetSenderName(string label)
         {
-            Console.WriteLine(label);
-            Console.WriteLine(tableILM[0]);
             for (int i = 0; i < tableILM.Count; i++)
             {
                 if ((tableILM[i].GetLabel().ToString()).Equals(label))
