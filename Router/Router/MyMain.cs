@@ -21,7 +21,7 @@ namespace RouterV1
 
                 while (true)
                 {
-                    Console.Write("HostCLI# ");
+                    Console.Write("RouterCLI# ");
                     command = Console.ReadLine();
                     cli.RunCommand(command, router);
                 }
