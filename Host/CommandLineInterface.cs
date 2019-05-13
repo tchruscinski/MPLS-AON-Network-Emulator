@@ -52,9 +52,15 @@ namespace Host
             
                 if (comm[0] == "send" || comm[0] == "s")
                 {
-                    if (comm.Length == 3)
+                    if (comm.Length >= 3)
                     {
-                        host.SendPacket(comm[1], comm[2]);
+                        StringBuilder messageBuilder = new StringBuilder();
+                        for (int i = 2; i < comm.Length; i++)
+                        {
+                            messageBuilder.Append(comm[i]);
+                            messageBuilder.Append(' ');
+                        }
+                        host.SendPacket(comm[1], messageBuilder.ToString());
                     }
                     else
                     {
