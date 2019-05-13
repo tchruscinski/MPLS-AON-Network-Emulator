@@ -61,7 +61,7 @@ namespace RouterV1
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndSend(ar);
                 timeStamp = time.GetTimestamp(DateTime.Now);
-                Console.WriteLine(timeStamp+" SEND: {0}, {1}", bytes, text);
+                Console.WriteLine(timeStamp+" SEND: {0}, {1}", _port, text);
             }, state);
         }
         /*
@@ -79,7 +79,7 @@ namespace RouterV1
                     int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                     _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                     timeStamp = time.GetTimestamp(DateTime.Now);
-                    Console.WriteLine(timeStamp+" RECV: {0}: {1}, {2}", epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                    Console.WriteLine(timeStamp+" RECV: {0}: {1}, {2}", epFrom.ToString(), _port, Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     router.SetIncPort(_port);
                     router.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     counter++;
