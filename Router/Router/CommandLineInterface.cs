@@ -32,6 +32,7 @@ namespace RouterV1
                 String[] splittedConfig = routerConf.Split(',');
                 for(int i = 0; i < splittedConfig.Length - 1; i = i+2)
                 {
+                    
                     Console.WriteLine("{0}: {1}", splittedConfig[i], splittedConfig[i + 1]);
                 }
 
@@ -56,6 +57,16 @@ namespace RouterV1
                 Console.WriteLine("Wyswietlenie lokalnej konfiguracji");
 
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("nhlfe");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("Wyswietlenie lokalnej tabeli NHLFE");
+
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine("ilm");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("Wyswietlenie lokalnej tabeli ILM");
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine("quit || q");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("Wylaczenie hosta");
@@ -92,6 +103,17 @@ namespace RouterV1
                             DisplayRouterConfig(router.GetName());   
                             //Console.WriteLine("{0}", localConf);
                     }
+                    else if(comm[0] == "nhlfe")
+                    {
+                         Console.WriteLine("NHLFE Table");
+                         router.ShowNHLFETable();
+
+                    }
+                    else if(comm[0] == "ilm")
+                    {
+                        Console.WriteLine("ILM Table");
+                        router.ShowILMTable();
+                }
 
                     else if (comm[0] == "quit" || comm[0] == "exit" || comm[0] == "q")
                     {

@@ -46,7 +46,7 @@ namespace Management_System
             string configName = builder.ToString();
             //Console.WriteLine("nazwa szukana "+routerName+" i nazwa pliku: "+configName);
             string routerConfig = parser.ParseRouterTable(configName, routerName);
-            Console.WriteLine("routerConfig: " + routerConfig);
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " routerConfig: " + routerConfig);
             return routerConfig;
         }
 
@@ -81,7 +81,7 @@ namespace Management_System
             }
             catch(NullReferenceException)
             {
-                Console.WriteLine("Configuration for router {0} doesn't exist.", routerName);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Configuration for router {0} doesn't exist.", routerName);
             }
 
         }
@@ -114,7 +114,7 @@ namespace Management_System
             }
             catch (NullReferenceException)
             {
-                Console.WriteLine("Configuration for host {0} doesn't exist or has incorrect format.", hostName);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Configuration for host {0} doesn't exist or has incorrect format.", hostName);
             }
 
         }
@@ -192,7 +192,7 @@ namespace Management_System
         */
         private static void SendRouterTable(string routerName)
         {   
-            Console.WriteLine("Parosowanie konfiguracji dla " + routerName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Parosowanie konfiguracji dla " + routerName + " ...");
             StringBuilder builder = new StringBuilder();
             builder.Append("NMS;");
             builder.Append(ReadRouterConfig(routerName, false));          
@@ -219,7 +219,7 @@ namespace Management_System
                 //routerSendingSockets[3].Client(localIP, 1);
                 routerSendingSockets[3].Send(routerTable);
             }
-            Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Wysyłanie konfiguracji do " + routerName + " ...");
         }
 
         /**
@@ -228,7 +228,7 @@ namespace Management_System
         */
         private static void SendRouterTable(string routerName, string scenarioNumber)
         {   
-            Console.WriteLine("Parsowanie konfiguracji dla " + routerName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Parsowanie konfiguracji dla " + routerName + " ...");
             StringBuilder builder = new StringBuilder();
             builder.Append("NMS;");
             builder.Append(ReadRouterConfig(routerName + scenarioNumber, true));          
@@ -255,7 +255,7 @@ namespace Management_System
                 //routerSendingSockets[3].Client(localIP, 1);
                 routerSendingSockets[3].Send(routerTable);
             }
-            Console.WriteLine("Wysyłanie konfiguracji do " + routerName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Wysyłanie konfiguracji do " + routerName + " ...");
         }
 
         /**
@@ -264,7 +264,7 @@ namespace Management_System
         */
         private static void SendHostTable(string hostName)
         {   
-            Console.WriteLine("Parsowanie konfiguracji dla " + hostName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Parsowanie konfiguracji dla " + hostName + " ...");
             StringBuilder builder = new StringBuilder();
             builder.Append("NMS;");
             builder.Append(ReadHostConfig(hostName, false));          
@@ -282,7 +282,7 @@ namespace Management_System
                 hostSendingSockets[1].Send(hostTable);
             }
 
-            Console.WriteLine("Wysyłanie konfiguracji do " + hostName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Wysyłanie konfiguracji do " + hostName + " ...");
         }
 
         /**
@@ -291,7 +291,7 @@ namespace Management_System
         */
         private static void SendHostTable(string hostName, string scenarioNumber)
         {   
-            Console.WriteLine("Parsowanie konfiguracji dla " + hostName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Parsowanie konfiguracji dla " + hostName + " ...");
             StringBuilder builder = new StringBuilder();
             builder.Append("NMS;");
             builder.Append(ReadHostConfig(hostName + scenarioNumber, true));          
@@ -309,7 +309,7 @@ namespace Management_System
                 hostSendingSockets[1].Send(hostTable);
             }
 
-            Console.WriteLine("Wysyłanie konfiguracji do " + hostName + " ...");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Wysyłanie konfiguracji do " + hostName + " ...");
         }
 
         /**
@@ -352,14 +352,14 @@ namespace Management_System
             {
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Otrzymano request od " + message + " o tabele hosta");
                 SendHostTable(message);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Tabela wysłana do " + message);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Tabela wysłana do " + message);
             }
 
             if(message.Contains("Router"))
             {
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Otrzymano request od " + message + " o tabele routera");
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Otrzymano request od " + message + " o tabele routera");
                 SendRouterTable(message);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Tabela wysłana do " + message);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Tabela wysłana do " + message);
             }   
         }
 
@@ -480,11 +480,11 @@ namespace Management_System
                 {
                     if (comm.Length == 3)
                     {
-                        if (comm[1].Contains("Host"))
+                        if (comm[1].Contains("host") || comm[1].Contains("h"))
                         {
                             DisplayHostConfig(comm[2]);
                         }
-                        else if (comm[1].Contains("Router"))
+                        else if (comm[1].Contains("router") || comm[1].Contains("r"))
                         {
                             DisplayRouterConfig(comm[2]);
                         }

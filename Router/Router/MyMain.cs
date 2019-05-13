@@ -15,11 +15,6 @@ namespace RouterV1
                 Router router = new Router(args[0]);
                 
                 router.ManagementRequest();
-                Console.ReadLine();
-                Console.WriteLine("NHLFE Table");
-                router.ShowNHLFETable();
-                Console.WriteLine("ILM Table");
-                router.ShowILMTable();
                 string command;
 
                 CommandLineInterface cli = new CommandLineInterface();
