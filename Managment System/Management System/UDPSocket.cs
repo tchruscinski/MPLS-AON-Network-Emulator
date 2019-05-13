@@ -43,12 +43,12 @@ namespace Management_System
         {
             socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             socket.Bind(new IPEndPoint(IPAddress.Parse(address), portNumber));
-            Console.WriteLine("Created UDPServer at: " + address + ":" + portNumber);
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + portNumber);
             Receive();
         }
         public void Client(string address, int port)
         {
-            Console.WriteLine("Created UDPClient at: " + address + ":" + portNumber);
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + portNumber);
             socket.Connect(address, portNumber);
             Receive();
         }
@@ -61,7 +61,7 @@ namespace Management_System
             {
                 State so = (State)ar.AsyncState;
                 int bytes = socket.EndSend(ar);
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " SEND: {0}, {1}", bytes, text);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " SEND: bytes: [{0}], message: [{1}]", bytes, text);
             }, state);
         }
 
@@ -75,15 +75,15 @@ namespace Management_System
                     State so = (State)ar.AsyncState;
                     int bytes = socket.EndReceiveFrom(ar, ref epFrom);
                     socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: {0}: {1}", epFrom.ToString(), bytes);
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RECV: from: [{0}]: bytes: [{1}]", epFrom.ToString(), bytes);
                     message = Encoding.ASCII.GetString(so.buffer, 0, bytes);
-                    Console.WriteLine("RCV MESSAGE: " + message);
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " RCV MESSAGE: " + message);
                     ManagementSystem.ProcessRequest(message);
                 }
                 catch(Exception e)
                 {
                     timeStamp = time.GetTimestamp(DateTime.Now);
-                    Console.WriteLine(timeStamp + " Nie mozna nawiazac polaczenia");
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna nawiazac polaczenia");
                 }
             }, state);
         }

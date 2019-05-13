@@ -74,7 +74,9 @@ namespace Host
             {
                 String sender = GetSenderName(extractedLabel[0]);//nazwa nadawcy
                 String[] extractedSender = packet.Split(';'); //wydzielamy nadawce i tresc wiadomosci
-                Console.WriteLine(_name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + _name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
+                Console.ForegroundColor = ConsoleColor.Gray;
             } 
             else 
             {

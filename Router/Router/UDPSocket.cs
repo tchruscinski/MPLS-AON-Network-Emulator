@@ -42,7 +42,7 @@ namespace RouterV1
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
             _router = router;
-            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
             Receive(_router);
         }
         public void Client(string address, int port, Router router)
@@ -61,7 +61,9 @@ namespace RouterV1
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndSend(ar);
                 timeStamp = time.GetTimestamp(DateTime.Now);
-                Console.WriteLine(timeStamp+" SEND: {0}, {1}", _port, text);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " SEND: bytes: [{0}], message: [{1}]", bytes, text);
+                Console.ForegroundColor = ConsoleColor.Gray;
             }, state);
         }
         /*
@@ -79,7 +81,7 @@ namespace RouterV1
                     int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                     _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                     timeStamp = time.GetTimestamp(DateTime.Now);
-                    Console.WriteLine(timeStamp+" RECV: {0}: {1}, {2}", epFrom.ToString(), _port, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                    Console.WriteLine(timeStamp+" RECV: {0}: bytes: [{1}], message: [{2}]", epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     router.SetIncPort(_port);
                     router.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     counter++;
@@ -89,7 +91,7 @@ namespace RouterV1
                     timeStamp = time.GetTimestamp(DateTime.Now);
                     router.ActualizeNHFLETable(_port);
                     router.RefactorPacket();
-                    Console.WriteLine(timeStamp + " Nie mozna nawiazac polaczenia");
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna nawiazac polaczenia");
                     //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
                     //host/router nie jest dostepny
                 }
