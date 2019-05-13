@@ -22,6 +22,7 @@ namespace SimStart
             // nazwa
             startMS.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             startMS.Start();
+            Console.ReadLine();
 
             Process startRouter1 = new Process();
             startRouter1.StartInfo.FileName = @"..\..\..\Router\Router\bin\Debug\Router.exe";

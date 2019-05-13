@@ -164,7 +164,6 @@ namespace Host
                 builder.Append(';'); //';' oddziela naglowek od wiadomosci
                 builder.Append(message);
                 sendingSocket.Send(builder.ToString());
-                Console.WriteLine(builder.ToString());
             }
                 
         }   
@@ -183,7 +182,6 @@ namespace Host
             for (int i = 0; i < tableMPLS_FIB.Count; i++)
                 if (tableMPLS_FIB[i].GetHostName().Equals(destinationHost))
                 {
-                    Console.WriteLine(tableMPLS_FIB[i].GetNHLFE());
                     return tableMPLS_FIB[i].GetNHLFE();
 
                 }
