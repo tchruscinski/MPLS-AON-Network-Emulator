@@ -16,7 +16,7 @@
 		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
-			<OutLabel>33</OutLabel>
+			<OutLabel>50</OutLabel>
 			<OutPortN>4</OutPortN>
 			<NextID>0</NextID>
 			<IncPort>5</IncPort>
@@ -57,7 +57,7 @@
 		<Row Assigned="Router4">
             <NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
-			<OutLabel>27</OutLabel>
+			<OutLabel>30</OutLabel>
 			<OutPortN>26</OutPortN>
 			<NextID>0</NextID>
             <?ILM?>
