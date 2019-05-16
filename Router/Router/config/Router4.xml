@@ -3,42 +3,49 @@
   <Router>
     <Row>
         <Type>NSEND</Type>
-        <Port>107</Port>
+        <Port>110</Port>
             </Row>
 
-      <Row>     
+            <Row>
+
         <Type>NRECV</Type>
-        <Port>101</Port>
+        <Port>104</Port>
             </Row>
+    <Row>
 
-        <Row>   
+        
         <Type>SEND</Type>
-        <Port>4</Port>
+        <Port>22</Port>
             </Row>
 
-           <Row>
+            <Row>
+
         <Type>SEND</Type>
-        <Port>6</Port>
+        <Port>24</Port>
             </Row>
+    <Row>
 
-           <Row>
+        
         <Type>SEND</Type>
-        <Port>8</Port>
+        <Port>26</Port>
+            </Row>
+    <Row>
+
+        
+        <Type>RECV</Type>
+        <Port>21</Port>
             </Row>
 
-           <Row>
+            <Row>
+
         <Type>RECV</Type>
-        <Port>3</Port>
+        <Port>23</Port>
             </Row>
 
-           <Row>
+          <Row>
+ 
         <Type>RECV</Type>
-        <Port>5</Port>
-          </Row>
-  
-           <Row>
-        <Type>RECV</Type>
-        <Port>7</Port>
+        <Port>25</Port>
     </Row>
   </Router>
 </Config>

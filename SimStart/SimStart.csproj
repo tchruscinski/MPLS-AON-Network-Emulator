@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{64170914-9218-4CBD-81EF-D97DD06E7831}</ProjectGuid>
+    <ProjectGuid>{BF87B2E1-9449-4C90-9B49-EBC6882F5354}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Host</RootNamespace>
-    <AssemblyName>Host</AssemblyName>
+    <RootNamespace>SimStart</RootNamespace>
+    <AssemblyName>SimStart</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,18 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicTerminal.cs" />
-    <Compile Include="CommandLineInterface.cs" />
-    <Compile Include="Host.cs" />
-    <Compile Include="ILMLine.cs" />
-    <Compile Include="MPLSLine.cs" />
-    <Compile Include="MyMain.cs" />
-    <Compile Include="NHLFELine.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Time.cs" />
-    <Compile Include="UDPSocket.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="Parser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

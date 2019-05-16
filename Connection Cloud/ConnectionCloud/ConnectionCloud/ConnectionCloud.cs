@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace ConnectionCloud
 {
@@ -28,7 +20,16 @@ namespace ConnectionCloud
         Time time = new Time();
         int outPort;
 
-        //TODO - wypelnianie tabeli routingu danymi
+        //TODO - wypelnianie tabeli routingu danymi''
+
+
+        public void StartText()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("--------------TSST - CABLE CLOUD EMULATOR------------------");
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
         public void Proceed(string packet, int receivingPort)
         {
             _packet = packet;
@@ -94,24 +95,19 @@ namespace ConnectionCloud
                     {
                         if (sendingSockets[j].getPort() == outPort)
                         {
-                            sendingSockets[j].Send(message);
+                            try { sendingSockets[j].Send(message); }
+                            catch (Exception e) { Console.WriteLine("Sending error!"); }
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message sent over port: {0}", port);
+                            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message sent over port: {0}", outPort);
                             Console.ForegroundColor = ConsoleColor.Gray;
                             return;
                         }
                     }
                 }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Message wasn't send");
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
 
             }
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem");
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Port unavailable");
             Console.ForegroundColor = ConsoleColor.Gray;
             //usuniecie wpisu z tablicy
             Console.WriteLine("PORT:" + port);
@@ -141,7 +137,7 @@ namespace ConnectionCloud
                 }
             }
             //jezeli nie udalo sie znalezc wlasciwego portu, zwraca komunikat
-            Console.WriteLine("Nie istnieje szukany port wysylajacy");
+            Console.WriteLine("Port doesn't exist");
             return 0;
         }
         

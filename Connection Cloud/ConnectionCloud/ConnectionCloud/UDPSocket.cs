@@ -93,7 +93,7 @@ namespace ConnectionCloud
                 int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", epFrom.ToString(), bytes);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", _port, epFrom.ToString());
                 Console.ForegroundColor = ConsoleColor.Gray;
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
             }, state);
@@ -109,7 +109,7 @@ namespace ConnectionCloud
                 int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                 _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", epFrom.ToString(), bytes);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", _port, epFrom.ToString());
                 Console.ForegroundColor = ConsoleColor.Gray;
                 msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
                 connectionCloud.Proceed(msg, this._port);

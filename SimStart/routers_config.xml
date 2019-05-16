@@ -22,40 +22,40 @@
 			<IncPort>7</IncPort>
 			<IncLabel>48</IncLabel>
 			<PoppedLabelStack> </PoppedLabelStack>
-			<NHLFE_ID_ILM>3</NHLFE_ID_ILM>
+			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
 		</Row>
 		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>3</NHLFE_ID_MPLS>
 			<Action>POP</Action>
 			<OutLabel>0</OutLabel>
 			<OutPortN>0</OutPortN>
-			<NextID>0</NextID>
+			<NextID>4</NextID>
             <?ILM?>
 			<IncPort>7</IncPort>
-			<IncLabel>46</IncLabel>
-			<PoppedLabelStack>48</PoppedLabelStack>
-			<NHLFE_ID_ILM>4</NHLFE_ID_ILM>
+			<IncLabel>36</IncLabel>
+			<PoppedLabelStack> </PoppedLabelStack>
+			<NHLFE_ID_ILM>3</NHLFE_ID_ILM>
 		</Row>
 		<Row Assigned="Router1">
 			<NHLFE_ID_MPLS>4</NHLFE_ID_MPLS>
-			<Action>PUSH</Action>
+			<Action>SWAP</Action>
 			<OutLabel>50</OutLabel>
 			<OutPortN>4</OutPortN>
 			<NextID>0</NextID>
             <?ILM?>
-			<IncPort> </IncPort>
-			<IncLabel> </IncLabel>
-			<PoppedLabelStack> </PoppedLabelStack>
-			<NHLFE_ID_ILM> </NHLFE_ID_ILM>
+			<IncPort>7</IncPort>
+			<IncLabel>32</IncLabel>
+			<PoppedLabelStack>36</PoppedLabelStack>
+			<NHLFE_ID_ILM>4</NHLFE_ID_ILM>
 		</Row>
 	</Router>
 	<Router>
 		<Name>Router3</Name>
 		<Row Assigned="Router3">
 			<NHLFE_ID_MPLS>1</NHLFE_ID_MPLS>
-			<Action>POP</Action>
-			<OutLabel>0</OutLabel>
-			<OutPortN>0</OutPortN>
+			<Action>SWAP</Action>
+			<OutLabel>26</OutLabel>
+			<OutPortN>20</OutPortN>
 			<NextID>0</NextID>
             <?ILM?>
 			<IncPort>15</IncPort>
@@ -66,62 +66,14 @@
 		<Row Assigned="Router3">
 			<NHLFE_ID_MPLS>2</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
-			<OutLabel>26</OutLabel>
-			<OutPortN>0</OutPortN>
-			<NextID>3</NextID>
-            <?ILM?>
-			<IncPort>15</IncPort>
-			<IncLabel>22</IncLabel>
-			<PoppedLabelStack>24</PoppedLabelStack>
-			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
-		</Row>
-		<Row Assigned="Router3">
-			<NHLFE_ID_MPLS>3</NHLFE_ID_MPLS>
-			<Action>PUSH</Action>
-			<OutLabel>28</OutLabel>
-			<OutPortN>20</OutPortN>
-			<NextID>0</NextID>
-            <?ILM?>
-			<IncPort>19</IncPort>
-			<IncLabel>42</IncLabel>
-			<PoppedLabelStack>44</PoppedLabelStack>
-			<NHLFE_ID_ILM>5</NHLFE_ID_ILM>
-		</Row>
-		<Row Assigned="Router3">
-			<NHLFE_ID_MPLS>4</NHLFE_ID_MPLS>
-			<Action>POP</Action>
-			<OutLabel>0</OutLabel>
-			<OutPortN>0</OutPortN>
-			<NextID>0</NextID>
-            <?ILM?>
-			<IncPort> </IncPort>
-			<IncLabel> </IncLabel>
-			<PoppedLabelStack> </PoppedLabelStack>
-			<NHLFE_ID_ILM> </NHLFE_ID_ILM>
-		</Row>
-		<Row Assigned="Router3">
-			<NHLFE_ID_MPLS>5</NHLFE_ID_MPLS>
-			<Action>SWAP</Action>
-			<OutLabel>46</OutLabel>
-			<OutPortN>0</OutPortN>
-			<NextID>6</NextID>
-            <?ILM?>
-			<IncPort> </IncPort>
-			<IncLabel> </IncLabel>
-			<PoppedLabelStack> </PoppedLabelStack>
-			<NHLFE_ID_ILM> </NHLFE_ID_ILM>
-		</Row>
-		<Row Assigned="Router3">
-			<NHLFE_ID_MPLS>6</NHLFE_ID_MPLS>
-			<Action>PUSH</Action>
-			<OutLabel>48</OutLabel>
+			<OutLabel>36</OutLabel>
 			<OutPortN>16</OutPortN>
 			<NextID>0</NextID>
             <?ILM?>
-			<IncPort> </IncPort>
-			<IncLabel> </IncLabel>
+			<IncPort>19</IncPort>
+			<IncLabel>34</IncLabel>
 			<PoppedLabelStack> </PoppedLabelStack>
-			<NHLFE_ID_ILM> </NHLFE_ID_ILM>
+			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
 		</Row>
 	</Router>
     <Router>
@@ -131,10 +83,10 @@
 			<Action>POP</Action>
 			<OutLabel>0</OutLabel>
 			<OutPortN>0</OutPortN>
-			<NextID>0</NextID>
+			<NextID>2</NextID>
             <?ILM?>
 			<IncPort>21</IncPort>
-			<IncLabel>28</IncLabel>
+			<IncLabel>26</IncLabel>
 			<PoppedLabelStack></PoppedLabelStack>
 			<NHLFE_ID_ILM>1</NHLFE_ID_ILM>
         </Row>
@@ -146,26 +98,26 @@
 			<NextID>0</NextID>
             <?ILM?>
 			<IncPort>21</IncPort>
-			<IncLabel>26</IncLabel>
-			<PoppedLabelStack>28</PoppedLabelStack>
+			<IncLabel>22</IncLabel>
+			<PoppedLabelStack>26</PoppedLabelStack>
 			<NHLFE_ID_ILM>2</NHLFE_ID_ILM>
         </Row>
 		<Row Assigned="Router4">
             <NHLFE_ID_MPLS>3</NHLFE_ID_MPLS>
 			<Action>SWAP</Action>
-			<OutLabel>42</OutLabel>
+			<OutLabel>32</OutLabel>
 			<OutPortN>0</OutPortN>
 			<NextID>4</NextID>
             <?ILM?>
 			<IncPort>25</IncPort>
 			<IncLabel>40</IncLabel>
-			<PoppedLabelStack>0</PoppedLabelStack>
+			<PoppedLabelStack> </PoppedLabelStack>
 			<NHLFE_ID_ILM>3</NHLFE_ID_ILM>
         </Row>
 		<Row Assigned="Router4">
             <NHLFE_ID_MPLS>4</NHLFE_ID_MPLS>
 			<Action>PUSH</Action>
-			<OutLabel>44</OutLabel>
+			<OutLabel>34</OutLabel>
 			<OutPortN>22</OutPortN>
 			<NextID>0</NextID>
             <?ILM?>

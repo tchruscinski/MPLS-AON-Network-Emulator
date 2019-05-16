@@ -29,11 +29,18 @@ namespace RouterV1
         private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
         private int _incPort; //port, ktorym przyszedl pakiet, potrzebny do tablicy ILM
         private int _topLabel; //etykieta na szczycie stosu etykiet pakietu
-        private string _poppedLabels; //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
+        //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
+        //robie tak dziwnie, bo dla innych przypisan pustego stringa cos sie wywala potem
+        private string _poppedLabels = new StringBuilder().ToString(); 
+        private static Parser parser = new Parser();
+        public static string destinationIP = "127.0.0.1"; //docelowe ip
+        static Time time = new Time();
+        private String timeStamp = time.GetTimestamp(DateTime.Now);
 
         public Router(string name)
         {
             _name = name;
+            ParseLocalConfig();
         }
         public string GetName() { return _name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
@@ -89,8 +96,8 @@ namespace RouterV1
             String[] extractedHead = packet.Split(';');
             if(extractedHead[0].Equals("NMS"))
             {
-                Console.WriteLine("kurwa");
-                Console.WriteLine(extractedHead[1]);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Otrzymano pakiet od NMS...");
+                ParseNMSResponse(packet);
                 return;
             }
             _packet = packet;
@@ -99,19 +106,77 @@ namespace RouterV1
             int port = RefactorPacket(); // nr portu, ktorym pakiet zostanie wyslany
             if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
             {
-                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem/");
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem/");
+                Console.ForegroundColor = ConsoleColor.Gray;
                 return;
             }
             //przesyla pakiet do nastepnego wezla
             SendPacket(port);
         }
+
+         /*
+         * Metoda parsująca responsa od NMS-a z konfiguracją(tabelą) dla routera
+         * @ response - string, reponse od NMS-a
+         */
+         public void ParseNMSResponse(string response)
+         {
+            String[] deleteHeaderTab = response.Split(';');
+            String[] responseSplit = deleteHeaderTab[1].Split(',');
+
+            if(String.IsNullOrEmpty(response)) 
+            {
+                return;
+            }
+            tableNHLFE.Clear();
+            tableILM.Clear();
+            //int counter = 0;
+            //for (int i = 0; i < responseSplit.Length; i++)
+            //{
+            //    Console.WriteLine(responseSplit[i]);
+            //    counter++;
+            //    if (counter == 9)
+            //    {
+            //        counter = 0;
+            //        Console.WriteLine("///");
+            //    }
+            //}
+
+            while (responseSplit.Count() >= 9)
+            {
+                int NHLFE_ID = (responseSplit[0] == null || responseSplit[0].Equals("")) ? 0 : Int32.Parse(responseSplit[0]);
+                Action action = (Action) Enum.Parse(typeof(Action), responseSplit[1]);
+                int OutLabel = (responseSplit[2] == null || responseSplit[2].Equals("")) ? 0 : Int32.Parse(responseSplit[2]);
+                int OutPortN = (responseSplit[3] == null || responseSplit[3].Equals("")) ? 0 : Int32.Parse(responseSplit[3]);
+                int NexID = (responseSplit[4] == null || responseSplit[4].Equals("")) ? 0 : Int32.Parse(responseSplit[4]);        
+                tableNHLFE.Add(new NHLFELine(NHLFE_ID, action, OutLabel, OutPortN, NexID));
+
+                int IncPort = (responseSplit[5] == null || responseSplit[5].Equals("")) ? 0 : Int32.Parse(responseSplit[5]);   
+                int IncLabel = (responseSplit[6] == null || responseSplit[6].Equals("")) ? 0 : Int32.Parse(responseSplit[6]);   
+                string PoppedLabelStack = responseSplit[7];
+                int NHLFE_ID_ILM = (responseSplit[8] == null || responseSplit[8].Equals("")) ? 0 : Int32.Parse(responseSplit[8]);   
+                tableILM.Add(new ILMLine(IncPort, IncLabel, PoppedLabelStack, NHLFE_ID_ILM));
+
+
+                List<string> list = new List<string>(responseSplit);
+                if(list.Count == 9)
+                {
+                    break;
+                }
+                list.RemoveRange(0, 9);
+                responseSplit = list.ToArray();
+            }
+         }
+
+
         /*
          * Pomocnicza metoda, wypisuje tresc odebranej wiadomosci 
          * @ message, tresc wiadomosci
          */
         public void ShowMessage(string message)
         {
-            Console.WriteLine(message);
+            //Console.WriteLine(message);
 
         }
         /*
@@ -150,11 +215,13 @@ namespace RouterV1
                 if (sendingSockets[i].getPort() == port)
                 {
                     sendingSockets[i].Send(message);
+                    _poppedLabels = new StringBuilder().ToString();
                     return;
                 }
-            Console.WriteLine("Nie mozna wyslac pakietu zadanym portem//");
+            _poppedLabels = new StringBuilder().ToString();
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem//");
             //usuniecie wpisu z tablicy
-            Console.WriteLine("PORT:" + port);
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " PORT:" + port);
             ActualizeNHFLETable(port);
             ShowNHLFETable();
 
@@ -167,7 +234,7 @@ namespace RouterV1
         public int RefactorPacket()
         {
             int port = 0; //nr portu, ktorym wyslemy pakiet
-            Console.WriteLine(_packet);
+            //Console.WriteLine(_packet);
             if (_packet.Equals("")) return 0;
             GetLabel(); //pobiera etykiety pakietu
             int NHLFE_ID; //ID wpisu tablicy NHLFE
@@ -205,7 +272,8 @@ namespace RouterV1
                             GetTopLabel(); //pobiera etykiety pakietu
                             NHLFE_ID = CheckILMTable(); //po zdjeciu etykiety ponownie sprawdzamy tablice ILM
                          wasPop = true;
-                         Console.WriteLine("NHLFE " + NHLFE_ID);
+                        //Console.WriteLine("Popped: " + _poppedLabels);
+                        // Console.WriteLine("NHLFE " + NHLFE_ID);
                         }
                         else
                         {
@@ -234,10 +302,13 @@ namespace RouterV1
                     if (sendingSockets[j].getPort() == port)
                     {
                         sendingSockets[j].Send(_packet);
+                        _poppedLabels = new StringBuilder().ToString(); //po wyslaniu czyscimy bufor zdjetych etykiet
                         return;
                     }
                 //jezeli nie udalo sie wyslac, zwraca komunikat
                 Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
+                _poppedLabels = new StringBuilder().ToString(); //czyscimy bufor zdjetych etykiet
+    
         }
         /*
          * Sprawdza tablice NHLFE i zwraca indeks wpisu o żądanym ID
@@ -267,13 +338,17 @@ namespace RouterV1
                 //Console.WriteLine("Popped labels")
                 //Console.WriteLine(_poppedLabels);
                 //Console.WriteLine(tableILM[i].GetPoppedLabels());
-
                 if (tableILM[i].GetPort() == _incPort && tableILM[i].GetLabel() == _topLabel
                     && tableILM[i].GetPoppedLabels().Equals(_poppedLabels))
                 {
-                    //Console.WriteLine(tableILM[i].GetNHLFE());
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + "'{0}' '{1}'", tableILM[i].GetPoppedLabels(), _poppedLabels); 
                     return tableILM[i].GetNHLFE(); //zwraca NHLFE danego wpisu
                 }
+                //if (tableILM[i].GetPort() == _incPort && tableILM[i].GetLabel() == _topLabel)
+                //{
+                //    Console.WriteLine("'{0}' '{1}'", tableILM[i].GetPoppedLabels(), _poppedLabels);
+                //    Console.WriteLine(tableILM[i].GetNHLFE());
+                //}
             }
             return 0; //jesli nie znaleziono 0
             
@@ -303,6 +378,7 @@ namespace RouterV1
             for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
                 builder.Append(extractTopLabel[i]);
             _packet = builder.ToString();
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Packet:" + _packet);
         }
         /*
          * Zdejmuje etykiete ze szczytu stosu etykiet
@@ -310,20 +386,32 @@ namespace RouterV1
          */
         public void PopLabel()
         {
-            String[] extractTopLabel = _packet.Split(','); //wydzielamy etykiete ze szczytu stosu, zeby ja zdjac
+            String[] extractLabels = _packet.Split(';');
+            String[] extractTopLabel = extractLabels[0].Split(','); //wydzielamy etykiete ze szczytu stosu, zeby ja zdjac
             StringBuilder poppedLabelBuilder = new StringBuilder(); //aktualizujemy wartosc poppedLabels pakietu
             poppedLabelBuilder.Append(extractTopLabel[0]);
             poppedLabelBuilder.Append("-");
             poppedLabelBuilder.Append(_poppedLabels); //dopisujemy reszte zdjetych etykiet
-            poppedLabelBuilder.Length--; //usuwamy '-' na ostatnim polu
+
+           
+            byte[] packet = Encoding.ASCII.GetBytes(_poppedLabels);
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Element: " + packet.Length);
+            if (packet.Length == 0)
+              poppedLabelBuilder.Length--; //usuwamy '-' na ostatnim polu
             _poppedLabels = poppedLabelBuilder.ToString();
 
             StringBuilder messageBuilder = new StringBuilder();
-            for (int i = 1; i < extractTopLabel.Length; i++) //dodajemy reszte pakietu
+            for (int i = 1; i < extractTopLabel.Length; i++)
+            { //dodajemy reszte etykiet oddzielonych przecinkiem
                 messageBuilder.Append(extractTopLabel[i]);
+                messageBuilder.Append(',');
+               
+            }
 
+            messageBuilder.Append(';'); //dodajemy znak konca naglowka
+            messageBuilder.Append(extractLabels[1]); //dodajemy wiadomosc
             _packet = messageBuilder.ToString();
-            Console.WriteLine("PAkiet: "+ _packet);
+            //Console.WriteLine("PAkiet: "+ _packet);
         }
         /*
          * Sprawdza czy przychodzacy pakiet ma etykiete MPLS
@@ -347,26 +435,35 @@ namespace RouterV1
          */
         public void GetLabel()
         {
+       
             String[] extractLabelsPart = _packet.Split(':'); //pakiet jest podzielony na czesc etykiet i reszte
             String[] extractLabels = extractLabelsPart[0].Split(','); //reszta naglowka podzielona na etykiety
-            Console.WriteLine("Etykiety:");
+            //Console.WriteLine("Etykiety:");
             if (extractLabels[0].Length != 0)
             {
                 for (int i = 0; i < extractLabels.Length; i++)
                 {
-                    Console.WriteLine(extractLabels[i]);
+                    //Console.WriteLine(extractLabels[i]);
                 }
-                    _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
-                StringBuilder builder = new StringBuilder();
-                for (int i = 2; i < extractLabels.Length - 1; i++) //pozostale etykiety dodane po myslniku
-                {
-                    builder.Append(extractLabels[i]);
-                    builder.Append('-');
-                }
-                _poppedLabels = builder.ToString();
+                _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+
+                //try
+                //{
+                //    _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
+                //} catch (SystemException e)
+                //{
+                //    Console.WriteLine(e);
+                //}
+                //StringBuilder builder = new StringBuilder();
+                //for (int i = 2; i < extractLabels.Length - 1; i++) //pozostale etykiety dodane po myslniku
+                //{
+                //    builder.Append(extractLabels[i]);
+                //    builder.Append('-');
+                //}
+                //_poppedLabels = builder.ToString(); //nie wiem czemu, bez tego sie wywala
+
 
             }
-
 
         }
         /*
@@ -377,19 +474,18 @@ namespace RouterV1
         {
             String[] extractLabelsPart = _packet.Split(';'); //pakiet jest podzielony na czesc etykiet i reszte
             String[] extractLabels = extractLabelsPart[0].Split(','); //reszta naglowka podzielona na etykiety
-            Console.WriteLine("Etykiety:");
+            //Console.WriteLine("Etykiety:");
             if (extractLabels[0].Length != 0)
             {
                 for (int i = 0; i < extractLabels.Length; i++)
                 {
-                    Console.WriteLine(extractLabels[i]);
+                    //Console.WriteLine(extractLabels[i]);
                 }
                 _topLabel = Int32.Parse(extractLabels[0]); //pierwsza etykieta zapisana jako etykieta ze szczytu
-                Console.WriteLine("top" + _topLabel);
+                //Console.WriteLine("top" + _topLabel);
             }
-
-
         }
+
         /*
          * Wysyla zadanie tablic NHLFE i ILM do systemu zarzadzania,
          * 
@@ -397,7 +493,6 @@ namespace RouterV1
         public void ManagementRequest()
         {
             sendingManagementSocket.Send(_name);
-            Console.WriteLine("wyslano: " + _name);
         }
         /*
          * Wysyla do systemu zarzadzania informacje o awarii łącza
@@ -429,20 +524,55 @@ namespace RouterV1
                     tableNHLFE[i].getPort(), tableNHLFE[i].getNextID());
         }
         /*
-         * Pobiera odpowiedz systemu zarzadzania i wstawia ja do tablic ILM i NHLFE
+         * Wyswietla tablice ILM
          */
-        public void GetManagementResponse(string response)
+        public void ShowILMTable()
         {
-            String[] splittedResponse = response.Split(',');
-            int counter = 0; //licznik konca wiersza
-            for(int i = 0; i < splittedResponse.Length; i++)
+            for (int i = 0; i < tableILM.Count; i++)
+                Console.WriteLine("Port: {0}, Label: {1}, PoppedLabels: {2}, ValueNHLFE: {3}",
+                    tableILM[i].GetPort(), tableILM[i].GetLabel(), 
+                    tableILM[i].GetPoppedLabels(), tableILM[i].GetNHLFE());
+        }
+
+
+        public void ParseLocalConfig()
+        {
+            try
             {
-                counter++;
-                if (counter == 8)
+                string localConfig = parser.ParseLocalConfig(_name + ".xml");
+
+                //Console.WriteLine("sparsowany xml: "+ localConfig);
+
+                String[] splitConfig = localConfig.Split(',');
+
+                if (splitConfig.Contains(null) || splitConfig.Contains(""))
                 {
-                    counter = 0;
+                    return;
                 }
-                
+                sendingManagementSocket.Client(Utils.destinationIP, Int32.Parse(splitConfig[1]), this);
+                receivingManagementSocket.Server(Utils.destinationIP, Int32.Parse(splitConfig[3]), this);
+
+                int numberOfPorts = (splitConfig.Count() - 4) / 4;
+                int c = 0;
+
+                while (c < numberOfPorts)
+                {
+                    sendingSockets.Add(new UDPSocket());
+                    sendingSockets[c].Client(destinationIP, Int32.Parse(splitConfig[5 + 2 * c]), this);
+                    c++;
+                }
+
+                c = 0;
+                while (c < numberOfPorts)
+                {
+                    receivingSockets.Add(new UDPSocket());
+                    receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts * 2 + 2 * c]), this);
+                    c++;
+                }
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Lokalna konfiguracja wczytana do routera " + _name);
+            } catch (NullReferenceException e)
+            {
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wczytac pliku konfiguracyjnego");
             }
         }
 

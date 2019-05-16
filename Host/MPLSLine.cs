@@ -21,6 +21,7 @@ namespace Host
         }
         public String GetHostName() { return _destinationHost; }
         public int GetNHLFE() { return _valueNHLFE; }
+        public void ShowMPLSLine() { Console.WriteLine("MPLSLine: {0}, {1}", _destinationHost, _valueNHLFE); }
     }
 
 }

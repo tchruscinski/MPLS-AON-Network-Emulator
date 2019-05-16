@@ -82,18 +82,26 @@ namespace Management_System
                     XmlNodeList rowsList = config.SelectNodes("/Config/Router/Row");
                     foreach (XmlNode row in rowsList)
                     {
-                        returnedString += row["NHLFE_ID_MPLS"]?.InnerText + ",";
-                        returnedString += row["Action"]?.InnerText + ",";
-                        returnedString += row["OutLabel"]?.InnerText + ",";
-                        returnedString += row["OutPortN"]?.InnerText + ",";
-                        returnedString += row["NextID"]?.InnerText + ",";
-                        returnedString += row["IncPort"]?.InnerText + ",";
-                        returnedString += row["IncLabel"]?.InnerText + ",";
-                        returnedString += row["PoppedLabelStack"]?.InnerText + ",";
-                        returnedString += row["NHLFE_ID_ILM"]?.InnerText + ",";
+                        if (row.Attributes["Assigned"]?.InnerText == routerName)
+                        {
+                            returnedString += row["NHLFE_ID_MPLS"]?.InnerText + ",";
+                            returnedString += row["Action"]?.InnerText + ",";
+                            returnedString += row["OutLabel"]?.InnerText + ",";
+                            returnedString += row["OutPortN"]?.InnerText + ",";
+                            returnedString += row["NextID"]?.InnerText + ",";
+                            returnedString += row["IncPort"]?.InnerText + ",";
+                            returnedString += row["IncLabel"]?.InnerText + ",";
+                            returnedString += row["PoppedLabelStack"]?.InnerText + ",";
+                            returnedString += row["NHLFE_ID_ILM"]?.InnerText + ",";
+                        }
                     }
                 }
             }
+            if (returnedString.Equals(""))
+            {
+                return null;
+            }
+            returnedString = returnedString.Remove(returnedString.Length - 1);
             return returnedString;
         }
 
@@ -119,11 +127,58 @@ namespace Management_System
                     XmlNodeList rowsList = config.SelectNodes("/Config/Host/Row");
                     foreach (XmlNode row in rowsList)
                     {
-                        returnedString += row["DestinationHost"]?.InnerText + ",";
-                        returnedString += row["NHLFE_ID"]?.InnerText + ",";
+                        if (row.Attributes["Assigned"]?.InnerText == hostName)
+                        {
+                            returnedString += row["DestinationHost"]?.InnerText + ",";
+                            returnedString += row["NHLFE_ID"]?.InnerText + ",";
+                            returnedString += row["Label"]?.InnerText + ",";
+                            returnedString += row["Sender"]?.InnerText + ",";
+                            returnedString += row["ID"]?.InnerText + ",";
+                            returnedString += row["NLabel"]?.InnerText + ",";
+                            returnedString += row["NextId"]?.InnerText + ",";
+                        }
                     }
                 }
             }
+            if (returnedString.Equals(""))
+            {
+                return null;
+            }
+            returnedString = returnedString.Remove(returnedString.Length - 1);
+            return returnedString;
+        }
+
+
+        /**
+       * Metoda zwracająca konfigurację z wybranego pliku dla Management Systemu
+       * @fileName - string, nazwa pliku z konfiguracją
+       */
+        public string ParseLocalConfig(string fileName)
+        {
+            if (fileName == null)
+            {
+                return null;
+            }
+
+            string returnedString = "";
+            LoadFile(fileName);
+            XmlNodeList nodesList = config.SelectNodes("/Config/Local");
+
+            foreach (XmlNode node in nodesList)
+            {
+                XmlNodeList rowsList = config.SelectNodes("/Config/Local/Row");
+                foreach (XmlNode row in rowsList)
+                {
+                    returnedString += row["Type"]?.InnerText + ",";
+                    returnedString += row["Port"]?.InnerText + ",";    
+                }
+                
+            }
+            if (returnedString.Equals(""))
+            {
+                return null;
+            }
+            returnedString = returnedString.Remove(returnedString.Length - 1);
             return returnedString;
         }
     }

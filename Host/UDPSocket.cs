@@ -31,6 +31,11 @@ namespace Host
 
         public int getPort() { return _port; }
 
+        public void SetPort(int portNumber) 
+        {
+            _port = portNumber;
+        }
+
         public void Server(string address, int port, Host host)
         {
             _port = port;
@@ -43,7 +48,7 @@ namespace Host
         public void Client(string address, int port, Host host)
         {
             _port = port;
-            Console.WriteLine("Created UDPServer at: " + address + ":" + port);
+            Console.WriteLine("Created UDPClient at: " + address + ":" + port);
             _socket.Connect(address, port);
 
             _host = host;
@@ -58,7 +63,7 @@ namespace Host
                 State so = (State)ar.AsyncState;
                 int bytes = _socket.EndSend(ar);
                 timeStamp = time.GetTimestamp(DateTime.Now);
-                Console.WriteLine(timeStamp+" SEND: {0},{1}", bytes, text);
+                Console.WriteLine(timeStamp+" SEND: {0},{1}", _port, text);
             }, state);
         }
         /*
@@ -76,8 +81,7 @@ namespace Host
                         int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
                         _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                         timeStamp = time.GetTimestamp(DateTime.Now);
-                        Console.WriteLine(timeStamp+" Received MSG");
-                        //Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                        Console.WriteLine("RECV: {0}: {1}, {2}" + " at: " + timeStamp, epFrom.ToString(), _port, Encoding.ASCII.GetString(so.buffer, 0, bytes));
                         host.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                         counter++;
                     }

@@ -7,21 +7,21 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 
-namespace RouterV1
+namespace Host
 {
     /**
     * Klasa tworząca obiekt Parser, który parsuje konfigurację z pliku xml
     * @Parser
     */
-    class Parser
+    public class Parser
     {
         private static XmlDocument config = new XmlDocument();
         private static XmlNode root = config.FirstChild;
 
         /**
-         * Metoda ładująca plik (inicjująca zmienną config), który następnie będzie parsowany
-         * @fileName - string, nazwa pliku do załadowania
-         */
+        * Metoda ładująca plik (inicjująca zmienną config), który następnie będzie parsowany
+        * @fileName - string, nazwa pliku do załadowania
+        */
         public void LoadFile(string fileName)
         {
             try
@@ -33,10 +33,9 @@ namespace RouterV1
                 Console.WriteLine(e.Message);
             }
         }
-        
 
         /**
-        * Metoda zwracająca konfigurację z wybranego pliku dla danego routera
+        * Metoda zwracająca konfigurację z wybranego pliku dla danego hosta
         * @fileName - string, nazwa pliku z konfiguracją
         */
         public string ParseLocalConfig(string fileName)
@@ -48,16 +47,17 @@ namespace RouterV1
 
             string returnedString = "";
             LoadFile(fileName);
-            XmlNodeList nodesList = config.SelectNodes("/Config/Router");
+            XmlNodeList nodesList = config.SelectNodes("/Config/Host");
 
             foreach (XmlNode node in nodesList)
             {
-                XmlNodeList rowsList = config.SelectNodes("/Config/Router/Row");
+                XmlNodeList rowsList = config.SelectNodes("/Config/Host/Row");
                 foreach (XmlNode row in rowsList)
                 {     
                     returnedString += row["Type"]?.InnerText + ",";
                     returnedString += row["Port"]?.InnerText + ",";                    
                 }
+          
             }
 
             if (returnedString.Equals(""))
