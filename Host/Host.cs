@@ -19,8 +19,6 @@ namespace Host
         private string _name = " "; //nazwa hosta
         private UDPSocket sendingSocket = new UDPSocket(); //socket, ktory wysyla pakiety
         private UDPSocket receivingSocket = new UDPSocket(); //sokcet, ktory nasluchuje na przychodzace pakiety
-        private UDPSocket sendingManagementSocket = new UDPSocket();
-        private UDPSocket receivingManagementSocket = new UDPSocket();
         private int _sendingPort; // nr portu, ktorym sendingSocket wysyla pakiety
         private int _receivingPort; //nr portu, na ktorym receivingPort nasluchuje
         private List<NHLFELine> tableNHLFE = new List<NHLFELine>(); //tablica NHLFE
@@ -38,6 +36,7 @@ namespace Host
         {
             _name = name;
             ParseLocalConfig();
+            ParseHostTable();
         }
 
         public Host(string name,int sendingPort, int receivingPort)
@@ -48,6 +47,7 @@ namespace Host
             sendingSocket.Client(Utils.destinationIP, _sendingPort, this);
             receivingSocket.Server(Utils.destinationIP, _receivingPort, this);
             ParseLocalConfig();
+            ParseHostTable();
         }
 
 
@@ -70,60 +70,44 @@ namespace Host
 
             String[] extractedLabel = packet.Split(','); //wydzielamy czesc etykiet, bo jej nie potrzebujemy
 
-            if(!packet.Contains("NMS"))
-            {
-                String sender = GetSenderName(extractedLabel[0]);//nazwa nadawcy
-                String[] extractedSender = packet.Split(';'); //wydzielamy nadawce i tresc wiadomosci
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + _name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
-                Console.ForegroundColor = ConsoleColor.Gray;
-            } 
-            else 
-            {
-                Console.WriteLine("Otrzymano pakiet od NMS...");
-                ParseNMSResponse(packet);
-
-            }
+            String sender = GetSenderName(extractedLabel[0]);//nazwa nadawcy
+            String[] extractedSender = packet.Split(';'); //wydzielamy nadawce i tresc wiadomosci
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + _name + " od: " + sender +  " otrzymal:" + extractedSender[1]);
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         /*
          * Metoda parsująca responsa od NMS-a z konfiguracją(tabelą) dla hosta
          * @ response - string, reponse od NMS-a
          */
-         public void ParseNMSResponse(string response)
+         public void ParseHostTable()
          {
-            String[] deleteHeaderTab = response.Split(';');
-            String[] responseSplit = deleteHeaderTab[1].Split(',');
-            //int counter = 0;
-            //for(int i = 0; i < responseSplit.Length; i++)
-            //{
-            //    string DestinationHost;
-            //    if (counter == 0) DestinationHost = responseSplit[counter];
-            //    //else if(counter == 1) 
+            string table = parser.ParseHostTable("host_config.xml", _name);
+            String[] tableContent = table.Split(',');
 
-            //}
-            while(responseSplit.Length >= 7)
+            while(tableContent.Length >= 7)
             {
-                string DestinationHost = responseSplit[0];
-                int NHLFE_ID = (responseSplit[1] == null || responseSplit[1].Equals("")) ? 0 : Int32.Parse(responseSplit[1]);
+                string DestinationHost = tableContent[0];
+                int NHLFE_ID = (tableContent[1] == null || tableContent[1].Equals("")) ? 0 : Int32.Parse(tableContent[1]);
                 tableMPLS_FIB.Add(new MPLSLine(DestinationHost, NHLFE_ID));
 
-                int Label = (responseSplit[2] == null || responseSplit[2].Equals("")) ? 0 : Int32.Parse(responseSplit[2]);
-                string Sender = responseSplit[3];
+                int Label = (tableContent[2] == null || tableContent[2].Equals("")) ? 0 : Int32.Parse(tableContent[2]);
+                string Sender = tableContent[3];
                 tableILM.Add(new ILMLine(Label, Sender));
 
-                int ID = (responseSplit[4] == null || responseSplit[4].Equals("")) ? 0 : Int32.Parse(responseSplit[4]);
-                int NLabel = (responseSplit[5] == null || responseSplit[5].Equals("")) ? 0 : Int32.Parse(responseSplit[5]);
-                int NNextIdLabel = (responseSplit[6] == null || responseSplit[6].Equals("")) ? 0 : Int32.Parse(responseSplit[6]);
+                int ID = (tableContent[4] == null || tableContent[4].Equals("")) ? 0 : Int32.Parse(tableContent[4]);
+                int NLabel = (tableContent[5] == null || tableContent[5].Equals("")) ? 0 : Int32.Parse(tableContent[5]);
+                int NNextIdLabel = (tableContent[6] == null || tableContent[6].Equals("")) ? 0 : Int32.Parse(tableContent[6]);
                 tableNHLFE.Add(new NHLFELine(ID, NLabel, NNextIdLabel));
 
-                List<string> list = new List<string>(responseSplit);
+                List<string> list = new List<string>(tableContent);
                 if(list.Count == 7)
                 {
                     break;
                 }
                 list.RemoveRange(1, 7);
-                responseSplit = list.ToArray();
+                tableContent = list.ToArray();
             }
          }
 
@@ -218,33 +202,6 @@ namespace Host
             }
             return ""; //jesli nie ma takiego wpisu w tabeli zwraca pustego stringa
         }
-    
-        /*
-         * Wysyla zadanie tablic NHLFE i ILM do systemu zarzadzania,
-         * 
-         */
-        public void ManagementRequest()
-        {
-            sendingManagementSocket.Send(_name);
-        }
-
-        /*
-         * Ustawia port wysyłający do połączeń z NMS
-         * 
-         */
-        public void SetSendingManagementSocket(int port)
-        {
-            sendingManagementSocket.Client(destinationIP, port, this);
-        }
-
-        /*
-         * Ustawia port nasłuchujący do połączeń z NMS
-         * 
-         */
-        public void SetReceivingManagementSocket(int port)
-        {
-            receivingManagementSocket.Server(destinationIP, port, this);
-        }
 
         public void ParseLocalConfig()
         {
@@ -258,14 +215,8 @@ namespace Host
                 {
                     return;
                 }
-                //sendingManagementSocket.SetPort(Int32.Parse(splitConfig[1]));
-                //receivingManagementSocket.SetPort(Int32.Parse(splitConfig[3]));
-                //sendingSocket.SetPort(Int32.Parse(splitConfig[5]));
-                //receivingSocket.SetPort(Int32.Parse(splitConfig[7]));
-                sendingManagementSocket.Client(Utils.destinationIP, Int32.Parse(splitConfig[1]), this);
-                receivingManagementSocket.Server(Utils.destinationIP, Int32.Parse(splitConfig[3]), this);
-                sendingSocket.Client(Utils.destinationIP, Int32.Parse(splitConfig[5]), this);
-                receivingSocket.Server(Utils.destinationIP, Int32.Parse(splitConfig[7]), this);
+                sendingSocket.Client(Utils.destinationIP, Int32.Parse(splitConfig[1]), this);
+                receivingSocket.Server(Utils.destinationIP, Int32.Parse(splitConfig[3]), this);
 
                 Console.WriteLine("Lokalna konfiguracja wczytana do hosta " + _name);
             } catch(NullReferenceException e)

@@ -14,7 +14,6 @@ namespace Host
             if (args.Length != 0)
             {
                 Host host = new Host(args[0]);
-                host.ManagementRequest();
                 Console.ReadLine();
                 /*while (true)
                 {
@@ -36,11 +35,9 @@ namespace Host
                 return;
             }
             //Host host1 = new Host("Host1");
-            //host1.ManagementRequest();
             //host1.ShowRoutingLines();
 
             //Host host2 = new Host("Host2");
-            //host2.ManagementRequest();
             //host2.ShowRoutingLines();
             //string command;
 
@@ -58,7 +55,6 @@ namespace Host
 
             //host1.SetReceivingManagementSocket(1);
             //host1.SetSendingManagementSocket(100);
-            //host1.ManagementRequest();
             ////Host host2 = new Host("host2");
             ////s1.Client("127.0.0.1", 1, host1);
             ////s2.Server("127.0.0.1", 100, host1);
