@@ -36,11 +36,15 @@ namespace RouterV1
         public static string destinationIP = "127.0.0.1"; //docelowe ip
         static Time time = new Time();
         private String timeStamp = time.GetTimestamp(DateTime.Now);
+     
 
         public Router(string name)
         {
             _name = name;
             ParseLocalConfig();
+            lrm = new LinkResourceManager();
+            rc = new RC();
+            
         }
         public string GetName() { return _name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
