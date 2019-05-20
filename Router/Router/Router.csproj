@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="CommandLineInterface.cs" />
     <Compile Include="ILMLine.cs" />
+    <Compile Include="Link.cs" />
     <Compile Include="MyMain.cs" />
     <Compile Include="NHLFELine.cs" />
     <Compile Include="Parser.cs" />

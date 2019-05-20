@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 namespace RouterV1
 {
     class MyMain
-    {
-        static void Main(string[] args)
+    {      
+       static void Main(string[] args)
         {
+            //Link link = new Link("Router1", "Router2", 1000, 10000);
+            //Console.ReadLine();
             if (args.Length != 0)
             {
                 Router router = new Router(args[0]);
