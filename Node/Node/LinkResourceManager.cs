@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RouterV1
+namespace Node
 {
     /*
      * Link resource manager, posiada informacje o łączach połączonych z danym węzłem i ich stanie

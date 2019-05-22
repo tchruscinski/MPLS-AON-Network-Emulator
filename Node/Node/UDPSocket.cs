@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 
 
-namespace RouterV1
+namespace Node
 {
     class UDPSocket
     {
@@ -20,7 +20,7 @@ namespace RouterV1
         static Time time = new Time();
         private String timeStamp = time.GetTimestamp(DateTime.Now);
         public int counter = 0;
-        Router _router;
+        Node _node;
         private int _port;
 
         public class State
@@ -36,21 +36,21 @@ namespace RouterV1
             _port = portNumber;
         }
 
-        public void Server(string address, int port, Router router)
+        public void Server(string address, int port, Node node)
         {
             _port = port;
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
             _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
-            _router = router;
+            _node = node;
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
-            Receive(_router);
+            Receive(_node);
         }
-        public void Client(string address, int port, Router router)
+        public void Client(string address, int port, Node node)
         {
             _port = port;
             _socket.Connect(IPAddress.Parse(address), port);
-            _router = router;
-            Receive(_router);
+            _node = node;
+            Receive(_node);
         }
 
         public void Send(string text)
@@ -68,9 +68,9 @@ namespace RouterV1
         }
         /*
          * Metoda nasluchuje na przychodzace pakiety
-         * @ router, referencja do routera, zeby umozliwic przeslanie mu tresci pakietu
+         * @ node, referencja do node, zeby umozliwic przeslanie mu tresci pakietu
          */
-        public void Receive(Router router)
+        public void Receive(Node node)
         {
 
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
@@ -82,18 +82,18 @@ namespace RouterV1
                     _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
                     timeStamp = time.GetTimestamp(DateTime.Now);
                     Console.WriteLine(timeStamp+" RECV: {0}: bytes: [{1}], message: [{2}], port: [{3}]", epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes), _port);
-                    router.SetIncPort(_port);
-                    router.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                    node.SetIncPort(_port);
+                    //node.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     counter++;
                 }
                 catch (SocketException e)
                 {
                     timeStamp = time.GetTimestamp(DateTime.Now);
-                    router.ActualizeNHFLETable(_port);
-                    router.RefactorPacket();
+                    //node.ActualizeNHFLETable(_port);
+                    //node.RefactorPacket();
                     Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna nawiazac polaczenia");
                     //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
-                    //host/router nie jest dostepny
+                    //host/node nie jest dostepny
                 }
             }, state);
 

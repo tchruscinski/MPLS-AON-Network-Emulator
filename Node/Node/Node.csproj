@@ -50,7 +50,9 @@
     <Compile Include="NHLFELine.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Router.cs" />
+    <Compile Include="LinkResourceManager.cs" />
+    <Compile Include="RoutingController.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="UDPSocket.cs" />
     <Compile Include="Utils.cs" />

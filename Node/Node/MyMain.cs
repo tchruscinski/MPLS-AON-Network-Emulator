@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RouterV1
+namespace Node
 {
     class MyMain
     {      
@@ -14,9 +14,9 @@ namespace RouterV1
             //Console.ReadLine();
             if (args.Length != 0)
             {
-                Router router = new Router(args[0]);
+                Node node = new Node(args[0]);
                 
-                router.ManagementRequest();
+                //router.ManagementRequest();
                 string command;
 
                 CommandLineInterface cli = new CommandLineInterface();
@@ -25,7 +25,7 @@ namespace RouterV1
                 {
                     Console.Write("RouterCLI# ");
                     command = Console.ReadLine();
-                    cli.RunCommand(command, router);
+                    cli.RunCommand(command, node);
                 }
 
                 return;

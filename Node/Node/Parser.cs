@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 
-namespace RouterV1
+namespace Node
 {
     /**
     * Klasa tworząca obiekt Parser, który parsuje konfigurację z pliku xml
@@ -60,6 +60,39 @@ namespace RouterV1
                 }
             }
 
+            if (returnedString.Equals(""))
+            {
+                return null;
+            }
+            returnedString = returnedString.Remove(returnedString.Length - 1);
+            return returnedString;
+        }
+
+        /**
+        * Metoda zwracająca konfigurację z wybranego pliku dla danego routera
+        * @fileName - string, nazwa pliku z konfiguracją
+        */
+        public string ParseConfig(string fileName)
+        {
+            if(fileName == null)
+            {
+                return null;
+            }
+
+            string returnedString = "";
+            LoadFile(fileName);
+            XmlNodeList nodesList = config.SelectNodes("/Config/Router");
+
+            foreach (XmlNode node in nodesList)
+            {
+                XmlNodeList rowsList = config.SelectNodes("/Config/Router/Row");
+                foreach (XmlNode row in rowsList)
+                {
+                        returnedString += row["Destination"]?.InnerText + ",";
+                        returnedString += row["OutPort"]?.InnerText + ",";
+                        returnedString += row["ListeningPort"]?.InnerText + ",";
+                }
+            }
             if (returnedString.Equals(""))
             {
                 return null;

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Router>
+		<Row>
+			<Destination>Node2</Destination>
+			<OutPort>24</OutPort>
+			<ListeningPort>22</ListeningPort>
+		</Row>
+		<Row>
+			<Destination>Node3</Destination>
+			<OutPort>26</OutPort>
+			<ListeningPort>28</ListeningPort>
+		</Row>
+		<Row>
+			<Destination>Host1</Destination>
+			<OutPort>2</OutPort>
+			<ListeningPort>3</ListeningPort>
+		</Row>
+    </Router>
+</Config>

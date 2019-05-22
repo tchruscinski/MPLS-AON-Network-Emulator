@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RouterV1
+namespace Node
 {
         class CommandLineInterface
         {
@@ -83,7 +83,7 @@ namespace RouterV1
                 Console.WriteLine(" ");
             }
 
-            public void RunCommand(string input, Router router)
+            public void RunCommand(string input, Node node)
             {
                 String[] comm;
                 if (input == "help" || input == "h" || input == "?")
@@ -100,19 +100,19 @@ namespace RouterV1
                     {
                             String localConf = " ";
 
-                            DisplayRouterConfig(router.GetName());   
+                            DisplayRouterConfig(node.GetName());   
                             //Console.WriteLine("{0}", localConf);
                     }
                     else if(comm[0] == "nhlfe")
                     {
-                         Console.WriteLine("NHLFE Table");
-                         router.ShowNHLFETable();
+                         //Console.WriteLine("NHLFE Table");
+                         //node.ShowNHLFETable();
 
                     }
                     else if(comm[0] == "ilm")
                     {
-                        Console.WriteLine("ILM Table");
-                        router.ShowILMTable();
+                        //Console.WriteLine("ILM Table");
+                        //node.ShowILMTable();
                 }
 
                     else if (comm[0] == "quit" || comm[0] == "exit" || comm[0] == "q")
