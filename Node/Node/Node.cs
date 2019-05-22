@@ -14,7 +14,7 @@ namespace Node
      */
     class Node
     {
-        private string _name = " "; //nazwa routera
+        private string name = " "; //nazwa routera
         //sockety, ktorymi pakiety sa przesylane dalej
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
         //sockety, ktore odbieraja pakiety
@@ -34,12 +34,10 @@ namespace Node
 
         public Node(string name)
         {
-            _name = name;
+            this.name = name;
             ParseNodeConfig();
-            //lrm = new LinkResourceManager();
-            //rc = new RC();
         }
-        public string GetName() { return _name; }
+        public string GetName() { return this.name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
 
         public string GetDestinationHost() { return destinationHost; }
@@ -180,7 +178,7 @@ namespace Node
         {
             try
             {
-                string localConfig = parser.ParseConfig(_name + ".xml");
+                string localConfig = parser.ParseConfig(this.name + ".xml");
 
                 //Console.WriteLine("sparsowany xml: "+ localConfig);
 
@@ -197,10 +195,7 @@ namespace Node
                 
                 while (c < numberOfRows)
                 {
-                    sendingSockets.Add(new UDPSocket());
-                    //sendingSockets[c].Client(destinationIP, Int32.Parse(splitConfig[1 + 2 * c]), this);
-                    //tu receiving sockets
-                    //tu destinations
+                    LinkResourceManager.addLink(this.name, splitConfig[c * 3], Int32.Parse(splitConfig[c * 3 + 1]), Int32.Parse(splitConfig[c * 3 + 2]));
                     c++;
                 }
 
@@ -212,7 +207,7 @@ namespace Node
                     receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts * 2 + 2 * c]), this);
                     c++;
                 }*/
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Lokalna konfiguracja wczytana do routera " + _name);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Lokalna konfiguracja wczytana do routera " + this.name);
             } catch (NullReferenceException e)
             {
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wczytac pliku konfiguracyjnego");

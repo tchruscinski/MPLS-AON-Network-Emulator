@@ -9,7 +9,7 @@ namespace Node
     /*
      * Klasa reprezentuje polaczenie miedzy węzłami
      */
-    class Link
+    public class Link
     {
         //WAZNE:
         // częstotliwości podajemy domyślnie w GHz, żeby nie mieć takich wielkich liczb

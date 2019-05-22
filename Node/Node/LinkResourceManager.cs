@@ -10,11 +10,24 @@ namespace Node
      * Link resource manager, posiada informacje o łączach połączonych z danym węzłem i ich stanie
      * przekazuje te wiedze do RC
      */
-    static class LinkResourceManager
+    public static class LinkResourceManager
     {
         private static List<Link> links = new List<Link>();
 
         public static List<Link> GetLinks() { return links; }
+
+        /*
+         * Metoda dodaje nowe łącze pomiędzy zdefiniowanymi węzłami o określonych parametrach do Link Resource Managera
+         *
+         * @node1 - nazwa jednego konćowego węzła
+         * @node2 - nazwa drugiego konćowego węzła
+         * @length - długość łącza
+         * @bandWidth - przepustowość łącza
+         */
+        public static void addLink(string node1, string node2, int length, double bandWidth)
+        {
+            links.Add(new Link(node1, node2, length, bandWidth));
+        }
 
     }
 }

@@ -3,18 +3,18 @@
 	<Router>
 		<Row>
 			<Destination>Node2</Destination>
-			<OutPort>24</OutPort>
-			<ListeningPort>22</ListeningPort>
+			<Length>1</Length>
+			<BandWidth>10</BandWidth>
 		</Row>
 		<Row>
 			<Destination>Node3</Destination>
-			<OutPort>26</OutPort>
-			<ListeningPort>28</ListeningPort>
+			<Length>5</Length>
+			<BandWidth>10</BandWidth>
 		</Row>
 		<Row>
 			<Destination>Host1</Destination>
-			<OutPort>2</OutPort>
-			<ListeningPort>3</ListeningPort>
+			<Length>3</Length>
+			<BandWidth>10</BandWidth>
 		</Row>
     </Router>
 </Config>

@@ -89,9 +89,10 @@ namespace Node
                 foreach (XmlNode row in rowsList)
                 {
                         returnedString += row["Destination"]?.InnerText + ",";
-                        returnedString += row["OutPort"]?.InnerText + ",";
-                        returnedString += row["ListeningPort"]?.InnerText + ",";
+                        returnedString += row["Length"]?.InnerText + ",";
+                        returnedString += row["BandWidth"]?.InnerText + ",";
                 }
+                Console.WriteLine("row+: " + returnedString);
             }
             if (returnedString.Equals(""))
             {
