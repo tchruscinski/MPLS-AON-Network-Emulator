@@ -72,13 +72,14 @@ namespace Node
         * Metoda zwracająca konfigurację z wybranego pliku dla danego routera
         * @fileName - string, nazwa pliku z konfiguracją
         */
-        public string ParseConfig(string fileName)
+        public List<string> ParseConfig(string fileName)
         {
             if(fileName == null)
             {
                 return null;
             }
 
+            int rowCounter = 0;
             string returnedString = "";
             LoadFile(fileName);
             XmlNodeList nodesList = config.SelectNodes("/Config/Router");
@@ -87,10 +88,22 @@ namespace Node
             {
                 XmlNodeList rowsList = config.SelectNodes("/Config/Router/Row");
                 foreach (XmlNode row in rowsList)
-                {
+                {                  
                         returnedString += row["Destination"]?.InnerText + ",";
                         returnedString += row["Length"]?.InnerText + ",";
                         returnedString += row["BandWidth"]?.InnerText + ",";
+                        returnedString += row["NumberOfRoutingLines"]?.InnerText + ",";
+                        
+                        if(Int32.Parse(row["NumberOfRoutingLines"]?.InnerText) > 0)
+                        {
+                            XmlNodeList routingLinesList = config.SelectNodes("/Config/Router/Row/RoutingLine");
+                            foreach (XmlNode line in routingLinesList)
+                            {
+                                returnedString += line["ListeningPort"]?.InnerText + ",";
+                                returnedString += line["SendingPort"]?.InnerText + ",";
+                            }
+                        }
+                        rowCounter++;
                 }
                 Console.WriteLine("row+: " + returnedString);
             }
@@ -99,7 +112,7 @@ namespace Node
                 return null;
             }
             returnedString = returnedString.Remove(returnedString.Length - 1);
-            return returnedString;
+            return new List<string>{returnedString, rowCounter.ToString()};
         }
     }
 }

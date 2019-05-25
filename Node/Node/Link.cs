@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Node
 {
     /*
-     * Klasa reprezentuje polaczenie miedzy węzłami
+     * Klasa reprezentuje łącze miedzy węzłami
      */
     public class Link
     {
@@ -15,6 +15,7 @@ namespace Node
         // częstotliwości podajemy domyślnie w GHz, żeby nie mieć takich wielkich liczb
         // jak gdzieś częstotliwość jest równa 10, to znaczy, że jest 10 GHz
         private Tuple<string, string> _nodes; //nazwy węzłów połączone danym łączem
+        private List<RoutingLine> routingLines = new List<RoutingLine>(); //lista lini łącza
         private int _length; //dlugosc lacza w kilometrach
         private double _bandWidth; //przepustowość łącza
         private int _slotNumber; //ilość slotów
@@ -43,5 +44,22 @@ namespace Node
          
         }
 
+        /*
+        * Metoda dodaje linię routingową do łącza,
+        * @ listeningPort - numer portu nasłuchującego
+        * @ sendingPort - numer portu wysyłającego
+        */
+        public void addRoutingLine(int listeningPort, int sendingPort)
+        {
+            routingLines.Add(new RoutingLine(listeningPort, sendingPort));
+        }
+
+        /*
+        * Metoda zwracająca wszystkie linie routingowe łącza
+        */
+        public List<RoutingLine> getRoutingLines()
+        {
+            return routingLines;
+        }
     }
 }

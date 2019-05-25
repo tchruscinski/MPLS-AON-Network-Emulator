@@ -24,10 +24,18 @@ namespace Node
          * @length - długość łącza
          * @bandWidth - przepustowość łącza
          */
-        public static void addLink(string node1, string node2, int length, double bandWidth)
+        public static void AddLink(string node1, string node2, int length, double bandWidth)
         {
             links.Add(new Link(node1, node2, length, bandWidth));
         }
 
+        /*
+         * Metoda dodaje nowe łącze do Link Resource Managera
+         *
+         */
+        public static void AddLink(Link link)
+        {
+            links.Add(link);
+        }
     }
 }

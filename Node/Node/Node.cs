@@ -178,41 +178,50 @@ namespace Node
         {
             try
             {
-                string localConfig = parser.ParseConfig(this.name + ".xml");
+                List<string> localConfig = parser.ParseConfig(this.name + ".xml");
 
                 //Console.WriteLine("sparsowany xml: "+ localConfig);
 
-                String[] splitConfig = localConfig.Split(',');
+                String[] splitConfig = localConfig[0].Split(',');
+                int numberOfRows = Int32.Parse(localConfig[1]);
+                Console.WriteLine("ilosc rzedow" + numberOfRows);
+                Console.ReadLine();
 
                 if (splitConfig.Contains(null) || splitConfig.Contains(""))
                 {
+                    Console.WriteLine("Plik konfiguracyjny zawiera puste wartości, nie można wczytać wartości.");
                     return;
                 }
 
-                int numberOfRows = (splitConfig.Count()) / 3;
-                int c = 0;
-                
-                
-                while (c < numberOfRows)
+                int n = 0;
+                int configIterator = 0;
+                  
+                while (n < numberOfRows)
                 {
-                    LinkResourceManager.addLink(this.name, splitConfig[c * 3], Int32.Parse(splitConfig[c * 3 + 1]), Int32.Parse(splitConfig[c * 3 + 2]));
-                    c++;
-                }
+                    int numberOfRoutingLines = Int32.Parse(splitConfig[configIterator + 3]);
+                    Link link = new Link(
+                        this.name,
+                        splitConfig[configIterator],
+                        Int32.Parse(splitConfig[configIterator + 1]),
+                        Int32.Parse(splitConfig[configIterator + 2])
+                    );
 
-                /*
-                c = 0;
-                while (c < numberOfPorts)
-                {
-                    receivingSockets.Add(new UDPSocket());
-                    receivingSockets[c].Server(destinationIP, Int32.Parse(splitConfig[5 + numberOfPorts * 2 + 2 * c]), this);
-                    c++;
-                }*/
+                    for(int i = 0; i < numberOfRoutingLines; i++)
+                    {
+                        link.addRoutingLine(
+                            Int32.Parse(splitConfig[configIterator  + 4 + i * 2]),
+                            Int32.Parse(splitConfig[configIterator  + 5 + i * 2])
+                        );
+                    }
+                    LinkResourceManager.AddLink(link);
+                    configIterator +=  numberOfRoutingLines * 2 + 4;
+                    n++;
+                }
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Lokalna konfiguracja wczytana do routera " + this.name);
             } catch (NullReferenceException e)
             {
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wczytac pliku konfiguracyjnego");
             }
         }
-
     }
 }
