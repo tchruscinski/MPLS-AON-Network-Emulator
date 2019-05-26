@@ -7,8 +7,8 @@
 			<BandWidth>10</BandWidth>
 			<NumberOfRoutingLines>2</NumberOfRoutingLines>
 			<RoutingLine>
-				<ListeningPort>10</ListeningPort>
-				<SendingPort>11</SendingPort>
+				<ListeningPort>9</ListeningPort>
+				<SendingPort>10</SendingPort>
 			</RoutingLine>
 			<RoutingLine>
 				<ListeningPort>12</ListeningPort>

@@ -44,22 +44,22 @@ namespace Node
          
         }
 
-        /*
-        * Metoda dodaje linię routingową do łącza,
-        * @ listeningPort - numer portu nasłuchującego
-        * @ sendingPort - numer portu wysyłającego
-        */
-        public void addRoutingLine(int listeningPort, int sendingPort)
-        {
-            routingLines.Add(new RoutingLine(listeningPort, sendingPort));
-        }
+        ///*
+        //* Metoda dodaje linię routingową do łącza,
+        //* @ listeningPort - numer portu nasłuchującego
+        //* @ sendingPort - numer portu wysyłającego
+        //*/
+        //public void addRoutingLine(int listeningPort, int sendingPort)
+        //{
+        //    routingLines.Add(new RoutingLine(listeningPort, sendingPort));
+        //}
 
-        /*
-        * Metoda zwracająca wszystkie linie routingowe łącza
-        */
-        public List<RoutingLine> getRoutingLines()
-        {
-            return routingLines;
-        }
+        ///*
+        //* Metoda zwracająca wszystkie linie routingowe łącza
+        //*/
+        //public List<RoutingLine> getRoutingLines()
+        //{
+        //    return routingLines;
+        //}
     }
 }

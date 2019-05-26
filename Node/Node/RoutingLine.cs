@@ -9,7 +9,7 @@ namespace Node
     /*
      * Klasa reprezentuje sk³¹dow¹ ³¹cza miêdzy wêz³ami, pojedyñcz¹ linie po³¹czeñ
      */
-    public class RoutingLine
+    class RoutingLine
     {
         private int listeningPort;
         private int sendingPort;
@@ -23,6 +23,14 @@ namespace Node
             listeningSocket.SetPort(listeningPort);
             sendingSocket.SetPort(sendingPort);
         }
+        public void RunSocket(Node node)
+        {
+            listeningSocket.Server(Utils.destinationIP, listeningPort, node);
+            sendingSocket.Client(Utils.destinationIP, sendingPort, node);
+        }
+        public int GetSendingPort() { return sendingPort; }
+        public UDPSocket GetSendingSocket() { return sendingSocket; }
+        public UDPSocket GetListeningSocket() { return listeningSocket; }
 
     }
 }

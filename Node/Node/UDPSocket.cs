@@ -40,7 +40,14 @@ namespace Node
         {
             _port = port;
             _socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.ReuseAddress, true);
-            _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
+            try
+            {
+                _socket.Bind(new IPEndPoint(IPAddress.Parse(address), port));
+            } catch(SocketException e)
+            {
+                Console.WriteLine("Nieprawidlowa konfiguracja węzła");
+                return;
+            }
             _node = node;
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
             Receive(_node);
@@ -50,6 +57,7 @@ namespace Node
             _port = port;
             _socket.Connect(IPAddress.Parse(address), port);
             _node = node;
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPClient at: " + address + ":" + port);
             Receive(_node);
         }
 

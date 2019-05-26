@@ -36,6 +36,10 @@ namespace Node
         {
             this.name = name;
             ParseNodeConfig();
+            LinkResourceManager.RunSockets(this); //sockety zaczynaja nasluchiwac/być gotowe do wysłania
+            sendingSockets = LinkResourceManager.GetSendingSockets();
+            receivingSockets = LinkResourceManager.GetListeningSockets();
+
         }
         public string GetName() { return this.name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
@@ -208,7 +212,7 @@ namespace Node
 
                     for(int i = 0; i < numberOfRoutingLines; i++)
                     {
-                        link.addRoutingLine(
+                        LinkResourceManager.AddRoutingLine(
                             Int32.Parse(splitConfig[configIterator  + 4 + i * 2]),
                             Int32.Parse(splitConfig[configIterator  + 5 + i * 2])
                         );
