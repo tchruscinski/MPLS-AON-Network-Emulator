@@ -11,12 +11,12 @@ namespace Node
        static void Main(string[] args)
         {
             //Link link = new Link("Router1", "Router2", 1000, 10000);
-            Node node = new Node("Node1");
-            Console.ReadLine();
-            /*if (args.Length != 0)
+            //Node node = new Node("Node1");
+            //Console.ReadLine();
+            if (args.Length != 0)
             {
                 Node node = new Node(args[0]);
-                
+
                 string command;
 
                 CommandLineInterface cli = new CommandLineInterface();
@@ -29,9 +29,9 @@ namespace Node
                 }
 
                 return;
-            }*/
+            }
 
-        
+
             //Router rt = new Router("Router1");
             //rt.ManagementRequest();
             //Router rter = new Router("Router3");

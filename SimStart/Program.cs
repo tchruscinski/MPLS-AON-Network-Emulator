@@ -17,38 +17,38 @@ namespace SimStart
             startCloud.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             startCloud.Start();
 
-            Process startMS = new Process();
-            startMS.StartInfo.FileName = @"..\..\..\Managment System\Management System\bin\Debug\Management System.exe";
-            // nazwa
-            startMS.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-            startMS.Start();
-            Console.ReadLine();
+            //Process startMS = new Process();
+            //startMS.StartInfo.FileName = @"..\..\..\Managment System\Management System\bin\Debug\Management System.exe";
+            //// nazwa
+            //startMS.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            //startMS.Start();
+            //Console.ReadLine();
 
             Process startRouter1 = new Process();
-            startRouter1.StartInfo.FileName = @"..\..\..\Router\Router\bin\Debug\Router.exe";
+            startRouter1.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
             // nazwa
-            startRouter1.StartInfo.Arguments = "Router1";
+            startRouter1.StartInfo.Arguments = "Node1";
             startRouter1.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             startRouter1.Start();
 
             Process startRouter2 = new Process();
-            startRouter2.StartInfo.FileName = @"..\..\..\Router\Router\bin\Debug\Router.exe";
+            startRouter2.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
             // nazwa
-            startRouter2.StartInfo.Arguments = "Router2";
+            startRouter2.StartInfo.Arguments = "Node2";
             startRouter2.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             startRouter2.Start();
 
             Process startRouter3 = new Process();
-            startRouter3.StartInfo.FileName = @"..\..\..\Router\Router\bin\Debug\Router.exe";
+            startRouter3.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
             // nazwa
-            startRouter3.StartInfo.Arguments = "Router3";
+            startRouter3.StartInfo.Arguments = "Node3";
             startRouter3.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             startRouter3.Start();
 
             Process startRouter4 = new Process();
-            startRouter4.StartInfo.FileName = @"..\..\..\Router\Router\bin\Debug\Router.exe";
+            startRouter4.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
             // nazwa
-            startRouter4.StartInfo.Arguments = "Router4";
+            startRouter4.StartInfo.Arguments = "Node4";
             startRouter4.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             startRouter4.Start();
 

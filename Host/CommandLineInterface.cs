@@ -25,6 +25,11 @@ namespace Host
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("Wylaczenie routera");
 
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("connection_request [desination_host_name] || cq");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Wyslanie żądania zestawienia połączenia z danym hostem");
+
         }
 
         private static void WrongUsage()
@@ -71,6 +76,11 @@ namespace Host
                 else if (comm[0] == "quit" || comm[0] == "exit" || comm[0] == "q")
                 {
                     Environment.Exit(0);
+                }
+                else if (comm[0] == "connection_request" || comm[0] == "cq")
+                {
+                    if (comm.Length == 2) host.SendConnectionRequest(comm[1]);
+                    else WrongUsage();
                 }
                 else
                 {
