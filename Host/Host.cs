@@ -240,5 +240,16 @@ namespace Host
                 tableMPLS_FIB[i].ShowMPLSLine();
 
         }
+        /*
+         * Wysyła żądanie zestawienia połączenia z danym hostem
+         */
+        public void SendConnectionRequest(string destinationHost)
+        {
+            StringBuilder connectionRequest = new StringBuilder();
+            connectionRequest.Append("ConnectionRequest"); //nagłówek ConnectionRequest mówi węzłowi, że host chce zestawić połączenie
+            connectionRequest.Append(";"); //znak końca nagłówka
+            connectionRequest.Append(destinationHost);
+            sendingSocket.Send(connectionRequest.ToString());
+        }
     }
 }
