@@ -97,7 +97,7 @@ namespace Node
         public static void ShowLinks()
         {
             for (int i = 0; i < links.Count; i++)
-                Console.WriteLine(links[i].GetLink());
+                Console.WriteLine(links[i].GetLinkToShow());
         }
     }
 }

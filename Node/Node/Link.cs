@@ -55,7 +55,10 @@ namespace Node
         {
             return _nodes;
         }
-        public string GetLink()
+        /*
+         * Zwraca informacje o Linku w formie czytelnej dla  użytkownika
+         */
+        public string GetLinkToShow()
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(_nodes.Item1);
@@ -68,6 +71,24 @@ namespace Node
             builder.Append(" - bandWidth");
             builder.Append(_slotNumber);
             builder.Append(" - slotNumber");
+            return builder.ToString();
+        }
+        /*
+         * Zwraca informacje o Linku w formie do wysłanie
+         */
+        public string GetLinkToSend()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(_nodes.Item1);
+            builder.Append(",");
+            builder.Append(_nodes.Item2);
+            builder.Append(",");
+            builder.Append(_length);
+            builder.Append(",");
+            builder.Append(_bandWidth);
+            builder.Append(",");
+            builder.Append(_slotNumber);
+            builder.Append(",");
             return builder.ToString();
         }
         ///*

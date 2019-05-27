@@ -34,12 +34,13 @@ namespace Node
             LinkResourceManager.RunSockets(this); //sockety zaczynaja nasluchiwac/być gotowe do wysłania
             sendingSockets = LinkResourceManager.GetSendingSockets();
             receivingSockets = LinkResourceManager.GetListeningSockets();
+            RoutingController.SetNode(this);
             RoutingController.SetInitialLinks(LinkResourceManager.GetLinks()); //LRM przekazuje RC informacje o stanie łączy
             LinkResourceManager.ShowLinks();
         }
         public string GetName() { return this.name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
-
+        public List<UDPSocket> GetSendingSockets() { return sendingSockets; }
         public string GetDestinationHost() { return destinationHost; }
         /*
          * Metoda dodaje,
