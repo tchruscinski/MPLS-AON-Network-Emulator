@@ -15,7 +15,7 @@ namespace Node
         // częstotliwości podajemy domyślnie w GHz, żeby nie mieć takich wielkich liczb
         // jak gdzieś częstotliwość jest równa 10, to znaczy, że jest 10 GHz
         private Tuple<string, string> _nodes; //nazwy węzłów połączone danym łączem
-        private List<RoutingLine> routingLines = new List<RoutingLine>(); //lista lini łącza
+        private RoutingLine routingLine;
         private int _length; //dlugosc lacza w kilometrach
         private double _bandWidth; //przepustowość łącza
         private int _slotNumber; //ilość slotów
@@ -27,7 +27,7 @@ namespace Node
         //TRUE = wolny link, FALSE = zajęty link
         private Dictionary<int, bool> _slotIndexList = new Dictionary<int, bool>();
 
-        public Link(string node1, string node2, int length, double bandWidth)
+        public Link(string node1, string node2, int length, double bandWidth, int listeningPort, int sendingPort)
         {
             _nodes = new Tuple<string, string>(node1, node2);
             _length = length;
@@ -41,9 +41,20 @@ namespace Node
                 //Console.WriteLine("Slot o numerze: {0}, status: {1}",
                 //    _slotIndexList.Keys.ElementAt(i), _slotIndexList.Values.ElementAt(i));
             }
+
+            routingLine = new RoutingLine(listeningPort, sendingPort);
          
         }
 
+        public RoutingLine GetRoutingLine()
+        {
+            return routingLine;
+        }
+
+        public Tuple<string, string> GetConnectedNodes()
+        {
+            return _nodes;
+        }
         ///*
         //* Metoda dodaje linię routingową do łącza,
         //* @ listeningPort - numer portu nasłuchującego

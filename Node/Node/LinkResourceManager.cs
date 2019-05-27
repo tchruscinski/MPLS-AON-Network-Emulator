@@ -13,26 +13,15 @@ namespace Node
     static class LinkResourceManager
     {
         private static List<Link> links = new List<Link>();
-        private static List<RoutingLine> routingLines = new List<RoutingLine>(); //lista portów łącza
+        private static List<RoutingLine> routingLines = new List<RoutingLine>(); //lista linii routingowych łącza
+        static Time time = new Time();
+        private static String timeStamp = time.GetTimestamp(DateTime.Now);
 
         public static List<Link> GetLinks() { return links; }
 
         /*
-         * Metoda dodaje nowe łącze pomiędzy zdefiniowanymi węzłami o określonych parametrach do Link Resource Managera
-         *
-         * @node1 - nazwa jednego konćowego węzła
-         * @node2 - nazwa drugiego konćowego węzła
-         * @length - długość łącza
-         * @bandWidth - przepustowość łącza
-         */
-        public static void AddLink(string node1, string node2, int length, double bandWidth)
-        {
-            links.Add(new Link(node1, node2, length, bandWidth));
-        }
-
-        /*
          * Metoda dodaje nowe łącze do Link Resource Managera
-         *
+         * @link - obiekt klasy Link, łącze które chcemy dodać
          */
         public static void AddLink(Link link)
         {
@@ -91,6 +80,19 @@ namespace Node
             {
                 routingLines[i].RunSocket(node);
             }
+        }
+
+        public static int GetSendingPortForDestination(string destination)
+        {
+            foreach (Link link in links)
+            {
+                if(string.Equals(link.GetConnectedNodes().Item2, destination))
+                {
+                    return link.GetRoutingLine().GetSendingPort();
+                }
+            }
+            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie ma linii routingowej do takiego węzła.");
+            return 0;
         }
     }
 }

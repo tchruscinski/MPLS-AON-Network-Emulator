@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Node
 {
-    class Time
+    public class Time
     {
 
         public string GetTimestamp(DateTime dt)

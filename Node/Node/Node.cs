@@ -12,7 +12,7 @@ namespace Node
      * 
      * TODO: Etykiety MPLS
      */
-    class Node
+    public class Node
     {
         private string name = ""; //nazwa routera
         //sockety, ktorymi pakiety sa przesylane dalej
@@ -22,10 +22,6 @@ namespace Node
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
         private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
         private int _incPort; //port, ktorym przyszedl pakiet, potrzebny do tablicy ILM
-        private int _topLabel; //etykieta na szczycie stosu etykiet pakietu
-        //etykiety ze stosu etykiet pakietu, poza szczytowa etykieta
-        //robie tak dziwnie, bo dla innych przypisan pustego stringa cos sie wywala potem
-        private string _poppedLabels = new StringBuilder().ToString(); 
         private static Parser parser = new Parser();
         public static string destinationIP = "127.0.0.1"; //docelowe ip
         static Time time = new Time();
@@ -73,23 +69,20 @@ namespace Node
          * Pobiera pakiet od socketu, a nastepnie przesyla go dalej
          * @ packet, tresc pakietu
          */
-        /* 
         public void ReadPacket(string packet)
         {
-            //destinationHost = ReadDestinationHost(_packet);
-            ShowMessage(_packet);
-            int port = RefactorPacket(); // nr portu, ktorym pakiet zostanie wyslany
+            ShowMessage(packet);
+            int port = DetermineSendingPort(packet); // nr portu, ktorym pakiet zostanie wyslany
             if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem/");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 return;
             }
             //przesyla pakiet do nastepnego wezla
-            SendPacket(port, packet);
-        }*/
+            SendPacket(packet, port);
+        }
 
         /*
          * Pomocnicza metoda, wypisuje tresc odebranej wiadomosci 
@@ -97,9 +90,10 @@ namespace Node
          */
         public void ShowMessage(string message)
         {
-            //Console.WriteLine(message);
+            Console.WriteLine(message);
 
         }
+
         /*
          * Odczytuje z tresci wiadomosci nazwe hosta docelowego i przypisuje go do @ destinationHost
          * @ message, tresc wiadomoci
@@ -119,12 +113,8 @@ namespace Node
             for (int i = 0; i < counter; i++)
                 hostName[i] = byteMessage[i];
 
-            //Console.WriteLine("Nazwa hosta");
-            //Console.WriteLine(destinationHost);
-            //Console.WriteLine("/////////////");
+            Console.WriteLine("Nazwa hosta: " + destinationHost);
             return Encoding.ASCII.GetString(hostName);
-
-
         }
 
         /*
@@ -133,44 +123,34 @@ namespace Node
          */
         public void SendPacket(string message, int port)
         {
-            for (int i = 0; i < sendingSockets.Count; i++)
-                if (sendingSockets[i].getPort() == port)
-                {
-                    sendingSockets[i].Send(message);
-                    _poppedLabels = new StringBuilder().ToString();
-                    return;
-                }
-            _poppedLabels = new StringBuilder().ToString();
-            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem//");
-            //usuniecie wpisu z tablicy
-            Console.WriteLine(time.GetTimestamp(DateTime.Now) + " PORT:" + port);
-            //ActualizeNHFLETable(port);
-            //ShowNHLFETable();
-
+            try
+            {
+                for (int i = 0; i < sendingSockets.Count; i++)
+                    if (sendingSockets[i].getPort() == port)
+                    {
+                        sendingSockets[i].Send(message);
+                        return;
+                    }
+            } catch (Exception e)
+            {
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wyslac pakietu zadanym portem");
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " PORT:" + port);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Błąd: " + e.Message);
+            }
         }
 
         /*
-         * Metoda wysyla pakiet podanym portem
-         * @ port, nr portu, ktorym pakiet zostanie wyslany
+         * Metoda sprawdza odpowiednie wpisy tablic routera i przetwarza jego naglowek
+         * @packet - string, pakiet odebrany przez węzeł
          */
-        /*
-       public void SendPacket(int port)
-       {
+        public int DetermineSendingPort(string packet)
+        {
+            if (packet.Equals("")) return 0;
+            string destinationHost = ReadDestinationHost(packet);
+            int port = LinkResourceManager.GetSendingPortForDestination(destinationHost);
+            return port;
+        }
 
-               //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
-               //pobrana przy odbiorze tresc pakietu
-               for (int j = 0; j < sendingSockets.Count; j++)
-                   if (sendingSockets[j].getPort() == port)
-                   {
-                       sendingSockets[j].Send(_packet);
-                       _poppedLabels = new StringBuilder().ToString(); //po wyslaniu czyscimy bufor zdjetych etykiet
-                       return;
-                   }
-               //jezeli nie udalo sie wyslac, zwraca komunikat
-               Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
-               _poppedLabels = new StringBuilder().ToString(); //czyscimy bufor zdjetych etykiet
-
-       }*/
 
         /*
         * Metoda parsuje konfigurację węzła
@@ -203,7 +183,9 @@ namespace Node
                         this.name,
                         splitConfig[configIterator],
                         Int32.Parse(splitConfig[configIterator + 1]),
-                        Int32.Parse(splitConfig[configIterator + 2])
+                        Int32.Parse(splitConfig[configIterator + 2]),
+                        Int32.Parse(splitConfig[configIterator + 3]),
+                        Int32.Parse(splitConfig[configIterator + 4])
                     );
                     LinkResourceManager.AddRoutingLine(
                         Int32.Parse(splitConfig[configIterator + 3]),
@@ -217,6 +199,7 @@ namespace Node
             } catch (NullReferenceException e)
             {
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wczytac pliku konfiguracyjnego");
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Błąd: " + e.Message);
             }
         }
     }

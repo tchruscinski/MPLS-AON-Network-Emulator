@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Node
 {
-    class UDPSocket
+    public class UDPSocket
     {
         private Socket _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         private const int bufSize = 8 * 1024;
@@ -46,6 +46,7 @@ namespace Node
             } catch(SocketException e)
             {
                 Console.WriteLine("Nieprawidlowa konfiguracja węzła");
+                Console.WriteLine("Błąd: " + e.Message);
                 return;
             }
             _node = node;
@@ -97,11 +98,8 @@ namespace Node
                 catch (SocketException e)
                 {
                     timeStamp = time.GetTimestamp(DateTime.Now);
-                    //node.ActualizeNHFLETable(_port);
-                    //node.RefactorPacket();
                     Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna nawiazac polaczenia");
-                    //tutaj bedzie mozna wyslac wiadomosc do systemu zarzadzajacego, ze 
-                    //host/node nie jest dostepny
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Błąd: " + e.Message);
                 }
             }, state);
 
