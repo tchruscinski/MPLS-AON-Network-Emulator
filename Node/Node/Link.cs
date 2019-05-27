@@ -32,7 +32,7 @@ namespace Node
             _nodes = new Tuple<string, string>(node1, node2);
             _length = length;
             _bandWidth = bandWidth;
-            _slotNumber = (int)Math.Round(_bandWidth / _slotWidth);
+            _slotNumber = (int)Math.Floor(_bandWidth / _slotWidth); //Floor() - zaokrąglenie w dół
             //Console.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}", _nodes.Item1, _nodes.Item2,
             //    _length, _bandWidth, _slotNumber, _slotWidth);
             for(int i = 0; i < _slotNumber; i++)
@@ -54,6 +54,21 @@ namespace Node
         public Tuple<string, string> GetConnectedNodes()
         {
             return _nodes;
+        }
+        public string GetLink()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(_nodes.Item1);
+            builder.Append("-");
+            builder.Append(_nodes.Item2);
+            builder.Append(", ");
+            builder.Append(_length);
+            builder.Append(" - length");
+            builder.Append(_bandWidth);
+            builder.Append(" - bandWidth");
+            builder.Append(_slotNumber);
+            builder.Append(" - slotNumber");
+            return builder.ToString();
         }
         ///*
         //* Metoda dodaje linię routingową do łącza,

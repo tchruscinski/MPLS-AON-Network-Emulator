@@ -94,5 +94,10 @@ namespace Node
             Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie ma linii routingowej do takiego węzła.");
             return 0;
         }
+        public static void ShowLinks()
+        {
+            for (int i = 0; i < links.Count; i++)
+                Console.WriteLine(links[i].GetLink());
+        }
     }
 }

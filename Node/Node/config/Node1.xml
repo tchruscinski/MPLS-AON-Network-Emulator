@@ -4,21 +4,21 @@
 		<Row>
 			<Destination>Node2</Destination>
 			<Length>1</Length>
-			<BandWidth>10</BandWidth>
+			<BandWidth>100</BandWidth>
 			<RLListeningPort>9</RLListeningPort>
 			<RLSendingPort>10</RLSendingPort>
 		</Row>
 		<Row>
 			<Destination>Node3</Destination>
 			<Length>5</Length>
-			<BandWidth>10</BandWidth>
+			<BandWidth>100</BandWidth>
 			<RLListeningPort>11</RLListeningPort>
 			<RLSendingPort>12</RLSendingPort>
 		</Row>
 		<Row>
 			<Destination>Host1</Destination>
 			<Length>3</Length>
-			<BandWidth>10</BandWidth>
+			<BandWidth>100</BandWidth>
 			<RLListeningPort>13</RLListeningPort>
 			<RLSendingPort>14</RLSendingPort>
 		</Row>
