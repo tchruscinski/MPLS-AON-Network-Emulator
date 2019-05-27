@@ -5,27 +5,22 @@
 			<Destination>Node2</Destination>
 			<Length>1</Length>
 			<BandWidth>10</BandWidth>
-			<NumberOfRoutingLines>2</NumberOfRoutingLines>
-			<RoutingLine>
-				<ListeningPort>9</ListeningPort>
-				<SendingPort>10</SendingPort>
-			</RoutingLine>
-			<RoutingLine>
-				<ListeningPort>12</ListeningPort>
-				<SendingPort>13</SendingPort>
-			</RoutingLine>
+			<RLListeningPort>9</RLListeningPort>
+			<RLSendingPort>10</RLSendingPort>
 		</Row>
 		<Row>
 			<Destination>Node3</Destination>
 			<Length>5</Length>
 			<BandWidth>10</BandWidth>
-			<NumberOfRoutingLines>0</NumberOfRoutingLines>
+			<RLListeningPort>11</RLListeningPort>
+			<RLSendingPort>12</RLSendingPort>
 		</Row>
 		<Row>
 			<Destination>Host1</Destination>
 			<Length>3</Length>
 			<BandWidth>10</BandWidth>
-			<NumberOfRoutingLines>0</NumberOfRoutingLines>
+			<RLListeningPort>13</RLListeningPort>
+			<RLSendingPort>14</RLSendingPort>
 		</Row>
     </Router>
 </Config>

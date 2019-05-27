@@ -14,12 +14,11 @@ namespace Node
      */
     class Node
     {
-        private string name = " "; //nazwa routera
+        private string name = ""; //nazwa routera
         //sockety, ktorymi pakiety sa przesylane dalej
         private List<UDPSocket> sendingSockets = new List<UDPSocket>();
         //sockety, ktore odbieraja pakiety
         private List<UDPSocket> receivingSockets = new List<UDPSocket>();
-        private String _packet = " "; //tresc pakietu obslugiwanego w danym momencie przez router,
         private String destinationHost = " "; //docelowy host pakietu obslugiwanego w danym momencie
         private int labelStartIndex; //nr bajtu, na ktorym zaczyna sie etykieta mpls
         private int _incPort; //port, ktorym przyszedl pakiet, potrzebny do tablicy ILM
@@ -69,21 +68,14 @@ namespace Node
             receivingSockets
                 .Add(socket);
         }
+
         /*
          * Pobiera pakiet od socketu, a nastepnie przesyla go dalej
          * @ packet, tresc pakietu
          */
-        /*public void ReadPacket(string packet)
+        /* 
+        public void ReadPacket(string packet)
         {
-            //to do poprawy
-            String[] extractedHead = packet.Split(';');
-            if(extractedHead[0].Equals("NMS"))
-            {
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Otrzymano pakiet od NMS...");
-                ParseNMSResponse(packet);
-                return;
-            }
-            _packet = packet;
             //destinationHost = ReadDestinationHost(_packet);
             ShowMessage(_packet);
             int port = RefactorPacket(); // nr portu, ktorym pakiet zostanie wyslany
@@ -96,7 +88,7 @@ namespace Node
                 return;
             }
             //przesyla pakiet do nastepnego wezla
-            SendPacket(port);
+            SendPacket(port, packet);
         }*/
 
         /*
@@ -134,6 +126,7 @@ namespace Node
 
 
         }
+
         /*
          * Metoda pomocnicza, do testowania
          * Wysyla pakiet odpowiednim portem, dla danego hosta docelowego
@@ -160,24 +153,28 @@ namespace Node
          * Metoda wysyla pakiet podanym portem
          * @ port, nr portu, ktorym pakiet zostanie wyslany
          */
-        public void SendPacket(int port)
-        {
-            
-                //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
-                //pobrana przy odbiorze tresc pakietu
-                for (int j = 0; j < sendingSockets.Count; j++)
-                    if (sendingSockets[j].getPort() == port)
-                    {
-                        sendingSockets[j].Send(_packet);
-                        _poppedLabels = new StringBuilder().ToString(); //po wyslaniu czyscimy bufor zdjetych etykiet
-                        return;
-                    }
-                //jezeli nie udalo sie wyslac, zwraca komunikat
-                Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
-                _poppedLabels = new StringBuilder().ToString(); //czyscimy bufor zdjetych etykiet
-    
-        }
+        /*
+       public void SendPacket(int port)
+       {
 
+               //nastepnie szuka socketu o odpowiednim numerze portu i wysyla nim 
+               //pobrana przy odbiorze tresc pakietu
+               for (int j = 0; j < sendingSockets.Count; j++)
+                   if (sendingSockets[j].getPort() == port)
+                   {
+                       sendingSockets[j].Send(_packet);
+                       _poppedLabels = new StringBuilder().ToString(); //po wyslaniu czyscimy bufor zdjetych etykiet
+                       return;
+                   }
+               //jezeli nie udalo sie wyslac, zwraca komunikat
+               Console.WriteLine("Nie mozna wyslac pakietu zadanym portem///");
+               _poppedLabels = new StringBuilder().ToString(); //czyscimy bufor zdjetych etykiet
+
+       }*/
+
+        /*
+        * Metoda parsuje konfigurację węzła
+        */
         public void ParseNodeConfig()
         {
             try
@@ -202,26 +199,21 @@ namespace Node
                   
                 while (n < numberOfRows)
                 {
-                    int numberOfRoutingLines = Int32.Parse(splitConfig[configIterator + 3]);
                     Link link = new Link(
                         this.name,
                         splitConfig[configIterator],
                         Int32.Parse(splitConfig[configIterator + 1]),
                         Int32.Parse(splitConfig[configIterator + 2])
                     );
-
-                    for(int i = 0; i < numberOfRoutingLines; i++)
-                    {
-                        LinkResourceManager.AddRoutingLine(
-                            Int32.Parse(splitConfig[configIterator  + 4 + i * 2]),
-                            Int32.Parse(splitConfig[configIterator  + 5 + i * 2])
-                        );
-                    }
+                    LinkResourceManager.AddRoutingLine(
+                        Int32.Parse(splitConfig[configIterator + 3]),
+                        Int32.Parse(splitConfig[configIterator + 4])
+                    );
                     LinkResourceManager.AddLink(link);
-                    configIterator +=  numberOfRoutingLines * 2 + 4;
+                    configIterator += 5;
                     n++;
                 }
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Lokalna konfiguracja wczytana do routera " + this.name);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Lokalna konfiguracja wczytana do węzła " + this.name);
             } catch (NullReferenceException e)
             {
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Nie mozna wczytac pliku konfiguracyjnego");

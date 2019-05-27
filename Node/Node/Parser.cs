@@ -92,17 +92,8 @@ namespace Node
                         returnedString += row["Destination"]?.InnerText + ",";
                         returnedString += row["Length"]?.InnerText + ",";
                         returnedString += row["BandWidth"]?.InnerText + ",";
-                        returnedString += row["NumberOfRoutingLines"]?.InnerText + ",";
-                        
-                        if(Int32.Parse(row["NumberOfRoutingLines"]?.InnerText) > 0)
-                        {
-                            XmlNodeList routingLinesList = config.SelectNodes("/Config/Router/Row/RoutingLine");
-                            foreach (XmlNode line in routingLinesList)
-                            {
-                                returnedString += line["ListeningPort"]?.InnerText + ",";
-                                returnedString += line["SendingPort"]?.InnerText + ",";
-                            }
-                        }
+                        returnedString += row["RLListeningPort"]?.InnerText + ",";
+                        returnedString += row["RLSendingPort"]?.InnerText + ",";
                         rowCounter++;
                 }
                 Console.WriteLine("row+: " + returnedString);

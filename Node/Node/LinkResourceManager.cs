@@ -65,6 +65,7 @@ namespace Node
 
             return sendingPorts;
         }
+
         public static List<UDPSocket> GetSendingSockets()
         {
             List<UDPSocket> sendingSockets = new List<UDPSocket>();
@@ -72,6 +73,7 @@ namespace Node
                 sendingSockets.Add(routingLines[i].GetSendingSocket());
             return sendingSockets;
         }
+
         public static List<UDPSocket> GetListeningSockets()
         {
             List<UDPSocket> listeningSockets = new List<UDPSocket>();
@@ -79,6 +81,7 @@ namespace Node
                 listeningSockets.Add(routingLines[i].GetListeningSocket());
             return listeningSockets;
         }
+
         /*
          * Metoda tworzy Serwery/Klienty
          */
