@@ -2,14 +2,6 @@
 <Config>
   <Host>
     <Row>
-        <Type>NSEND</Type>
-        <Port>111</Port>
-    </Row>
-    <Row>
-        <Type>NRECV</Type>
-        <Port>105</Port>
-    </Row>
-    <Row>
         <Type>SEND</Type>
         <Port>2</Port>
     </Row>

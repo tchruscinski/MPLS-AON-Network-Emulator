@@ -36,9 +36,11 @@ namespace ConnectionCloud
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Created UDPServer at: " + address + ":" + port);
                 _connectionCloud = connectionCloud;
                 AsyncTransfer(_connectionCloud);
-            } catch(Exception e)
+            } catch(SocketException e)
             {
-                Console.WriteLine("wyjatekServer");
+                Console.WriteLine("Nieprawidlowa konfiguracja chmury");
+                Console.WriteLine("Błąd: " + e.Message);
+                return;
             }
               
         }
@@ -57,9 +59,11 @@ namespace ConnectionCloud
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Receive();
             } 
-        catch (Exception e)
+        catch (SocketException e)
             {
-                Console.WriteLine("wyjatekCLient");
+                Console.WriteLine("Nieprawidlowa konfiguracja chmury");
+                Console.WriteLine("Błąd: " + e.Message);
+                return;
             }
             
 
@@ -89,13 +93,21 @@ namespace ConnectionCloud
              string msg = "";
             _socket.BeginReceiveFrom(state.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv = (ar) =>
             {
-                State so = (State)ar.AsyncState;
-                int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
-                _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", _port, epFrom.ToString());
-                Console.ForegroundColor = ConsoleColor.Gray;
-                msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
+                try
+                {
+                    State so = (State)ar.AsyncState;
+                    int bytes = _socket.EndReceiveFrom(ar, ref epFrom);
+                    _socket.BeginReceiveFrom(so.buffer, 0, bufSize, SocketFlags.None, ref epFrom, recv, so);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Received message: {0}: {1}", _port, epFrom.ToString());
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    msg = Encoding.ASCII.GetString(so.buffer, 0, bytes);
+                } catch(SocketException e)
+                {
+                    Console.WriteLine("Nieprawidlowa konfiguracja chmury");
+                    Console.WriteLine("Błąd: " + e.Message);
+                    return;
+                }
             }, state);
         }
 

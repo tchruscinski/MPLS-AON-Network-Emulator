@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Config>
-  <Host>
-    <Row>
-        <Type>NSEND</Type>
-        <Port>112</Port>
-      </Row>  
-     <Row>   
-        <Type>NRECV</Type>
-        <Port>106</Port>
-     </Row>   
+  <Host>   
       <Row>  
         <Type>SEND</Type>
         <Port>28</Port>

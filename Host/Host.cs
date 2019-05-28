@@ -36,7 +36,7 @@ namespace Host
         {
             _name = name;
             ParseLocalConfig();
-            ParseHostTable();
+            //ParseHostTable();
         }
 
         public Host(string name,int sendingPort, int receivingPort)
@@ -57,6 +57,13 @@ namespace Host
          */
         public void ReadPacket(string packet)
         {
+            //jeżeli treść wiadomości to ACK, jedynie wyświetl na ekran
+            if (packet.Equals("ACK"))
+            {
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + _name + " otrzymal:" + packet);
+                return;
+            }
+
             Byte[] bytes = Encoding.ASCII.GetBytes(packet);
             //petla wyszukuje, na ktorym bajcie jest znak konca naglowka 
             //zeby usunac wszystkie bajty do niego wlacznie, pozostawiajac sama tresc otrzymanej wiadomosci

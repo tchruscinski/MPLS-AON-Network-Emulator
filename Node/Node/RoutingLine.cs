@@ -31,6 +31,7 @@ namespace Node
         }
 
         public int GetSendingPort() { return sendingPort; }
+        public int GetListeneningPort() { return listeningPort; }
         public UDPSocket GetSendingSocket() { return sendingSocket; }
         public UDPSocket GetListeningSocket() { return listeningSocket; }
 

@@ -42,6 +42,7 @@ namespace Node
         public string GetName() { return this.name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
         public List<UDPSocket> GetSendingSockets() { return sendingSockets; }
+        public List<UDPSocket> GetReceivingSockets() { return receivingSockets; }
         public string GetDestinationHost() { return destinationHost; }
         /*
          * Metoda dodaje,
@@ -75,6 +76,7 @@ namespace Node
         public void ReadPacket(string packet)
         {
             ShowMessage(packet);
+            SendFeedback();//wysłanie potwierdzenia otrzymania wiadomości
             int port = DetermineSendingPort(packet); // nr portu, ktorym pakiet zostanie wyslany
             if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
             {
@@ -85,6 +87,22 @@ namespace Node
             }
             //przesyla pakiet do nastepnego wezla
             SendPacket(packet, port);
+        }
+        /*
+         * Wysyła informacje zwrotną po odebraniu wiadomości, domyślnie przesyła ACK
+         */
+        public void SendFeedback(string message="ACK")
+        {
+            int index = 0; //szukany index wpisu tablicy routingowej
+            foreach(RoutingLine i in LinkResourceManager.GetRoutingLines())
+            {
+                if (_incPort == i.GetListeneningPort())
+                {
+                    i.GetSendingSocket().Send(message);
+                    return;
+                }
+                Console.WriteLine("Nie można odesłać wiadomości zwrotnej: " + message);
+            }
         }
 
         /*
@@ -169,7 +187,7 @@ namespace Node
                 String[] splitConfig = localConfig[0].Split(',');
                 int numberOfRows = Int32.Parse(localConfig[1]);
                 Console.WriteLine("ilosc rzedow" + numberOfRows);
-                Console.ReadLine();
+                //Console.ReadLine();
 
                 if (splitConfig.Contains(null) || splitConfig.Contains(""))
                 {
@@ -194,7 +212,9 @@ namespace Node
                         Int32.Parse(splitConfig[configIterator + 3]),
                         Int32.Parse(splitConfig[configIterator + 4])
                     );
-                    LinkResourceManager.AddLink(link);
+                    //jeżeli, któraś z wartości jest 0, to znaczy, że jest to połączenie z hostem, więc nie dodajemy go do LRM
+                    if(Int32.Parse(splitConfig[configIterator + 1]) != 0)
+                         LinkResourceManager.AddLink(link);
                     configIterator += 5;
                     n++;
                 }

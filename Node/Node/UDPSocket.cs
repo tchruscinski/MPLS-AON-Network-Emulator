@@ -92,7 +92,7 @@ namespace Node
                     timeStamp = time.GetTimestamp(DateTime.Now);
                     Console.WriteLine(timeStamp+" RECV: {0}: bytes: [{1}], message: [{2}], port: [{3}]", epFrom.ToString(), bytes, Encoding.ASCII.GetString(so.buffer, 0, bytes), _port);
                     node.SetIncPort(_port);
-                    //node.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
+                    node.ReadPacket(Encoding.ASCII.GetString(so.buffer, 0, bytes));
                     counter++;
                 }
                 catch (SocketException e)

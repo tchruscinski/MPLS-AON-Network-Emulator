@@ -10,6 +10,18 @@ namespace Host
     {
         public static void Main(string[] args)
         {
+            Host host1 = new Host("Host1");
+
+            string command1;
+
+            CommandLineInterface cli1 = new CommandLineInterface();
+
+            while (true)
+            {
+                Console.Write("HostCLI# ");
+                command1 = Console.ReadLine();
+                cli1.RunCommand(command1, host1);
+            }
 
             if (args.Length != 0)
             {
