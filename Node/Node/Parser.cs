@@ -91,7 +91,7 @@ namespace Node
                 {                  
                         returnedString += row["Destination"]?.InnerText + ",";
                         returnedString += row["Length"]?.InnerText + ",";
-                        returnedString += row["BandWidth"]?.InnerText + ",";
+                        returnedString += row["Capacity"]?.InnerText + ",";
                         returnedString += row["RLListeningPort"]?.InnerText + ",";
                         returnedString += row["RLSendingPort"]?.InnerText + ",";
                         rowCounter++;

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallController.cs" />
     <Compile Include="CommandLineInterface.cs" />
     <Compile Include="ILMLine.cs" />
     <Compile Include="Link.cs" />

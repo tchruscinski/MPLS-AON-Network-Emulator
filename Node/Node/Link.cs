@@ -17,9 +17,11 @@ namespace Node
         private Tuple<string, string> _nodes; //nazwy węzłów połączone danym łączem
         private RoutingLine routingLine;
         private int _length; //dlugosc lacza w kilometrach
-        private double _bandWidth; //przepustowość łącza
+        private double _bandWidth; //szerokość pasma
         private int _slotNumber; //ilość slotów
+        private double _capacity; //przepustowość łącza
         private double _slotWidth = 12.5; // szerokosc slotu, w eonie 12,5 Ghz
+        private int bandEfficiency = 2; // efektywnosc widmowa, przyjmujemy 2 Hz/Baud
 
         //lista zawiera indeksy slotów oraz informacje o tym czy dany slot jest w tym momencie zajęty
         //jest to po to potrzebne, że na całej długości połączenia sygnał musi iść dokładnie tymi samymi
@@ -27,11 +29,12 @@ namespace Node
         //TRUE = wolny link, FALSE = zajęty link
         private Dictionary<int, bool> _slotIndexList = new Dictionary<int, bool>();
 
-        public Link(string node1, string node2, int length, double bandWidth, int listeningPort, int sendingPort)
+        public Link(string node1, string node2, int length, double capacity, int listeningPort, int sendingPort)
         {
             _nodes = new Tuple<string, string>(node1, node2);
             _length = length;
-            _bandWidth = bandWidth;
+            _capacity = capacity;
+            _bandWidth = _capacity * bandEfficiency; //szerokość pasma to przepustowość * efektywność widmowa
             _slotNumber = (int)Math.Floor(_bandWidth / _slotWidth); //Floor() - zaokrąglenie w dół
             //Console.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}", _nodes.Item1, _nodes.Item2,
             //    _length, _bandWidth, _slotNumber, _slotWidth);

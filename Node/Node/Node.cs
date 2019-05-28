@@ -35,6 +35,7 @@ namespace Node
             sendingSockets = LinkResourceManager.GetSendingSockets();
             receivingSockets = LinkResourceManager.GetListeningSockets();
             RoutingController.SetNode(this);
+            CallController.InitiateCC(this);
             RoutingController.SetInitialLinks(LinkResourceManager.GetLinks()); //LRM przekazuje RC informacje o stanie łączy
             LinkResourceManager.ShowLinks();
         }
