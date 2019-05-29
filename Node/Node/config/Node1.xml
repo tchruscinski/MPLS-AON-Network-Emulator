@@ -17,8 +17,8 @@
 		</Row>
 		<Row>
 			<Destination>Host1</Destination>
-			<Length> </Length>
-			<Capacity> </Capacity>
+			<Length>0</Length>
+			<Capacity>0</Capacity>
 			<RLListeningPort>3</RLListeningPort>
 			<RLSendingPort>4</RLSendingPort>
 		</Row>

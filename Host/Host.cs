@@ -63,6 +63,11 @@ namespace Host
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + _name + " otrzymal:" + packet);
                 return;
             }
+            if(packet.Contains("Hello"))
+            {
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + _name + " otrzymal:" + packet);
+                return;
+            }
 
             Byte[] bytes = Encoding.ASCII.GetBytes(packet);
             //petla wyszukuje, na ktorym bajcie jest znak konca naglowka 

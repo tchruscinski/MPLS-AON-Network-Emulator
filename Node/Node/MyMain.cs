@@ -11,12 +11,12 @@ namespace Node
        static void Main(string[] args)
         {
             //Link link = new Link("Router1", "Router2", 1000, 10000);
-            Node node1 = new Node("Node1");
+            //Node node1 = new Node("Node1");
             //Console.ReadLine();
             ////node1.SendPacket("test", 10);
             //foreach (UDPSocket i in node1.GetReceivingSockets())
             //    Console.WriteLine(i.getPort());
-            Console.ReadLine();
+            //Console.ReadLine();
             if (args.Length != 0)
             {
                 Node node = new Node(args[0]);

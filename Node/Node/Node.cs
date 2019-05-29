@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Node
 {
@@ -38,6 +39,9 @@ namespace Node
             CallController.InitiateCC(this);
             RoutingController.SetInitialLinks(LinkResourceManager.GetLinks()); //LRM przekazuje RC informacje o stanie łączy
             LinkResourceManager.ShowLinks();
+            Thread.Sleep(2000); //pauza, żeby wszystkie węzły zdążyły się włączyć
+            SendHello();
+
         }
         public string GetName() { return this.name; }
         public void SetIncPort(int incPort) { _incPort = incPort; } 
@@ -76,7 +80,7 @@ namespace Node
         public void ReadPacket(string packet)
         {
             ShowMessage(packet);
-            SendFeedback();//wysłanie potwierdzenia otrzymania wiadomości
+            //SendFeedback();//wysłanie potwierdzenia otrzymania wiadomości
             int port = DetermineSendingPort(packet); // nr portu, ktorym pakiet zostanie wyslany
             if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
             {
@@ -103,6 +107,14 @@ namespace Node
                 }
                 Console.WriteLine("Nie można odesłać wiadomości zwrotnej: " + message);
             }
+        }
+        /*
+         * Węzeł po włączeniu wysyła do wszystkich sąsiadów wiadomość hello
+         */
+        public void SendHello()
+        {
+            foreach (RoutingLine i in LinkResourceManager.GetRoutingLines())
+                i.GetSendingSocket().Send("Hello; " + name);
         }
 
         /*
@@ -189,7 +201,7 @@ namespace Node
                 Console.WriteLine("ilosc rzedow" + numberOfRows);
                 //Console.ReadLine();
 
-                if (splitConfig.Contains(null) || splitConfig.Contains(""))
+                if (!splitConfig.Contains("0") && (splitConfig.Contains(null) || splitConfig.Contains("")))
                 {
                     Console.WriteLine("Plik konfiguracyjny zawiera puste wartości, nie można wczytać wartości.");
                     return;
