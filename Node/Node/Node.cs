@@ -103,6 +103,7 @@ namespace Node
             //przesyla pakiet do nastepnego wezla
             SendPacket(packet, port);
         }
+
         /*
          * Wysyła informacje zwrotną po odebraniu wiadomości, domyślnie przesyła ACK
          */
@@ -119,6 +120,7 @@ namespace Node
                 Console.WriteLine("Nie można odesłać wiadomości zwrotnej: " + message);
             }
         }
+
         /*
          * Węzeł po włączeniu wysyła do wszystkich sąsiadów wiadomość hello
          */

@@ -6,10 +6,7 @@ namespace ConnectionCloud
     class Program
     {
         static void Main(string[] args)
-        {
-            int RECV_SOCK_NUMBER = 12;
-            int SEND_SOCK_NUMBER = 12;
-            
+        {   
             ConnectionCloud cc = new ConnectionCloud();
             cc.StartText();
 
@@ -20,27 +17,15 @@ namespace ConnectionCloud
 
             rtl = cb.ParseCableCloudEmulatorTable();
             cc.AddRoutingTable(rtl);
+            int SOCKET_PAIRS_NUMBER = cb.getNumberOfCables();
 
-            for (int sock_number = 0; sock_number < RECV_SOCK_NUMBER; sock_number++)
+            for (int sock_number = 0; sock_number < SOCKET_PAIRS_NUMBER; sock_number++)
             {
-                UDPSocket sock = new UDPSocket();
-                udp_sock_recv.Add(sock);
-            }
-
-            for (int send_sock_number = 0; send_sock_number < SEND_SOCK_NUMBER; send_sock_number++)
-            {
-                UDPSocket sock = new UDPSocket();
-                udp_sock_send.Add(sock);
-            }
-
-           
-            for(int sock_number = 0; sock_number < RECV_SOCK_NUMBER; sock_number++)
-            {
+                UDPSocket sockRecv = new UDPSocket();
+                udp_sock_recv.Add(sockRecv);
                 cc.AddReceivingSocket(udp_sock_recv[sock_number]);
-            }
-
-            for(int sock_number = 0; sock_number <SEND_SOCK_NUMBER; sock_number++)
-            {
+                UDPSocket sockSend = new UDPSocket();
+                udp_sock_send.Add(sockSend);
                 cc.AddSendingSocket(udp_sock_send[sock_number]);
             }
             

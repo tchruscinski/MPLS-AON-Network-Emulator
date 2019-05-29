@@ -17,6 +17,7 @@ namespace ConnectionCloud
     {
 
         Time time = new Time();
+        int numberOfCables = 0; //liczba par portów (kabli)
         private static XmlDocument config = new XmlDocument();
         //private static XmlNode root = config.FirstChild;
 
@@ -36,7 +37,10 @@ namespace ConnectionCloud
             }
         }
 
-        
+        public int getNumberOfCables() 
+        {
+            return numberOfCables;
+        }
 
         /**
         * Metoda sciagajaca chmure XD
@@ -59,6 +63,7 @@ namespace ConnectionCloud
             XmlNodeList nodes = doc.DocumentElement.SelectNodes("/Cloud/Row");
 
             List<RoutingTableLine> rtl = new List<RoutingTableLine>();
+            int numberOfPorts = 0;
 
             foreach (XmlNode node in nodes)
             {
@@ -73,8 +78,9 @@ namespace ConnectionCloud
                 rtl_obj._incomingPort = Int32.Parse(inP);
                 rtl_obj._outgoingPort = Int32.Parse(outP);
                 rtl.Add(rtl_obj);
-                
+                numberOfPorts++;
             }
+            this.numberOfCables = numberOfPorts;
             Console.ForegroundColor = ConsoleColor.Green;
             System.Console.WriteLine(time.GetTimestamp(DateTime.Now) + "Total RTLs: " + rtl.Count);
             Console.ForegroundColor = ConsoleColor.Gray;
