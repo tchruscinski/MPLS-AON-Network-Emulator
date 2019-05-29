@@ -5,22 +5,15 @@
 			<Destination>Node2</Destination>
 			<Length>1</Length>
 			<Capacity>100</Capacity>
-			<RLListeningPort>9</RLListeningPort>
-			<RLSendingPort>10</RLSendingPort>
+			<RLListeningPort>8</RLListeningPort>
+			<RLSendingPort>7</RLSendingPort>
 		</Row>
 		<Row>
 			<Destination>Node3</Destination>
 			<Length>5</Length>
 			<Capacity>100</Capacity>
-			<RLListeningPort>11</RLListeningPort>
-			<RLSendingPort>12</RLSendingPort>
-		</Row>
-		<Row>
-			<Destination>Host1</Destination>
-			<Length>0</Length>
-			<Capacity>0</Capacity>
-			<RLListeningPort>3</RLListeningPort>
-			<RLSendingPort>4</RLSendingPort>
+			<RLListeningPort>6</RLListeningPort>
+			<RLSendingPort>5</RLSendingPort>
 		</Row>
     </Router>
 </Config>
