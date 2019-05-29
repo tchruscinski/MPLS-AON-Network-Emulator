@@ -37,10 +37,12 @@ namespace Node
             receivingSockets = LinkResourceManager.GetListeningSockets();
             RoutingController.SetNode(this);
             CallController.InitiateCC(this);
-            RoutingController.SetInitialLinks(LinkResourceManager.GetLinks()); //LRM przekazuje RC informacje o stanie łączy
-            LinkResourceManager.ShowLinks();
             Thread.Sleep(2000); //pauza, żeby wszystkie węzły zdążyły się włączyć
             SendHello();
+            Thread.Sleep(1000);
+            RoutingController.SetInitialLinks(LinkResourceManager.GetLinks()); //LRM przekazuje RC informacje o stanie łączy
+            LinkResourceManager.ShowLinks();
+         
 
         }
         public string GetName() { return this.name; }
@@ -80,7 +82,16 @@ namespace Node
         public void ReadPacket(string packet)
         {
             ShowMessage(packet);
-            //SendFeedback();//wysłanie potwierdzenia otrzymania wiadomości
+            if (!packet.Equals("ACK"))
+            {
+                SendFeedback();//wysłanie potwierdzenia otrzymania wiadomości
+                return;
+            }
+            //*****************
+            //NA POTRZEBY TESTÓW
+            //*****************
+            return;
+
             int port = DetermineSendingPort(packet); // nr portu, ktorym pakiet zostanie wyslany
             if(port == 0) //jezeli RefactorPacket() zwraca 0, to znaczy, ze nie ma takiego portu albo jest jakis blad
             {

@@ -29,6 +29,7 @@ namespace Node
         //TRUE = wolny link, FALSE = zajęty link
         private Dictionary<int, bool> _slotIndexList = new Dictionary<int, bool>();
 
+
         public Link(string node1, string node2, int length, double capacity, int listeningPort, int sendingPort)
         {
             _nodes = new Tuple<string, string>(node1, node2);

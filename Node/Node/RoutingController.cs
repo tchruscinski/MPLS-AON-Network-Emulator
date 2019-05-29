@@ -27,12 +27,11 @@ namespace Node
             StringBuilder linksBuilder = new StringBuilder();
             foreach (Link i in _links)
                 linksBuilder.Append(i.GetLinkToSend());
-            //ZAKOMENTOWANE DO TESTÓW
-            //foreach(UDPSocket i in node.GetSendingSockets())
-            //{
-            //    i.Send(linksBuilder.ToString());
-            //}
-                
+            foreach (UDPSocket i in node.GetSendingSockets())
+            {
+                i.Send(linksBuilder.ToString());
+            }
+
 
         }
         public static void SetWasChange(bool wc) { wasChange = wc; }
