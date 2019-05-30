@@ -64,6 +64,7 @@ namespace Node
         {
             return _nodes;
         }
+
         /*
          * Zwraca informacje o Linku w formie czytelnej dla  użytkownika
          */
@@ -71,17 +72,18 @@ namespace Node
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(_nodes.Item1);
-            builder.Append("-");
+            builder.Append(" to ");
             builder.Append(_nodes.Item2);
             builder.Append(", ");
+            builder.Append("length: ");
             builder.Append(_length);
-            builder.Append(" - length");
+            builder.Append(", bandWidth: ");
             builder.Append(_bandWidth);
-            builder.Append(" - bandWidth");
+            builder.Append(", slotNumber: ");
             builder.Append(_slotNumber);
-            builder.Append(" - slotNumber");
             return builder.ToString();
         }
+
         /*
          * Zwraca informacje o Linku w formie do wysłanie
          */
@@ -94,12 +96,11 @@ namespace Node
             builder.Append(",");
             builder.Append(_length);
             builder.Append(",");
-            builder.Append(_bandWidth);
-            builder.Append(",");
-            builder.Append(_slotNumber);
-            builder.Append(",");
+            builder.Append(_capacity);
+            builder.Append(":");
             return builder.ToString();
         }
+
         ///*
         //* Metoda dodaje linię routingową do łącza,
         //* @ listeningPort - numer portu nasłuchującego

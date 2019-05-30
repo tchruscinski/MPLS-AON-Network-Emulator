@@ -29,10 +29,10 @@ namespace Node
         }
 
         /*
-     * Metoda dodaje linię routingową do łącza,
-     * @ listeningPort - numer portu nasłuchującego
-     * @ sendingPort - numer portu wysyłającego
-     */
+         * Metoda dodaje linię routingową do łącza,
+         * @ listeningPort - numer portu nasłuchującego
+         * @ sendingPort - numer portu wysyłającego
+         */
         public static void AddRoutingLine(int listeningPort, int sendingPort)
         {
             routingLines.Add(new RoutingLine(listeningPort, sendingPort));

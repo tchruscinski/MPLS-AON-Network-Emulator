@@ -77,15 +77,24 @@ namespace Node
 
         /*
          * Pobiera pakiet od socketu, a nastepnie przesyla go dalej
-         * @ packet, tresc pakietu
+         * @ packet - string, tresc pakietu
+         * @ port - int, numer portu, którym został odebrany pakiet
          */
-        public void ReadPacket(string packet)
+        public void ReadPacket(string packet, int incomingPort)
         {
+            String[] splitPacket = packet.Split(';');
+            string header = splitPacket[0];
+
             ShowMessage(packet);
-            if (!packet.Equals("ACK"))
+            /*if (!packet.Equals("ACK"))
             {
                 SendFeedback();//wysłanie potwierdzenia otrzymania wiadomości
                 return;
+            }*/
+
+            if (header == "LINKS")
+            {
+                ProcessNetworkInformation(splitPacket[1], incomingPort);
             }
             //*****************
             //NA POTRZEBY TESTÓW
@@ -197,6 +206,31 @@ namespace Node
             return port;
         }
 
+        /*
+         * Metoda procesuje informacje o topologii sieci od sąsiednich węzłów,
+         * parsuje otrzymany pakiet na linki do swojego Link Resource Managera
+         * i rozsyła do kolejnych węzłów informację dalej
+         * @routingInformation - string, string zawierający informacje o linkach oddzielonych :
+         * @port - int, numer portu, którym odebrano informacje o topologii sieci
+         */
+        public void ProcessNetworkInformation(string routingInformation, int port)
+        {
+            String[] links = routingInformation.Split(':');
+
+            foreach(string link in links)
+            {
+                String[] linkParameters = link.Split(',');
+                Link newLink = new Link(
+                    linkParameters[0],
+                    linkParameters[1],
+                    Int32.Parse(linkParameters[2]),
+                    Convert.ToDouble(linkParameters[3])
+                );
+                LinkResourceManager.AddLink(newLink);
+                Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Otrzymano informację o nowym łączu: " + newLink.GetLinkToShow());
+            }
+            RoutingController.SendLinks(port);
+        }
 
         /*
         * Metoda parsuje konfigurację węzła

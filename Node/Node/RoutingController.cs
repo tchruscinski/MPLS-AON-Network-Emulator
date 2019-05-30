@@ -27,8 +27,14 @@ namespace Node
         {
             _links = links;
             StringBuilder linksBuilder = new StringBuilder();
+            linksBuilder.Append("LINKS;");
             foreach (Link i in _links)
+            {
                 linksBuilder.Append(i.GetLinkToSend());
+            }
+            //usuwamy ostatni ':', aby nie mieć problemu przy parsowaniu wysłanych linków
+            linksBuilder.Length--;
+
             foreach (RoutingLine i in LinkResourceManager.GetRoutingLines())
             {
                 i.GetSendingSocket().Send(linksBuilder.ToString());
@@ -36,6 +42,7 @@ namespace Node
 
 
         }
+
         /*
          * Porównuje dwa łącza, jeżeli mają identyczne parametry zwraca true
         */
@@ -48,6 +55,7 @@ namespace Node
                 return false;
         }
         public static void SetWasChange(bool wasChange) { _wasChange = wasChange; }
+
         /*
          * Sprawdza informacje o łączach otrzymane od innych węzłów, jeśli dowiedział się czegoś nowego, zwraca true
          * oraz zapamiętuje te informacje
@@ -80,6 +88,7 @@ namespace Node
 
 
         }
+
         /*
          * Wysyła informacje o łączach do sąsiadów
          * @port - numer portu, którym otrzymaliśmy informacje o nowych łączach
@@ -88,8 +97,14 @@ namespace Node
         public static void SendLinks(int port)
         {
             StringBuilder linksBuilder = new StringBuilder();
+            linksBuilder.Append("LINKS;");
             foreach (Link i in _links)
+            {
                 linksBuilder.Append(i.GetLinkToSend());
+            }
+            //usuwamy ostatni ':', aby nie mieć problemu przy parsowaniu wysłanych linków
+            linksBuilder.Length--;
+
             foreach (RoutingLine i in LinkResourceManager.GetRoutingLines())
             {
                 if (i.GetListeneningPort() != port)
