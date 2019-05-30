@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+  <Host>
+    <Row>
+        <Type>SEND</Type>
+        <Port>2</Port>
+    </Row>
+      <Row>
+        <Type>RECV</Type>
+        <Port>1</Port>
+    </Row>
+  </Host>
+</Config>

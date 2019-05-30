@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+	<Router>
+		<Row>
+			<Destination>Node2</Destination>
+			<Length>1</Length>
+			<Capacity>100</Capacity>
+			<RLListeningPort>8</RLListeningPort>
+			<RLSendingPort>7</RLSendingPort>
+		</Row>
+		<Row>
+			<Destination>Node3</Destination>
+			<Length>5</Length>
+			<Capacity>100</Capacity>
+			<RLListeningPort>6</RLListeningPort>
+			<RLSendingPort>5</RLSendingPort>
+		</Row>
+    </Router>
+</Config>
