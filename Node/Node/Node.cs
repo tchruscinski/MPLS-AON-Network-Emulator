@@ -239,7 +239,9 @@ namespace Node
                     );
                     //jeżeli, któraś z wartości jest 0, to znaczy, że jest to połączenie z hostem, więc nie dodajemy go do LRM
                     if(Int32.Parse(splitConfig[configIterator + 1]) != 0)
-                         LinkResourceManager.AddLink(link);
+                    {
+                        LinkResourceManager.AddLink(link);
+                    }
                     configIterator += 5;
                     n++;
                 }

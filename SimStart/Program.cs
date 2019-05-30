@@ -38,19 +38,19 @@ namespace SimStart
             startRouter2.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
             startRouter2.Start();
             //ZAKOMENTOWANE DO TESTÓW
-            //Process startRouter3 = new Process();
-            //startRouter3.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
+            Process startRouter3 = new Process();
+            startRouter3.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
             //// nazwa
-            //startRouter3.StartInfo.Arguments = "Node3";
-            //startRouter3.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-            //startRouter3.Start();
+            startRouter3.StartInfo.Arguments = "Node3";
+            startRouter3.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            startRouter3.Start();
 
-            //Process startRouter4 = new Process();
-            //startRouter4.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
+            Process startRouter4 = new Process();
+            startRouter4.StartInfo.FileName = @"..\..\..\Node\Node\bin\Debug\Node.exe";
             //// nazwa
-            //startRouter4.StartInfo.Arguments = "Node4";
-            //startRouter4.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-            //startRouter4.Start();
+            startRouter4.StartInfo.Arguments = "Node4";
+            startRouter4.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            startRouter4.Start();
 
             Process startHost1 = new Process();
             startHost1.StartInfo.FileName = @"..\..\..\Host\bin\Debug\Host.exe";
