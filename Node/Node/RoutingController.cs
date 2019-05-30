@@ -29,9 +29,9 @@ namespace Node
             StringBuilder linksBuilder = new StringBuilder();
             foreach (Link i in _links)
                 linksBuilder.Append(i.GetLinkToSend());
-            foreach (UDPSocket i in node.GetSendingSockets())
+            foreach (RoutingLine i in LinkResourceManager.GetRoutingLines())
             {
-                i.Send(linksBuilder.ToString());
+                i.GetSendingSocket().Send(linksBuilder.ToString());
             }
 
 
@@ -78,8 +78,25 @@ namespace Node
 
             return wasChange;
 
+
         }
+        /*
+         * Wysyła informacje o łączach do sąsiadów
+         * @port - numer portu, którym otrzymaliśmy informacje o nowych łączach
+         *          wysyłamy do wszystkich sąsiadów, poza właścicielem tego portu
+         */
+        public static void SendLinks(int port)
+        {
+            StringBuilder linksBuilder = new StringBuilder();
+            foreach (Link i in _links)
+                linksBuilder.Append(i.GetLinkToSend());
+            foreach (RoutingLine i in LinkResourceManager.GetRoutingLines())
+            {
+                if (i.GetListeneningPort() != port)
+                    i.GetSendingSocket().Send(linksBuilder.ToString());
 
+            }
 
+        }
     }
 }
