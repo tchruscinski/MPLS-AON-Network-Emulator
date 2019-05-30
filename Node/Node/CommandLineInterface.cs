@@ -19,7 +19,7 @@ namespace Node
             builder.Append(".xml");
             string configName = builder.ToString();
             //Console.WriteLine("nazwa szukana "+routerName+" i nazwa pliku: "+configName);
-            string routerConfig = parser.ParseLocalConfig(configName);
+            string routerConfig = parser.ParseConfig(configName)[0];
             return routerConfig;
         }
 

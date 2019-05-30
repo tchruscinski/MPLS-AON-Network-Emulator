@@ -39,7 +39,6 @@ namespace Node
                 Node node = new Node(args[0]);
 
                 string command;
-
                 CommandLineInterface cli = new CommandLineInterface();
 
                 while (true)

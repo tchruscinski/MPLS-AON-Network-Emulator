@@ -31,6 +31,7 @@ namespace Node
         public Node(string name)
         {
             this.name = name;
+            Console.WriteLine("# " + this.name + " #");
             ParseNodeConfig();
             LinkResourceManager.RunSockets(this); //sockety zaczynaja nasluchiwac/być gotowe do wysłania
             sendingSockets = LinkResourceManager.GetSendingSockets();
@@ -92,7 +93,7 @@ namespace Node
                 return;
             }*/
 
-            if (header == "LINKS")
+            if (header.Equals("LINKS"))
             {
                 ProcessNetworkInformation(splitPacket[1], incomingPort);
             }
@@ -200,7 +201,10 @@ namespace Node
          */
         public int DetermineSendingPort(string packet)
         {
-            if (packet.Equals("")) return 0;
+            if (packet.Equals(""))
+            {
+                return 0;
+            }
             string destinationHost = ReadDestinationHost(packet);
             int port = LinkResourceManager.GetSendingPortForDestination(destinationHost);
             return port;
@@ -216,6 +220,7 @@ namespace Node
         public void ProcessNetworkInformation(string routingInformation, int port)
         {
             String[] links = routingInformation.Split(':');
+            List<Link> linksToCheck = new List<Link>();
 
             foreach(string link in links)
             {
@@ -227,9 +232,14 @@ namespace Node
                     Convert.ToDouble(linkParameters[3])
                 );
                 LinkResourceManager.AddLink(newLink);
+                linksToCheck.Add(newLink);
                 Console.WriteLine(time.GetTimestamp(DateTime.Now) + " Otrzymano informację o nowym łączu: " + newLink.GetLinkToShow());
             }
-            RoutingController.SendLinks(port);
+
+            if(RoutingController.CheckNewLinks(linksToCheck))
+            {
+                RoutingController.SendLinks(port);
+            }
         }
 
         /*
@@ -245,8 +255,6 @@ namespace Node
 
                 String[] splitConfig = localConfig[0].Split(',');
                 int numberOfRows = Int32.Parse(localConfig[1]);
-                Console.WriteLine("ilosc rzedow" + numberOfRows);
-                //Console.ReadLine();
 
                 if (!splitConfig.Contains("0") && (splitConfig.Contains(null) || splitConfig.Contains("")))
                 {
