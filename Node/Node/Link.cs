@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace Node
 {
@@ -28,9 +29,13 @@ namespace Node
         //szczelinami, tj. o tych samych indeksach, więc przed zestawieniem połączenia musimy je zarezerwować
         //TRUE = wolny link, FALSE = zajęty link
         private Dictionary<int, bool> _slotIndexList = new Dictionary<int, bool>();
+        public string GetNode1() { return _nodes.Item1; }
+        public string GetNode2() { return _nodes.Item2; }
+        public int GetLength() { return _length; }
+        public double GetCapacity() { return _capacity; }
 
 
-        public Link(string node1, string node2, int length, double capacity, int listeningPort, int sendingPort)
+        public Link(string node1, string node2, int length, double capacity)
         {
             _nodes = new Tuple<string, string>(node1, node2);
             _length = length;
@@ -46,7 +51,7 @@ namespace Node
                 //    _slotIndexList.Keys.ElementAt(i), _slotIndexList.Values.ElementAt(i));
             }
 
-            routingLine = new RoutingLine(listeningPort, sendingPort);
+            //routingLine = new RoutingLine(listeningPort, sendingPort);
          
         }
 
@@ -112,5 +117,6 @@ namespace Node
         //{
         //    return routingLines;
         //}
+
     }
 }

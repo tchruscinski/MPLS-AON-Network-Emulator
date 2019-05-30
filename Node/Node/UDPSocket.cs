@@ -47,6 +47,7 @@ namespace Node
             {
                 Console.WriteLine("Nieprawidlowa konfiguracja węzła");
                 Console.WriteLine("Błąd: " + e.Message);
+                Console.WriteLine("Port: " + _port);
                 return;
             }
             _node = node;

@@ -229,9 +229,7 @@ namespace Node
                         this.name,
                         splitConfig[configIterator],
                         Int32.Parse(splitConfig[configIterator + 1]),
-                        Int32.Parse(splitConfig[configIterator + 2]),
-                        Int32.Parse(splitConfig[configIterator + 3]),
-                        Int32.Parse(splitConfig[configIterator + 4])
+                        Int32.Parse(splitConfig[configIterator + 2])
                     );
                     LinkResourceManager.AddRoutingLine(
                         Int32.Parse(splitConfig[configIterator + 3]),
